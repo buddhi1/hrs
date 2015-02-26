@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +15,12 @@
 		<!-- Latest compiled JavaScript -->
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
+		<title>Hotel Reservation System</title>
+
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" >  	
+	  	<link rel="stylesheet" href="/resources/demos/style.css">
+	  	
+
 	</head>
 
 	<h1>Hotel Reservation System</h1>
@@ -21,5 +28,6 @@
 	<div class = "containter">
 		@yield('content')
 	</div>
+
 
 </html>
