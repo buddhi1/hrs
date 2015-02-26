@@ -1,12 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 	<head>
+
+
+		<title>Hotel Reservation System</title>
+
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" >  		  	
+
 		<title>Hotel Reservation System</title>
 
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" >  	
 	
+
 
 	</head>
 
@@ -15,6 +21,4 @@
 	<div class = "containter">
 		@yield('content')
 	</div>
-
-
 </html>

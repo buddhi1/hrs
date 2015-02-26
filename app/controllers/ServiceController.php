@@ -41,9 +41,14 @@ class ServiceController extends BaseController {
 	// delete a service from the database
 
 		$service = Service::find(Input::get('id'));
+		$service_name = Service::find(Input::get('name'));
+
+		$room_services = RoomType::find($service_name);
 
 		if($service) {
 			$service->delete();
+
+
 
 			return Redirect::To('admin/service')
 				->with('ser_message_del','Facility is successfully deleted');

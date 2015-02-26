@@ -17,19 +17,16 @@
 		</tr>
 
 		<tr>
-			<td valign = "top">{{ Form::label('lblFacilities', 'Facilities') }}</td>
 			<td>
+				<strong>Facilities</strong><br>
 				@foreach($facilities as $facility)
 					{{ Form::checkbox('facility[]', $facility->name)}}
 					{{ $facility->name }}
 					<br>
 				@endforeach
 			</td>
-		</tr>
-
-		<tr>
-			<td valign = "top">{{ Form::label('lblServices', 'services')}}</td>
 			<td>
+				<strong>Services</strong><br>
 				@foreach($services as $service)
 					{{ Form::checkbox('service[]', $service->name) }}
 					{{ $service->name }}
