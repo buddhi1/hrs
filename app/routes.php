@@ -15,3 +15,9 @@ Route::get('/', function()
 {
 	return View::make('hello');
 });
+
+Route::controller('admin/user', 'UserController');
+
+Route::controller('admin/permission', 'PermissionController');
+
+Route::controller('admin/calendar', 'CalendarController');
