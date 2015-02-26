@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,4 +23,20 @@
 		@yield('content')
 	</div>
 
+=======
+<html>
+<head>
+	<title>Hotel Reservation System</title>
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" >  	
+  	<link rel="stylesheet" href="/resources/demos/style.css">
+  	
+</head>
+
+<body>
+	<h1>----------------Hotel Reservation -------------</h1>
+
+	@yield('content')
+</body>
+>>>>>>> 1251cefd644f8b91a2d8dba0a7bdfafe569c4838
 </html>
