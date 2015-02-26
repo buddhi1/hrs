@@ -1,9 +1,6 @@
 <?php
 
-class Service extends Eloquent {
-
+class Facility extends Eloquent {
 	protected $guarded = array();
 	public static $rules = array();
-
-
 }
