@@ -10,6 +10,7 @@ class CreateTables extends Migration {
 		Schema::create('permissions', function($table)
 		{
 			$table->increments('id');
+			$table->string('name');
 			$table->boolean('addservice');
 			$table->boolean('removeservice');
 			$table->boolean('addcalendar');
@@ -44,9 +45,9 @@ class CreateTables extends Migration {
 		    $table->increments('id');
 		    $table->string('name');
 		    $table->string('password');
-		    $table->string('level');
 		    $table->integer('permission_id')->unsigned();
 		    $table->foreign('permission_id')->references('id')->on('permissions');
+		    $table->rememberToken();
 		    $table->timestamps();
 		});
 
