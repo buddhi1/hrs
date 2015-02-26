@@ -21,20 +21,28 @@ class CalendarController extends BaseController {
 	//Posts the create form details to database
 
 	public function postCreate(){
-		$record =DB::table('room_price_Calendars')->where('name', Input::get('uname'))->first();
 
-		if(!$user){
+		$date = Input::get('from');
+		$from = new DateTime($date );
+		$to = new DateTime(Input::get('to'));
+		$days = $to->diff($from)->format("%a");		
+		
+		for ($i=0; $i <= $days; $i++) { 
 			$calendar = new Calendar;
-			$calendar->name = Input::get('uname');
-			$calendar->password = Hash::make(Input::get('password'));
-			$calendar->permission_id = Input::get('permission');
+			$calendar->room_type_id = Input::get('roomType');
+			$calendar->service_id = Input::get('service');
+			$calendar->start_date = $date;
+			$calendar->end_date = $date;
+			$calendar->price = Input::get('price');
+			$calendar->discount_rate = Input::get('discount');			
 			$calendar->save();
-			return Redirect::to('admin/user/create')
-				->with('message', 'A user has been added successfully');
-		}else{
-			return Redirect::to('admin/user/create')
-				->with('message', 'The user name already exists. Please enter differernt user name');
+			$date = date('Y-m-d', strtotime($date.' +1 day'));	
 		}
+	
+			
+			return Redirect::to('admin/calendar/create')
+				->with('message', 'Calendar record has been added successfully');
+		
 		
 	}
 }

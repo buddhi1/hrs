@@ -4,7 +4,7 @@
 
 <h2>Room price calendar</h2>
 <table>
-	{{ Form::open(array('url'=>'/admin/Calander/create')) }}
+	{{ Form::open(array('url'=>'/admin/calendar/create')) }}
 	<tr>
 		<td clospan="2"> 
 			@if(Session::has('message'))
@@ -47,6 +47,7 @@
 </table>
 @stop
 
-<script src="//code.jquery.com/jquery-1.10.2.js"> </script>
-<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"> </script>
+
+ <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+ <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
 <script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>

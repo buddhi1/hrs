@@ -4,7 +4,8 @@ $(function() {
       changeMonth: true,
       numberOfMonths: 2,
       onClose: function( selectedDate ) {
-        $( "#to" ).datepicker( "option", "minDate", selectedDate );
+        $( "#from" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+        $( "#to" ).datepicker( "option", "minDate", selectedDate);
       }
     });
     $( "#to" ).datepicker({
@@ -12,6 +13,7 @@ $(function() {
       changeMonth: true,
       numberOfMonths: 2,
       onClose: function( selectedDate ) {
+        $( "#to" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
         $( "#from" ).datepicker( "option", "maxDate", selectedDate );
       }
     });
