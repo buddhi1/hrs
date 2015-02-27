@@ -70,7 +70,10 @@ class CalendarController extends BaseController {
 
 	//edit function for selected record
 	public function postUpdate(){
+
 		if(Input::get('sdate') <= Input::get('from') && Input::get('edate') >= Input::get('to')){
+
+			//delets overlapping records
 			DB::table('room_price_calenders')
 			->where('room_type_id','=',Input::get('room_id'))
 			->where('start_date','>=',Input::get('from'))
@@ -113,6 +116,40 @@ class CalendarController extends BaseController {
 				->with('message', 'Calendar record has been update successfully');			
 		}elseif(Input::get('sdate') > Input::get('from') && Input::get('edate') < Input::get('to')){
 
+			//deletes ovelapping records
+			DB::table('room_price_calenders')
+			->where('room_type_id','=',Input::get('room_id'))
+			->where('end_date','=',Input::get('edate'))
+			->delete();
+
+			//read from date
+			$date = Input::get('from');	
+
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
+			
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$calendar = new Calendar;
+				$calendar->room_type_id = Input::get('roomType');
+				$calendar->service_id = Input::get('service');
+				$calendar->start_date = $date;
+				$calendar->end_date = new DateTime(Input::get('to'));
+				$calendar->price = Input::get('price');
+				$calendar->discount_rate = Input::get('discount');			
+				$calendar->save();
+
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}
+
+			return Redirect::to('admin/calendar/index')
+				->with('message', 'Calendar record has been update successfully!!!');	
 		}	
 		return Redirect::to('admin/calendar/index')
 				->with('message', 'Something went wrong');	
