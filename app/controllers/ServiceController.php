@@ -41,17 +41,39 @@ class ServiceController extends BaseController {
 	// delete a service from the database
 
 		$service = Service::find(Input::get('id'));
-		$service_name = Service::find(Input::get('name'));
 
-		$room_services = RoomType::find($service_name);
+
+		// remove the deleted service from the room types table
+		$rooms = DB::table('room_types')->get();
+		// var_dump($ser);
+		// die();
+
+		foreach ($rooms as $room) {
+			$json = json_decode($room->services, true);
+			// var_dump($json);
+			// die();
+			if(($key = array_search($service->name, $json)) !== false) {
+			    unset($json[$key]);
+			    $json = array_values($json);
+
+			    //after the delete updating the services table
+			    DB::table('room_types')
+			    	->where('id', $room->id)
+			    	->update(array('services'=> json_encode($json)));
+
+
+			}
+		}
+
 
 		if($service) {
 			$service->delete();
 
-
-
 			return Redirect::To('admin/service')
-				->with('ser_message_del','Facility is successfully deleted');
+				->with('ser_message_del','Service is successfully deleted');
 		}
+
+		return Redirect::To('admin/service')
+			->with('ser_message_del','Service is successfully deleted');
 	}
 }

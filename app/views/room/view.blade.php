@@ -9,6 +9,7 @@
 		<th>Room Facilities</th>
 		<th>Room Services</th>
 		<th>No of Rooms</th>
+		<th>Edit</th>
 		<th>Delete</th>
 	@foreach($rooms as $room)
 	
@@ -17,6 +18,12 @@
 			<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
 			<td>{{ implode(", ", json_decode($room->services)) }}</td>
 			<td>{{ $room->no_of_rooms }}</td>
+			<td>
+				{{ Form::open(array('url' => 'admin/room/edit')) }}
+				{{ Form::hidden('id', $room->id) }}
+				{{ Form::submit('Edit') }}
+				{{ Form::close() }}
+			</td>
 			<td>
 				{{ Form::open(array('url' => 'admin/room/destroy')) }}
 				{{ Form::hidden('id', $room->id) }}
@@ -30,7 +37,7 @@
 
 	@if(Session::has('room_message_del'))
 
-	<p>{{ Session::get('room_message_del') }}</p>
+		<p>{{ Session::get('room_message_del') }}</p>
 	
 	@endif
 
