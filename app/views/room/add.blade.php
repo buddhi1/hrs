@@ -20,7 +20,7 @@
 			<td>
 				<strong>Facilities</strong><br>
 				@foreach($facilities as $facility)
-					{{ Form::checkbox('facility[]', $facility->name)}}
+					{{ Form::checkbox('facility[]', $facility->name) }}
 					{{ $facility->name }}
 					<br>
 				@endforeach

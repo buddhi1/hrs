@@ -41,6 +41,23 @@ class FacilityController extends BaseController {
 
 		$facility = Facility::find(Input::get('id'));
 
+		// remove the deleted facility from the room types table
+		$rooms = DB::table('room_types')->get();
+
+		foreach ($rooms as $room) {
+			$json = json_decode($room->facilities, true);
+
+			if(($key = array_search($facility->name, $json)) !== false) {
+			    unset($json[$key]);
+			    $json = array_values($json);
+
+			    //after the delete updating the facilities table
+			    DB::table('room_types')
+			    	->where('id', $room->id)
+			    	->update(array('facilities'=> json_encode($json)));
+			}
+		}
+
 		if($facility) {
 			$facility->delete();
 
