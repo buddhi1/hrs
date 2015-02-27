@@ -15,8 +15,16 @@
 	
 		<tr>
 			<td>{{ $room->name }}</td>
-			<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
-			<td>{{ implode(", ", json_decode($room->services)) }}</td>
+			<?php if(json_decode($room->facilities) !== null) { ?>
+				<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
+
+				<?php }else { echo "<td></td>";} ?>
+			<?php if(json_decode($room->services) !== null) { ?>
+				<td>{{ implode(", ", json_decode($room->services)) }}</td>
+
+				<?php }else { echo "<td></td>";} ?>
+			<!--<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
+			<td>{{ implode(", ", json_decode($room->services)) }}</td>-->
 			<td>{{ $room->no_of_rooms }}</td>
 			<td>
 				{{ Form::open(array('url' => 'admin/room/edit')) }}
