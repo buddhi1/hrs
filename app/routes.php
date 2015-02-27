@@ -29,3 +29,5 @@ Route::controller('admin/permission', 'PermissionController');
 
 Route::controller('admin/calendar', 'CalendarController');
 
+Route::controller('admin/promo', 'PromoController');
+

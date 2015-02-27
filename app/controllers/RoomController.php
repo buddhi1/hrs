@@ -46,4 +46,27 @@ class RoomController extends BaseController {
 				->with('room_message_del','Room type is successfully deleted');
 		}
 	}
+
+	public function postEdit() {
+		return View::make('room.edit')
+			->with('rooms', RoomType::find(Input::get('id')))
+			->with('facilities', Facility::all())
+			->with('services', Service::all());
+	}
+
+	public function postUpdate() {
+		// update an existing room type
+		
+		$room = RoomType::find(Input::get('id'));
+
+		$room->name = Input::get('name');
+		$room->facilities = json_encode(Input::get('facility'));
+		$room->services = json_encode(Input::get('service'));
+		$room->no_of_rooms = Input::get('no_of_room');
+
+		$room->save();
+
+		return Redirect::to('admin/room')
+			->with('room_message_add','Room is succesfully updated');
+	}
 }
