@@ -44,7 +44,7 @@
 
 	@if(Session::has('room_message_add'))
 
-		<p class="text-success">{{ Session::get('room_message_add') }}</p>
+		<p>{{ Session::get('room_message_add') }}</p>
 		
 	@endif
 

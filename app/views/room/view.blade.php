@@ -30,7 +30,7 @@
 
 	@if(Session::has('room_message_del'))
 
-	<p class="text-success">{{ Session::get('room_message_del') }}</p>
+	<p>{{ Session::get('room_message_del') }}</p>
 	
 	@endif
 
