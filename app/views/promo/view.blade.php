@@ -23,7 +23,16 @@
 			<td>{{ $promo->end_date }}</td>
 			<td>{{ $promo->price }}</td>
 			<td>{{ $promo->days }}</td>
-			<td>{{ $promo->room_type_id }}</td>
+
+			<!-- Get the room type name instead of room_type_id -->
+			@foreach($rooms as $room)
+				@if($promo->room_type_id === $room->id)
+				<td>{{ $room->name }}</td>
+				@endif
+			@endforeach
+
+			<!-- end-->
+
 			<td>{{ $promo->no_of_rooms }}</td>
 			<?php if(json_decode($promo->services) !== null) { ?>
 				<td>{{ implode(", ", json_decode($promo->services)) }}</td>
@@ -46,9 +55,9 @@
 	@endforeach
 	</table>
 
-	@if(Session::has('promo_message_del'))
+	@if(Session::has('promo_message'))
 
-		<p>{{ Session::get('promo_message_del') }}</p>
+		<p>{{ Session::get('promo_message') }}</p>
 	
 	@endif
 

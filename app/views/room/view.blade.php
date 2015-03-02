@@ -49,4 +49,10 @@
 	
 	@endif
 
+	@if(Session::has('room_message_add'))
+
+		<p>{{ Session::get('room_message_add') }}</p>
+	
+	@endif
+
 @stop
