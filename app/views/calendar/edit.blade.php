@@ -13,30 +13,24 @@
 		 </td>
 	</tr>
 	<?php
-		$roomTypes = RoomType::lists('name', 'id');
-		$services = Service::lists('name', 'id');
-
+		
 		$record = Calendar::find(Input::get('id'));
 
-		//$record = DB::table('room_price_calenders')->where('room_type_id','=',Input::get('room_id'))->get();
 	?>
-	{{ Form::hidden('room_id', $record->room_type_id) }}
-	{{ Form::hidden('sdate',$record->start_date) }}
-	{{ Form::hidden('edate',$record->end_date) }}
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
-		<td> {{ Form::select('roomType', $roomTypes, $record->room_type_id, array('required')) }} </td>
+		<td> {{ Form::text('room_id', $record->room_type_id,array('readonly')) }} </td>
 	</tr>
 	<tr>
 		<td> {{ Form::label('lblservice', 'Service') }} </td>
-		<td> {{ Form::select('service', $services, $record->service_id, array('required')) }} </td>
+		<td> {{ Form::text('service', $record->service_id,array('readonly')) }} </td>
 	</tr>
 	<tr>
-		<td> {{ Form::label('lblfrom', 'Start date') }} </td>
+		<td> {{ Form::label('lblfrom', 'Start date: ') }} </td>
 		<td>
-			{{ Form::text('from', $record->start_date, array('required', 'id'=>'from')) }} 
-			{{ Form::label('lblend', 'End date') }}
-		 	{{ Form::text('to', $record->end_date, array('required', 'id'=>'to')) }} 
+			{{ Form::text('from', $record->start_date,array('readonly')) }} 
+			{{ Form::label('lblend', 'End date: ') }}
+		 	{{ Form::text('to', $record->end_date,array('readonly')) }} 
 		</td>
 	</tr>
 	<tr>
