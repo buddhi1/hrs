@@ -36,27 +36,33 @@ class FacilityController extends BaseController {
 			->with('fac_message_err','Facility already exists');
 	}
 
+	public function deleteFacility($table, $name) {
+		// This function is used to delete a facilility from any table when the original facility is deleted.
+
+		$rooms = DB::table($table)->get();
+
+		foreach ($rooms as $room) {
+			$json = json_decode($room->facilities, true);
+
+			if(($key = array_search($name, $json)) !== false) {
+			    unset($json[$key]);
+			    $json = array_values($json);
+
+			    //after the delete updating the facilities table
+			    DB::table($table)
+			    	->where('id', $room->id)
+			    	->update(array('facilities'=> json_encode($json)));
+			}
+		}
+	}
+
 	public function postDestroy(){
 		//delete a facility from the database
 
 		$facility = Facility::find(Input::get('id'));
 
 		// remove the deleted facility from the room types table
-		$rooms = DB::table('room_types')->get();
-
-		foreach ($rooms as $room) {
-			$json = json_decode($room->facilities, true);
-
-			if(($key = array_search($facility->name, $json)) !== false) {
-			    unset($json[$key]);
-			    $json = array_values($json);
-
-			    //after the delete updating the facilities table
-			    DB::table('room_types')
-			    	->where('id', $room->id)
-			    	->update(array('facilities'=> json_encode($json)));
-			}
-		}
+		$this->deleteFacility('room_types', $facility->name);
 
 		if($facility) {
 			$facility->delete();
@@ -64,6 +70,5 @@ class FacilityController extends BaseController {
 			return Redirect::To('admin/facility')
 				->with('fac_message_del','Facility is successfully deleted');
 		}
-
 	}
 }

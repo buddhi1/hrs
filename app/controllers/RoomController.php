@@ -21,17 +21,26 @@ class RoomController extends BaseController {
 
 	public function postCreate() {
 	// add a new room type to the database
-		$room = New RoomType();
 
-		$room->name = Input::get('name');
-		$room->facilities = json_encode(Input::get('facility'));
-		$room->services = json_encode(Input::get('service'));
-		$room->no_of_rooms = Input::get('no_of_room');
+		$validator = Validator::make(Input::all(), RoomType::$rules);
 
-		$room->save();
+		if($validator->passes()) {
+			$room = New RoomType();
 
-		return Redirect::to('admin/room')
-			->with('room_message_add','Room is succesfully added');
+			$room->name = Input::get('name');
+			$room->facilities = json_encode(Input::get('facility'));
+			$room->services = json_encode(Input::get('service'));
+			$room->no_of_rooms = Input::get('no_of_room');
+
+			$room->save();
+
+			return Redirect::to('admin/room')
+				->with('room_message_add','Room is succesfully added');
+		}
+
+		return Redirect::to('admin/room/create')
+				->with('room_message_add','Services or Facilites cannot be empty')
+				->withInput();
 	}
 
 	public function postDestroy() {
@@ -48,6 +57,8 @@ class RoomController extends BaseController {
 	}
 
 	public function postEdit() {
+	// display the edit room type form
+		
 		return View::make('room.edit')
 			->with('rooms', RoomType::find(Input::get('id')))
 			->with('facilities', Facility::all())
@@ -56,17 +67,25 @@ class RoomController extends BaseController {
 
 	public function postUpdate() {
 		// update an existing room type
-		
-		$room = RoomType::find(Input::get('id'));
 
-		$room->name = Input::get('name');
-		$room->facilities = json_encode(Input::get('facility'));
-		$room->services = json_encode(Input::get('service'));
-		$room->no_of_rooms = Input::get('no_of_room');
+		$validator = Validator::make(Input::all(), RoomType::$rules);
 
-		$room->save();
+		if($validator->passes()) {
+			$room = RoomType::find(Input::get('id'));
+
+			$room->name = Input::get('name');
+			$room->facilities = json_encode(Input::get('facility'));
+			$room->services = json_encode(Input::get('service'));
+			$room->no_of_rooms = Input::get('no_of_room');
+
+			$room->save();
+
+			return Redirect::to('admin/room')
+			->with('room_message_add','Room is succesfully updated');
+		}
 
 		return Redirect::to('admin/room')
-			->with('room_message_add','Room is succesfully updated');
+			->with('room_message_add','Services or Facilites cannot be empty')
+			->withErrors($validator);
 	}
 }

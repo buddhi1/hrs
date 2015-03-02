@@ -37,33 +37,33 @@ class ServiceController extends BaseController {
 		
 	}
 
+	public function deleteService($table,$name) {
+		// This function is used to delete a service from any table when the original service is deleted.
+
+		$rooms = DB::table($table)->get();
+
+		foreach ($rooms as $room) {
+			$json = json_decode($room->services, true);
+
+			if(($key = array_search($name, $json)) !== false) {
+			    unset($json[$key]);
+			    $json = array_values($json);
+
+			    //after the delete updating the services table
+			    DB::table($table)
+			    	->where('id', $room->id)
+			    	->update(array('services'=> json_encode($json)));
+			}
+		}
+	}
+
 	public function postDestroy() {
 	// delete a service from the database
 
 		$service = Service::find(Input::get('id'));
 
-
 		// remove the deleted service from the room types table
-		$rooms = DB::table('room_types')->get();
-		// var_dump($ser);
-		// die();
-
-		foreach ($rooms as $room) {
-			$json = json_decode($room->services, true);
-			// var_dump($json);
-			// die();
-			if(($key = array_search($service->name, $json)) !== false) {
-			    unset($json[$key]);
-			    $json = array_values($json);
-
-			    //after the delete updating the services table
-			    DB::table('room_types')
-			    	->where('id', $room->id)
-			    	->update(array('services'=> json_encode($json)));
-
-
-			}
-		}
+		$this->deleteService('room_types', $service->name);
 
 
 		if($service) {
