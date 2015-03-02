@@ -25,31 +25,51 @@ class CalendarController extends BaseController {
 		//read from date
 		$date = Input::get('from');	
 
-		//convert from date to dateTime format
-		$from = new DateTime($date );
-		//convert to date to dateTime format
-		$to = new DateTime(Input::get('to'));
+		$room_type_id = Input::get('roomType');
+		$service_id = Input::get('service');
 
-		//finds the days between from and to dates
-		$days = $to->diff($from)->format("%a");		
-		
-		//loop inserts new rows for all days between from and to dates
-		for ($i=0; $i <= $days; $i++) { 
-			$calendar = new Calendar;
-			$calendar->room_type_id = Input::get('roomType');
-			$calendar->service_id = Input::get('service');
-			$calendar->start_date = $date;
-			$calendar->end_date = new DateTime(Input::get('to'));
-			$calendar->price = Input::get('price');
-			$calendar->discount_rate = Input::get('discount');			
-			$calendar->save();
+		//check for availability of date range for selected room type and service type
+		$fdate = DB::table('room_price_calenders')
+			->where('start_date','=',$date)
+			->where('room_type_id','=',$room_type_id)
+			->where('service_id','=',$service_id)
+			->get();
 
-			//get next date
-			$date = date('Y-m-d', strtotime($date.' +1 day'));	
-		}	
+		//if such date range does not exist for the selected room type and service type
+		if(!$fdate){
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
 			
-			return Redirect::to('admin/calendar/create')
-				->with('message', 'Calendar record has been added successfully');		
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$calendar = new Calendar;
+				$calendar->room_type_id = $room_type_id;
+				$calendar->service_id = $service_id;
+				$calendar->start_date = $date;
+				$calendar->end_date = new DateTime(Input::get('to'));
+				$calendar->price = Input::get('price');
+				$calendar->discount_rate = Input::get('discount');			
+				$calendar->save();
+
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}	
+				
+				return Redirect::to('admin/calendar/create')
+					->with('message', 'Calendar record has been added successfully');		
+			
+			}
+			//if the given date range existing for the selected room type and service type
+			else{
+					return Redirect::to('admin/calendar/create')
+					->with('message', 'Calendar records overlapping for given date range. Please refer to edit time line');
+				}		
+
 		
 	}
 
@@ -87,9 +107,7 @@ class CalendarController extends BaseController {
 			return Redirect::to('admin/calendar/index')
 				->with('message', 'Calendar record has been update successfully');			
 		
-	}
-
-	//---------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++
+	}	
 
 	//edit function for selected time line
 	public function postUpdatetimeline(){
@@ -140,7 +158,7 @@ class CalendarController extends BaseController {
 		}
 
 		//replacing existing block(s) in time line
-		else{
+		elseif($top_date < $end_date && $bottom_date > $to_date){
 
 			//reads the end date of editing time line block
 			$end_date = DB::table('room_price_calenders')->where('start_date','=',$from_date)->get();
@@ -189,6 +207,8 @@ class CalendarController extends BaseController {
 
 			return Redirect::to('admin/calendar/index')
 				->with('message', 'Calendar record has been update successfully!!!');
+		}else{
+			if()
 		}
 
 	
