@@ -33,3 +33,5 @@ Route::controller('admin/promo', 'PromoController');
 
 Route::controller('admin/policy', 'PolicyController');
 
+Route::controller('booking', 'BookingController');
+

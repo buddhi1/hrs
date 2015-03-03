@@ -76,5 +76,3 @@
 	@endif
 
 @stop
-<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="{{URL::to('/')}}/js/policies.js"></script>
