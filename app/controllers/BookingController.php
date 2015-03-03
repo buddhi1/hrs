@@ -19,6 +19,39 @@ class BookingController extends BaseController {
 			Session::put('no_of_kids', Input::get('no_of_kids'));
 			Session::put('no_of_rooms', Input::get('no_of_rooms'));
 			Session::put('promo_code', Input::get('promo_code'));
+
+			$room = RoomType::find(Input::get('room_type_id'));
+
+			$no_rooms = array();
+			$count = 0;
+
+			// get all the room types available withing the booked date
+			$calendar = DB::table('room_price_calenders')
+								->select('room_type_id')
+								->where('start_date', '>=', Session::get('start_date'))
+								->where('start_date', '<=', Session::get('end_date'))
+								->distinct()
+								->get();
+
+			foreach ($calendar as $roomss) {
+
+				
+				$room_type = RoomType::find($roomss->room_type_id);
+				
+				// get the total of booked room types from the above selected room types
+				$room_no = DB::table('bookings')
+								->whereNull('check_out')
+								->where('room_type_id', $roomss->room_type_id)
+								->sum('no_of_rooms');
+								
+				if((Session::get('no_of_rooms')+$room_no)<=$room_type['no_of_rooms']) {
+					$no_rooms[$count] = $room_type['name'];
+					$count++;
+				}
+			}
+
+			var_dump($no_rooms);
+			die();
 			
 			return View::make('booking.add2');
 
@@ -31,16 +64,9 @@ class BookingController extends BaseController {
 	public function postCreate() {
 	// Create a new booking
 
+			
 
-
-			$room = RoomType::find(Input::get('room_type_id'));
-			$calendar = DB::table('room_price_calenders')
-								->where('room_type_id', '=', Input::get('room_type_id'))
-								->where('service_id', '=', Input::get('service_id'))
-								->where('start_date', '=', Session::get('start_date'))
-								->where('end_date', '=', Session::get('end_date'));
-
-			var_dump($calendar);
+			var_dump($no_rooms);
 			die();
 
 			$data = array(
@@ -62,8 +88,6 @@ class BookingController extends BaseController {
 			$booking->services = json_encode(Input::get('service'));
 			$booking->total_charges = Input::get('total_charges');
 			$booking->paid_amount = Input::get('paid_amount');
-			$booking->check_in = Input::get('check_in');
-			$booking->check_out = Input::get('check_out');
 			$booking->promo_code = Session::get('promo_code');
 
 			$booking->save();*/
