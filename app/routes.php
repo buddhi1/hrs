@@ -31,4 +31,9 @@ Route::controller('admin/calendar', 'CalendarController');
 
 Route::controller('admin/promo', 'PromoController');
 
+
 Route::controller('admin/promotion', 'PromotionController');
+
+Route::controller('admin/policy', 'PolicyController');
+
+
