@@ -1245,6 +1245,8 @@ return array(
     'Predis\\Transaction\\MultiExecContext' => $vendorDir . '/predis/predis/lib/Predis/Transaction/MultiExecContext.php',
     'PromoCode' => $baseDir . '/app/models/PromoCode.php',
     'PromoController' => $baseDir . '/app/controllers/PromoController.php',
+    'Promotion' => $baseDir . '/app/models/Promotion.php',
+    'PromotionController' => $baseDir . '/app/controllers/PromotionController.php',
     'Psr\\Log\\AbstractLogger' => $vendorDir . '/psr/log/Psr/Log/AbstractLogger.php',
     'Psr\\Log\\InvalidArgumentException' => $vendorDir . '/psr/log/Psr/Log/InvalidArgumentException.php',
     'Psr\\Log\\LogLevel' => $vendorDir . '/psr/log/Psr/Log/LogLevel.php',
