@@ -93,6 +93,7 @@ class CreateTables extends Migration {
 		{
 			$table->increments('id');
 			$table->decimal('price',8,2);
+			$table->decimal('discount_rate',5,4);
 			$table->date('start_date');
 			$table->date('end_date');
 			$table->integer('room_type_id')->unsigned();
