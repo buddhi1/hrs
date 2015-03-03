@@ -52,15 +52,15 @@
 			</table>
 			</td>
 			{{ Form::open(array('url'=>'admin/calendar/edittimeline')) }}
-				{{ Form::hidden('room_id',$type->room_type_id) }}
-				{{ Form::hidden('service_id',$type->service_id) }}
+				{{ Form::hidden('room_id',$room->room_type_id) }}
+				{{ Form::hidden('service_id',$room->service_id) }}
 			<td>	{{ Form::submit('Edit time line') }} </td>
 			{{ Form::close() }}			
 			
 			{{ Form::open(array('url'=>'admin/calendar/destroytimeline')) }}	
-				{{ Form::hidden('room_id',$type->room_type_id) }}
-				{{ Form::hidden('service_id', $type->service_id) }}
-				{{ Form::hidden('date',$type->end_date) }}
+				{{ Form::hidden('room_id',$room->room_type_id) }}
+				{{ Form::hidden('service_id', $room->service_id) }}
+				{{-- Form::hidden('date',$room->end_date) --}}
 		 		<td>{{ Form::submit('Delete time line') }} </td>		
 			{{ Form::close() }}
 						

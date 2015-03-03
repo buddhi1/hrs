@@ -43,7 +43,7 @@
 		<td> {{ Form::text('stays', '', array('required')) }} </td>
 	</tr>
 	<tr>
-		<td> {{ Form::label('lbldiscount', 'Number of rooms booked') }} </td>
+		<td> {{ Form::label('lblrooms', 'Number of rooms booked') }} </td>
 		<td> {{ Form::text('rooms', '', array('required')) }} </td>
 	</tr>
 	<tr>
@@ -57,6 +57,16 @@
 	<tr>
 		<td colspan="2" align="center"> {{ Form::submit('Add promotion') }} </td>
 	</tr>
+	<div>
+		@if($errors->has())
+			<p>Following errors occured:</p>
+			<ul>
+				@foreach($errors->all() as $error)
+					<li>{{$error }}</li>
+				@endforeach
+			</ul>
+		@endif
+	</div>	
 	{{ Form::close() }}
 </table>
 @stop

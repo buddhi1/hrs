@@ -26,24 +26,59 @@ class PromotionController extends BaseController{
 		$validator = Validator::make(Input::all(), PromoCode::$rules);
 
 		if($validator->passes()) {
-			$promotion = New Promotion();
 
-			$promotion->promo_code = Input::get('promo_code');
-			$promotion->start_date = Input::get('start_date');
-			$promotion->end_date = Input::get('end_date');
-			$promotion->price = Input::get('price');
-			$promotion->days = Input::get('days');
-			$promotion->room_type_id = Input::get('room_id');
-			$promotion->no_of_rooms = Input::get('no_of_rooms');
-			$promotion->services = json_encode(Input::get('service'));
+			//read from date
+			$date = Input::get('from');
+			$price = Input::get('price');
+			$stays = Input::get('stays');
+			$room_type_id = Input::get('room_id');
+			$rooms = Input::get('rooms');
 
-			$promo->save();
+			//validate the availability for the same promotion
+			$record = DB::table('Promotion_Calenders')
+				->where('room_type_id','=', $room_type_id)
+				->where('start_date','=', $date)
+				->where('end_date','=', Input::get('to'))
+				->where('services','=', json_encode(Input::get('service')))
+				->get();
 
-			return Redirect::to('admin/promo')
-				->with('promo_message','Promo Code is succesfully added');
+			if(!$record){
+				//convert from date to dateTime format
+				$from = new DateTime($date );
+				//convert to date to dateTime format
+				$to = new DateTime(Input::get('to'));
+
+				//finds the days between from and to dates
+				$days = $to->diff($from)->format("%a");		
+				
+				//loop inserts new rows for all days between from and to dates
+				for ($i=0; $i <= $days; $i++) { 
+					$promotion = New Promotion();
+
+					$promotion->start_date = $date;
+					$promotion->end_date = $to;
+					$promotion->price = $price;
+					$promotion->days = $stays;
+					$promotion->room_type_id = $room_type_id;
+					$promotion->no_of_rooms = $rooms;
+					$promotion->services = json_encode(Input::get('service'));
+					$promotion->save();
+					//get next date
+					$date = date('Y-m-d', strtotime($date.' +1 day'));	
+				}	
+
+				return Redirect::to('admin/promotion/create')
+					->with('message','Promotion has been added to calendar succesfully');
+			}
+		
+			return Redirect::to('admin/promotion/create')
+				->with('message','The promotion already exists');
+			
 		}
 
-		return Redirect::to('admin/promo')
-				->with('promo_message','Services cannot be empty');
+		return Redirect::to('admin/promotion/create')
+			->with('message','Something went wrong.Please try again')
+			->withErrors($validator)
+			->withInput();
 	}
 }

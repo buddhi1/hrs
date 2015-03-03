@@ -8,12 +8,10 @@
 */
 
 
-class Promotions extends Eloquent
+class Promotion extends Eloquent
 {
 	public $table = 'promotion_calenders';
 	protected $guarded = array();
-
-	public static $rules = array();
 
 	public static $rules = array('service'=>'required');
 }
