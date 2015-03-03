@@ -35,7 +35,7 @@ class PromotionController extends BaseController{
 			$rooms = Input::get('rooms');
 
 			//validate the availability for the same promotion
-			$record = DB::table('Promotion_Calenders')
+			$record = DB::table('promotion_calenders')
 				->where('room_type_id','=', $room_type_id)
 				->where('start_date','=', $date)
 				->where('end_date','=', Input::get('to'))
@@ -80,5 +80,15 @@ class PromotionController extends BaseController{
 			->with('message','Something went wrong.Please try again')
 			->withErrors($validator)
 			->withInput();
+	}
+
+	//Views index page of promotion calendar
+	public function getIndex(){
+		return View::make('promotion.index')
+			->with('start_date', DB::table('promotion_calenders')->orderBy('start_date')->pluck('start_date'))
+			->with('end_date', DB::table('promotion_calenders')->orderBy('start_date', 'desc')->pluck('start_date'))
+			->with('rooms', DB::table('promotion_calenders')->select('id','room_type_id','services')->groupBy('room_type_id')->get())
+			->with('calendar', DB::table('promotion_calenders')->select(DB::raw('count(*) as days'),'id','room_type_id','end_date','price','discount_rate',
+				'service_id','start_date')->groupBy('end_date','room_type_id','service_id')->get());
 	}
 }
