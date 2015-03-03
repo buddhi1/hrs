@@ -146,8 +146,8 @@ class CreateTables extends Migration {
 			$table->text('services');
 			$table->text('total_charges');
 			$table->decimal('paid_amount', 8, 2);
-			$table->boolean('check_in');
-			$table->boolean('check_out');
+			$table->dateTime('check_in');
+			$table->dateTime('check_out');
 			$table->string('promo_code');
 			$table->timestamps();
 		});
@@ -155,7 +155,8 @@ class CreateTables extends Migration {
 		Schema::create('checkins', function($table){
 			$table->increments('id');
 			$table->string('authorizer');
-			$table->boolean('check_out');
+			$table->dateTime('check_in');
+			$table->dateTime('check_out');
 			$table->decimal('advance_payment', 8, 2);
 			$table->text('payment');
 			$table->integer('booking_id')->unsigned();

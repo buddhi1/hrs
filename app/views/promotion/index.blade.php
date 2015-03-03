@@ -22,22 +22,22 @@
 					@foreach($calendar as $type)
 					<td> 
 						<ul>
-							@if($room->room_type_id == $type->room_type_id && $room->service_id == $type->service_id)
+							@if($room->room_type_id == $type->room_type_id)
 							<li>Duration:{{ $type->start_date." to ".$type->end_date }} </li>
-							<li>Services: {{ implode(",",$type->servicec) }} </li>
+							<li>Services: {{ implode(",",json_decode($type->services)) }} </li>
 							<li>Price:{{ $type->price }}</li>
 							<li>Discount rate:{{ $type->discount_rate }}</li>
 							<li>No. of days:{{ $type->days }}</li>
 							<li>
-								{{ Form::open(array('url'=>'admin/calendar/destroy')) }}	
+								{{ Form::open(array('url'=>'admin/promotion/destroy')) }}	
 								{{ Form::hidden('room_id',$type->room_type_id) }}
-								{{ Form::hidden('service_id', $type->service_id) }}
+								{{ Form::hidden('services', $type->services) }}
 								{{ Form::hidden('date',$type->end_date) }}
 		 						{{ Form::submit('Delete') }}		
 								{{ Form::close() }}
 							</li>
 							<li>
-								{{ Form::open(array('url'=>'admin/calendar/edit')) }}
+								{{ Form::open(array('url'=>'admin/promotion/edit')) }}
 								{{ Form::hidden('id',$type->id) }}
 								{{ Form::hidden('date',$type->end_date) }}
 								{{ Form::submit('Edit') }} 
@@ -50,21 +50,29 @@
 				</tr>
 			</table>
 			</td>
-			{{ Form::open(array('url'=>'admin/calendar/edittimeline')) }}
+			{{ Form::open(array('url'=>'admin/promotion/edittimeline')) }}
 				{{ Form::hidden('room_id',$room->room_type_id) }}
-				{{ Form::hidden('service_id',$room->service_id) }}
+				{{-- Form::hidden('service_id',$room->service_id) --}}
 			<td>	{{ Form::submit('Edit time line') }} </td>
 			{{ Form::close() }}			
 			
-			{{ Form::open(array('url'=>'admin/calendar/destroytimeline')) }}	
+			{{ Form::open(array('url'=>'admin/promotion/destroytimeline')) }}	
 				{{ Form::hidden('room_id',$room->room_type_id) }}
-				{{ Form::hidden('service_id', $room->service_id) }}
-				{{-- Form::hidden('date',$room->end_date) --}}
 		 		<td>{{ Form::submit('Delete time line') }} </td>		
 			{{ Form::close() }}
 						
 		</tr>		
 		@endforeach
+		<div>
+		@if($errors->has())
+			<p>Following errors occured:</p>
+			<ul>
+				@foreach($errors->all() as $error)
+					<li>{{$error }}</li>
+				@endforeach
+			</ul>
+		@endif
+	</div>	
 </table>
 
 

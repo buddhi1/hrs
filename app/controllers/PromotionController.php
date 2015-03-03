@@ -89,6 +89,73 @@ class PromotionController extends BaseController{
 			->with('end_date', DB::table('promotion_calenders')->orderBy('start_date', 'desc')->pluck('start_date'))
 			->with('rooms', DB::table('promotion_calenders')->select('id','room_type_id','services')->groupBy('room_type_id')->get())
 			->with('calendar', DB::table('promotion_calenders')->select(DB::raw('count(*) as days'),'id','room_type_id','end_date','price','discount_rate',
-				'service_id','start_date')->groupBy('end_date','room_type_id','service_id')->get());
+				'services','start_date')->groupBy('end_date','room_type_id')->get());
+	}
+
+	//Deletes the time line block of selected room type		
+
+	public function postDestroy(){
+		
+		DB::table('promotion_calenders')
+			->where('room_type_id','=',Input::get('room_id'))
+			->where('services','=',Input::get('services'))
+			->where('end_date','=',Input::get('date'))
+			->delete();
+
+		return Redirect::to('admin/promotion/index')
+			->with('message','Record removed successfully');
+	}
+
+	//Deletes the whole time line of a selected room type
+	public function postDestroytimeline(){
+
+		DB::table('promotion_calenders')
+			->where('room_type_id','=',Input::get('room_id'))
+			->delete();
+
+		return Redirect::to('admin/promotion/index')
+			->with('message','Time line removed successfully');
+	}
+
+	//Views the time line block edit page
+	public function postEdit(){
+		return View::make('promotion.edit')
+			->with('services', Service::all());
+	}
+
+	//Views the time line edit page of selected room type
+	public function postEdittimeline(){
+		return View::make('promotion.edittimeline')
+			->with('services', Service::all());
+	}
+
+
+	//Update function for edit time line block
+	public function postUpdate(){
+
+		$validator = Validator::make(Input::all(), PromoCode::$rules);
+
+		if($validator->passes()) {
+
+			DB::table('promotion_calenders')
+				->where('room_type_id','=',Input::get('room_id'))
+				->where('services','=',Input::get('serviceArray'))
+				->where('end_date','=', Input::get('to'))
+				->update(['price'=>Input::get('price'),
+							'discount_rate'=>Input::get('discount'),
+							'services'=>json_encode(Input::get('service'))]);
+
+			return Redirect::to('admin/promotion/index')
+				->with('message', 'Calendar record has been update successfully');	
+		}
+		return Redirect::to('admin/promotion/index')
+			->with('message', 'Something went wrong.Please try again')
+			->withErrors($validator)
+			->withInput();	
+	}
+
+	//Update function for edit time line for selected room type
+	public function postUpdatetimeline(){
+
 	}
 }
