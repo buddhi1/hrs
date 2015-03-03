@@ -8,7 +8,6 @@
 <table border="1">
 	<tr>
 		<th>Room type</th>
-		<th>Service</th>
 		<th>Description</th>	
 		<th colspan="2">Edit/Delete</th>	
 	</tr>
@@ -17,7 +16,6 @@
 		@foreach($rooms as $room)
 		<tr>			
 			<td> {{ $room->room_type_id }}</td>
-			<td> {{ $room->service_id }}</td>
 			<td>
 			<table>
 				<tr>
@@ -26,6 +24,7 @@
 						<ul>
 							@if($room->room_type_id == $type->room_type_id && $room->service_id == $type->service_id)
 							<li>Duration:{{ $type->start_date." to ".$type->end_date }} </li>
+							<li>Services: {{ implode(",",$type->servicec) }} </li>
 							<li>Price:{{ $type->price }}</li>
 							<li>Discount rate:{{ $type->discount_rate }}</li>
 							<li>No. of days:{{ $type->days }}</li>
