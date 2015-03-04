@@ -18,6 +18,8 @@
 
 	?>
 	{{ Form::hidden('serviceArray', $record->services) }}
+	{{ Form::hidden('sdate',$record->start_date) }}
+	{{ Form::hidden('edate',$record->end_date) }}
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
 		<td> {{ Form::text('room_id', $record->room_type_id,array('readonly')) }} </td>
@@ -27,7 +29,7 @@
 		<td>
 			{{ Form::text('from', $record->start_date, array('required', 'id'=>'from')) }}
 			{{ Form::label('lblend', 'End date: ') }}
-		 	{{ Form::text('to', $record->start_date, array('required', 'id'=>'to')) }}
+		 	{{ Form::text('to', $record->end_date, array('required', 'id'=>'to')) }}
 		</td>
 	</tr>
 	<tr>
