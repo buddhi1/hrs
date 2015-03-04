@@ -23,7 +23,7 @@ class PromotionController extends BaseController{
 	public function postCreate() {
 	
 
-		$validator = Validator::make(Input::all(), PromoCode::$rules);
+		$validator = Validator::make(Input::all(), Promotion::$rules);
 
 		if($validator->passes()) {
 
