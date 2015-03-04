@@ -13,11 +13,16 @@
 		<h3>{{ Session::get('message') }}</h3>
 	@endif
 </div>
+<?php
+	$record = Permission::find(Input::get('id'));
+?>
+
 <table>
-	{{ Form::open(array('url'=>'/admin/permission/create')) }}
+	{{ Form::open(array('url'=>'/admin/permission/update')) }}
+	{{ Form::hidden('id', $record->id) }}
 	<tr>
 		<td> {{ Form::label('name', 'Permission name') }} </td>
-		<td> {{ Form::text('name','',array('required')) }} </td>
+		<td> {{ Form::text('name',$record->name,array('required')) }} </td>
 	</tr>
 	<?php
 		$permissions = Schema::getColumnListing('permissions');
@@ -27,7 +32,14 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				{{ Form::checkbox('permission[]', $permission) }}
+				<?php $i=0 ?>
+				@if($record->$permission == '1')
+				<?php $i=1 ?>
+					{{ Form::checkbox('permission[]', $permission, array('required')) }}
+				@endif
+				@if($i ==0 )
+					{{ Form::checkbox('permission[]', $permission) }}
+				@endif
 				{{ $permission }}
 				<br />
 			</td>
