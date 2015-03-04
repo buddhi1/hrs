@@ -21,12 +21,6 @@
 {{ Form::label('Paid Amount') }}
 {{ Form::text('paid_amount', null) }}
 
-{{ Form::label('Check-in') }}
-{{ Form::checkbox('check_in', null) }}
-
-{{ Form::label('Check-out') }}
-{{ Form::checkbox('check_out', null) }}
-
 {{ Form::submit('Place Booking')}}
 {{ Form::close() }}
 
