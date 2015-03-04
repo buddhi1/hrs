@@ -32,17 +32,16 @@ document.getElementById('room_type').onchange = function(){
     
     document.getElementById("service").options.length=0;
     for(var i=0; services.length;++i){
-      console.log(services.length);
+      console.log(services);
       
       var option = document.createElement("option");
       option.text = services[i]['name'];
-      option.value = services[i]['id'];
+      option.value = services[i]['service_id'];
       var select = document.getElementById("service");
       select.appendChild(option);
     }   
   }
 
-var loadItem = function(){  
-  console.log('dfgdf');
+window.onload = function(){
   sendRequestToServerPost(http_path+'/loadItem','room_type_id='+document.getElementById('room_type').value,handleResponce);
 }

@@ -31,6 +31,7 @@ class BookingController extends BaseController {
 								->select('room_type_id')
 								->where('start_date', '>=', Session::get('start_date'))
 								->where('start_date', '<=', Session::get('end_date'))
+								->where('end_date', '>=', Session::get('end_date'))
 								->distinct()
 								->get();
 
@@ -54,12 +55,14 @@ class BookingController extends BaseController {
 								->whereNull('check_out')
 								->where('room_type_id', $roomss->room_type_id)
 								->sum('no_of_rooms');
-								
+
+				//adding the room type to the combo box array if the rooms are available
 				if((Session::get('no_of_rooms')+$room_no)<=$room_type['no_of_rooms']) {
 					$no_rooms[$room_type['id']] = $room_type['name'];
 				}
 			}
 
+			//getting the rooms that has not been booked before
 			$not_booked_rooms = DB::table('room_price_calenders')
 									->select('room_types.name', 'room_types.id')
 									->distinct()
@@ -67,54 +70,71 @@ class BookingController extends BaseController {
 									->where('start_date', '>=', Session::get('start_date'))
 									->where('start_date', '<=', Session::get('end_date'))
 									->where('room_types.no_of_rooms', '>=', Session::get('no_of_rooms'))
+									->where('room_price_calenders.end_date', '>=', Session::get('end_date'))
 				                    ->whereNotIn('room_price_calenders.room_type_id', $arr_booked_rooms)
 				                    ->get();
 
-			
+			//adding the rooms that are not booked before to the combo box array
 			foreach ($not_booked_rooms as $book) {
 				$no_rooms[$book->id] = $book->name;
 			}
 			
+			//sending the combo box array to the next page
 			return View::make('booking.add2')
 				->with('rooms', $no_rooms);
+	}
 
 
-		// return Redirect::To('booking/booking1')
-		// 	->with('message', 'All the fields are required')
-		// 	->withInput();
+	public function postPrice() {
+		// get all the prices withing the given date range and within give services and room type
+
+		$prices = DB::table('room_price_calenders')
+						->where('start_date', '>=', Session::get('start_date'))
+						->where('start_date', '<=', Session::get('end_date'))
+						->where('service_id', '=', Input::get('service_id'))
+						->where('room_type_id', '=', Input::get('room_type_id'))
+						->get();
+
+
+		$price_list = array();
+		$total = 0;
+		foreach ($prices as $price) {
+			$price_list[] = $price->price;
+			$total = $total+$price->price;
+		}
+		
+		return $total;
 	}
 
 	public function postCreate() {
 	// Create a new booking
 
-			
+		/*$data = array(
+			'id' => Input::get('room_type_id'),
+			'name' => $room->name,
+			'qty' => Session::get('no_of_rooms'),
+			'price' => $price
+			);
 
-			var_dump($no_rooms);
-			die();
+		Cart::insert($data);*/
 
-			$data = array(
-				'id' => Input::get('room_type_id'),
-				'name' => $room->name,
-				'qty' => Session::get('no_of_rooms'),
-				'price' => $price
-				);
+		$booking = new Booking();
 
-			Cart::insert($data);
+		$booking->identification_no = Session::get('id_no');
+		$booking->room_type_id = Input::get('room_type');
+		$booking->no_of_rooms = Session::get('no_of_rooms');
+		$booking->no_of_adults = Session::get('no_of_adults');
+		$booking->no_of_kids = Session::get('no_of_kids');
+		$booking->services = Input::get('service');
+		$booking->total_charges = Input::get('total_charges');
+		$booking->paid_amount = Input::get('paid_amount');
+		$booking->promo_code = Session::get('promo_code');
 
-			/*$booking = new Booking();
+		$booking->save();
+		Session::flush();
 
-			$booking->identification_no = Session::get('id_no');
-			$booking->room_type_id = Input::get('room_type_id');
-			$booking->no_of_rooms = Session::get('no_of_rooms');
-			$booking->no_of_adults = Session::get('no_of_adults');
-			$booking->no_of_kids = Session::get('no_of_kids');
-			$booking->services = json_encode(Input::get('service'));
-			$booking->total_charges = Input::get('total_charges');
-			$booking->paid_amount = Input::get('paid_amount');
-			$booking->promo_code = Session::get('promo_code');
-
-			$booking->save();*/
-		return Redirect::To('/');
+		return Redirect::To('booking/booking1')
+			->with('message', 'Booking is sucessful');
 	}
 
 	public function loaditem() {

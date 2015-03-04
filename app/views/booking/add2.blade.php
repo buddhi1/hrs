@@ -2,13 +2,6 @@
 
 @section('content')
 
-<?php
-	//$service = Service::lists('name', 'id');
-	// $rooms = RoomType::lists('name', 'id');
-	// var_dump($rooms);
-	// die();
-?>
-
 {{ Form::open(array('url' => 'booking/create')) }}
 
 {{ Form::label('Room Type') }}
