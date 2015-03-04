@@ -16,7 +16,8 @@ class UserController extends BaseController {
 	//Views the create user form
 	
 	public function getCreate(){
-		return View::make('user.create');
+		return View::make('user.create')
+			->with('permissions', Permission::lists('name', 'id'));
 	}
 
 	//Posts the create form details to database
@@ -43,8 +44,12 @@ class UserController extends BaseController {
 	//Views the user index page
 
 	public function getIndex(){
+		$permissions = DB::table('users')
+			->leftJoin('permissions', 'permissions.id', '=', 'permission_id')
+			->select('users.id as uid','users.name as uname','permission_id', 'permissions.id','permissions.name')						
+	        ->get();
 		return View::make('user.index')			
-			->with('users', User::all());
+			->with('users', $permissions);
 	}
 
 	//Deletes the selected user
@@ -67,7 +72,8 @@ class UserController extends BaseController {
 
 	public function postEdit(){
 		return View::make('user.edit')
-			->with('id', Input::get('id'));
+			->with('user', User::find(Input::get('id')))
+			->with('permissions', Permission::lists('name', 'id'));
 	}
 
 	//Updates the edits to user

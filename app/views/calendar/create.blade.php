@@ -12,17 +12,13 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-		$roomTypes = RoomType::lists('name', 'id');
-		$services = Service::lists('name', 'id');
-	?>
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
-		<td> {{ Form::select('roomType', $roomTypes, null) }} </td>
+		<td> {{ Form::select('roomType', $roomTypes, null, array('id'=>'roomType')) }} </td>
 	</tr>
 	<tr>
 		<td> {{ Form::label('lblservice', 'Service') }} </td>
-		<td> {{ Form::select('service', $services, null, array('required')) }} </td>
+		<td> {{ Form::select('service', $services, null, array('required', 'id'=>'service')) }} </td>
 	</tr>
 	<tr>
 		<td> {{ Form::label('lblfrom', 'Start date') }} </td>

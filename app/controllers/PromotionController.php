@@ -16,7 +16,8 @@ class PromotionController extends BaseController{
 	//Views the create promotion page
 	public function getCreate(){
 		return View::make('promotion.create')
-			->with('services',Service::all());
+			->with('services',Service::all())
+			->with('roomTypes', RoomType::lists('name', 'id'));
 	}
 
 	// add a new promotion to the database
@@ -118,14 +119,27 @@ class PromotionController extends BaseController{
 
 	//Views the time line block edit page
 	public function postEdit(){
+
+		$record = Promotion::find(Input::get('id'));
+
 		return View::make('promotion.edit')
-			->with('services', Service::all());
+			->with('services', Service::all())
+			->with('record', $record)
+			->with('checks', json_decode($record->services));
 	}
 
 	//Views the time line edit page of selected room type
 	public function postEdittimeline(){
+
+		$start_date = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
+		$record = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
+
+		
 		return View::make('promotion.edittimeline')
-			->with('services', Service::all());
+			->with('services', Service::all())
+			->with('start_date', $start_date)
+			->with('record', $record)
+			->with('checks', json_decode($record->services));
 	}
 
 

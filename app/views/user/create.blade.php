@@ -14,9 +14,6 @@
 		<td> {{ Form::label('lbluname', 'User name') }} </td>
 		<td> {{ Form::text('uname','', array('required')) }} </td>
 	</tr>
-	<?php
-		$permissions = Permission::lists('name', 'id');
-	?>
 	<tr>
 		<td> {{ Form::label('lblpermission', 'Permission Group') }} </td>
 		<td> {{ Form::select('permission', $permissions, null, array('required')) }} </td>

@@ -16,7 +16,8 @@ class PermissionController extends BaseController {
 	//Views the create Permission form
 	
 	public function getCreate(){
-		return View::make('permission.create');
+		return View::make('permission.create')
+			->with('permissions', Schema::getColumnListing('permissions'));
 	}
 
 	//Posts the create form details to database
@@ -59,7 +60,8 @@ class PermissionController extends BaseController {
 	//Views index page for permissions
 	public function getIndex(){
 		return View::make('permission.index')
-			->with('groups', Permission::all());
+			->with('groups', Permission::all())
+			->with('permissions', Schema::getColumnListing('permissions'));
 	}
 
 	//Deletes the selected permission group
@@ -77,7 +79,9 @@ class PermissionController extends BaseController {
 
 	//Views the edit page for the selected permission group
 	public function postEdit(){
-		return View::make('permission.edit');
+		return View::make('permission.edit')
+			->with('record', Permission::find(Input::get('id')))
+			->with('permissions', Schema::getColumnListing('permissions'));
 	}
 
 	//Update operation for the selected permission group
