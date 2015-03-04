@@ -38,7 +38,6 @@ class PromotionController extends BaseController{
 			$record = DB::table('promotion_calenders')
 				->where('room_type_id','=', $room_type_id)
 				->where('start_date','=', $date)
-				->where('end_date','=', Input::get('to'))
 				->where('services','=', json_encode(Input::get('service')))
 				->get();
 
@@ -156,6 +155,170 @@ class PromotionController extends BaseController{
 
 	//Update function for edit time line for selected room type
 	public function postUpdatetimeline(){
+		$validator = Validator::make(Input::all(), PromoCode::$rules);
 
+		if($validator->passes()){
+			$top_date = Input::get('sdate');
+			$bottom_date = Input::get('edate');
+			$from_date = Input::get('from');
+			$to_date = Input::get('to');
+
+			//reads the end date of editing time line block
+			$end_date = DB::table('promotion_calenders')
+			->where('start_date','=',$from_date)
+			->where('room_type_id','=',Input::get('room_id'))
+			->where('services','=',Input::get('serviceArray'))
+			->get();
+
+			//replacing existing time line with a single price and discount
+
+		if($top_date >= $from_date && $bottom_date <= $to_date){
+
+			//deletes ovelapping records
+			DB::table('promotion_calenders')
+			->where('room_type_id','=',Input::get('room_id'))
+			->where('services','=',Input::get('serviceArray'))
+			->delete();
+
+			//read from date
+			$date = Input::get('from');	
+
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
+			
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$promotion = new Promotion;
+				$promotion->room_type_id = Input::get('room_id');
+				$promotion->services = json_encode(Input::get('service'));
+				$promotion->start_date = $date;
+				$promotion->end_date = new DateTime($to_date);
+				$promotion->price = Input::get('price');
+				$promotion->discount_rate = Input::get('discount');			
+				$promotion->save();
+
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}
+
+			return Redirect::to('admin/promotion/index')
+				->with('message', 'Promotion record has been update successfully');	
+		}
+
+		//replacing existing block(s) in time line
+		elseif($top_date < $from_date || $bottom_date > $to_date){
+
+			
+
+			//deletes ovelapping records
+			DB::table('promotion_calenders')
+				->where('room_type_id','=',Input::get('room_id'))
+				->where('services','=',Input::get('serviceArray'))
+				->where('start_date','>=',$from_date)
+				->where('start_date','<=',$to_date)
+				->delete();
+			//read from date
+			$date = Input::get('from');	
+
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
+			
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$promotion = new Promotion;
+				$promotion->room_type_id = Input::get('room_id');
+				$promotion->services = json_encode(Input::get('service'));
+				$promotion->start_date = $date;
+				$promotion->end_date = new DateTime($to_date);
+				$promotion->price = Input::get('price');
+				$promotion->discount_rate = Input::get('discount');			
+				$promotion->save();
+
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}
+
+
+			//change end_dates of existing block 
+			DB::table('promotion_calenders')
+				->where('room_type_id','=',Input::get('room_id'))
+				->where('services','=',Input::get('serviceArray'))
+				->where('start_date','<',$from_date)
+				->where('end_date','=', $end_date[0]->end_date)
+				->update(['end_date'=>date('Y-m-d', strtotime($from_date.' -1 day'))]);
+
+			return Redirect::to('admin/promotion/index')
+				->with('message', 'Promotion record has been update successfully!!!');
+		}else{
+			if($top_date = $from_date){
+				//deletes ovelapping records
+				DB::table('promotion_calenders')
+					->where('room_type_id','=',Input::get('room_id'))
+					->where('services','=',Input::get('serviceArray'))
+					->where('start_date','=',$top_date)
+					->delete();
+			}
+			if ($bottom_date = $to_date) {
+				//deletes ovelapping records
+				DB::table('promotion_calenders')
+					->where('room_type_id','=',Input::get('room_id'))
+					->where('services','=',Input::get('serviceArray'))
+					->where('start_date','=',$bottom_date)
+					->delete();
+
+				//change end_dates of existing block 
+				DB::table('promotion_calenders')
+					->where('room_type_id','=',Input::get('room_id'))
+					->where('services','=',Input::get('serviceArray'))
+					->where('end_date','=', $to_date)
+					->update(['end_date'=>date('Y-m-d', strtotime($to_date.' -1 day'))]);
+			}
+
+			//read from date
+			$date = Input::get('from');	
+
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
+			
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$promotion = new Promotion;
+				$promotion->room_type_id = Input::get('room_id');
+				$promotion->services= json_encode(Input::get('service'));
+				$promotion->start_date = $date;
+				$promotion->end_date = new DateTime($to_date);
+				$promotion->price = Input::get('price');
+				$promotion->discount_rate = Input::get('discount');			
+				$promotion->save();
+
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}
+
+			return Redirect::to('admin/promotion/index')
+				->with('message', 'Promotion record has been update successfully!!!');
+
+		}
+		}
+
+		return Redirect::to('admin/promotion/index')
+			->with('message', 'Something went wrong.Please try again')
+			->withErrors($validator)
+			->withInput();	
 	}
 }
