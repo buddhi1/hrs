@@ -12,6 +12,7 @@ class BookingController extends BaseController {
 
 	public function postBooking2() {
 
+			//getting all the values into sessions
 			Session::put('id_no', Input::get('id_no'));
 			Session::put('start_date', Input::get('start_date'));
 			Session::put('end_date', Input::get('end_date'));
@@ -22,10 +23,10 @@ class BookingController extends BaseController {
 
 			$room = RoomType::find(Input::get('room_type_id'));
 
+			//array to load the comobo box
 			$no_rooms = array();
-			$count = 0;
 
-			// get all the room types available withing the booked date
+			// get all the room types that have prices withing the booked date
 			$calendar = DB::table('room_price_calenders')
 								->select('room_type_id')
 								->where('start_date', '>=', Session::get('start_date'))
@@ -37,6 +38,16 @@ class BookingController extends BaseController {
 
 				
 				$room_type = RoomType::find($roomss->room_type_id);
+				$booked_rooms = DB::table('bookings')
+										->select('room_type_id')
+										->distinct()
+										->get();
+
+				$arr_booked_rooms = array();
+
+				foreach ($booked_rooms as $book) {
+					$arr_booked_rooms[] = $book->room_type_id;
+				}
 				
 				// get the total of booked room types from the above selected room types
 				$room_no = DB::table('bookings')
@@ -45,15 +56,27 @@ class BookingController extends BaseController {
 								->sum('no_of_rooms');
 								
 				if((Session::get('no_of_rooms')+$room_no)<=$room_type['no_of_rooms']) {
-					$no_rooms[$count] = $room_type['name'];
-					$count++;
+					$no_rooms[$room_type['id']] = $room_type['name'];
 				}
 			}
 
-			var_dump($no_rooms);
-			die();
+			$not_booked_rooms = DB::table('room_price_calenders')
+									->select('room_types.name', 'room_types.id')
+									->distinct()
+									->join('room_types', 'room_types.id', '=', 'room_price_calenders.room_type_id')
+									->where('start_date', '>=', Session::get('start_date'))
+									->where('start_date', '<=', Session::get('end_date'))
+									->where('room_types.no_of_rooms', '>=', Session::get('no_of_rooms'))
+				                    ->whereNotIn('room_price_calenders.room_type_id', $arr_booked_rooms)
+				                    ->get();
+
 			
-			return View::make('booking.add2');
+			foreach ($not_booked_rooms as $book) {
+				$no_rooms[$book->id] = $book->name;
+			}
+			
+			return View::make('booking.add2')
+				->with('rooms', $no_rooms);
 
 
 		// return Redirect::To('booking/booking1')
@@ -92,5 +115,19 @@ class BookingController extends BaseController {
 
 			$booking->save();*/
 		return Redirect::To('/');
+	}
+
+	public function loaditem() {
+		$room_id = Input::get('room_type_id');
+		$service_id = DB::table('room_price_calenders')
+							->join('services', 'room_price_calenders.service_id', '=', 'services.id')
+							->select('room_price_calenders.service_id', 'services.name')
+							->where('room_type_id', $room_id)
+							->where('start_date', '>=', Session::get('start_date'))
+							->where('start_date', '<=', Session::get('end_date'))
+							->distinct()
+							->get();
+
+		return Response::json($service_id);
 	}
 }

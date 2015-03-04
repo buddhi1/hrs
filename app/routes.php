@@ -39,3 +39,4 @@ Route::controller('admin/policy', 'PolicyController');
 Route::controller('booking', 'BookingController');
 
 
+Route::post('/loadItem','BookingController@loaditem');
