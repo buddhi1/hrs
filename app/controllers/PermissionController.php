@@ -58,7 +58,56 @@ class PermissionController extends BaseController {
 
 	//Views index page for permissions
 	public function getIndex(){
-		return View::get('permission.edit');
+		return View::make('permission.index')
+			->with('groups', Permission::all());
+	}
+
+	//Deletes the selected permission group
+	public function postDestroy(){
+		$group = Permission::find(Input::get('id'));
+
+		if($group){
+			$group->delete();
+
+			return Redirect::to('admin/permission/index')
+				->with('message','Permission group deleted Successfully');
+		}
+
+	}
+
+	//Views the edit page for the selected permission group
+	public function postEdit(){
+		return View::make('permission.edit');
+	}
+
+	//Update operation for the selected permission group
+	public function postUpdate(){
+		$validator = Validator::make(Input::all(), Permission::$rules);
+
+		if($validator->passes()){			
+
+			$name = Input::get('name');
+			$record = DB::table('permissions')
+				->where('name','=', $name)
+				->get();
+
+			//checks for the availability of the permission group name
+			if(!$record){
+				$group = Permission::find(Input::get('id'));
+				$group->name =  Input::get('name');
+				
+				foreach (Input::get('permission') as $value) {
+					$group->$value = 1;
+				}
+				$group->save();
+				return Redirect::to('admin/permission/index')
+					->with('message','New permission group added successfully');
+				
+			}
+			return Redirect::to('admin/permission/index')
+				->with('message','Permission group already exists');
+
+		}
 	}
 
 }
