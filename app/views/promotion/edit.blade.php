@@ -12,11 +12,7 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-		
-		$record = Promotion::find(Input::get('id'));
 
-	?>
 	{{ Form::hidden('serviceArray', $record->services) }}
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
@@ -34,10 +30,7 @@
 		<td> {{ Form::label('lblservice', 'Service') }} </td>
 		
 		<td>
-			<?php
-				$checks = json_decode($record->services);
-				
-			?>
+		
 			@foreach($services as $service)
 				{{ Form::label('lbl', $service->name) }}
 				<?php $i=0; ?>

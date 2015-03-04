@@ -42,7 +42,8 @@ document.getElementById('room_type').onchange = function(){
     }   
   }
 
-var loadItem = function(){  
+window.onload = function(){  
   console.log('dfgdf');
   sendRequestToServerPost(http_path+'/loadItem','room_type_id='+document.getElementById('room_type').value,handleResponce);
 }
+

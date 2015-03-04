@@ -16,21 +16,18 @@
 	</tr>
 	@foreach($users as $user)
 	<tr>
-		<td>{{$user->id}}</td>
-		<td>{{$user->name}}</td>
-		<?php
-			$permission = Permission::find($user->permission_id);
-		?>
-		<td>{{ $permission->name }}</td>
+		<td>{{$user->uid}}</td>
+		<td>{{$user->uname}}</td>
+		<td>{{ $user->name }}</td>
 		{{ Form::open(array('url'=>'admin/user/edit')) }}
 		<td>
-			{{Form::hidden('id',$user->id)}} 
+			{{Form::hidden('id',$user->uid)}} 
 			{{ Form::submit('Edit') }} 
 		</td>
 		{{ Form::close() }}
 		{{ Form::open(array('url'=>'admin/user/destroy')) }}
 		<td> 
-			{{Form::hidden('id',$user->id)}}
+			{{Form::hidden('id',$user->uid)}}
 			{{ Form::submit('Delete') }}
 		 </td>
 		{{ Form::close() }}
