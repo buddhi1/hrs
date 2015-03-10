@@ -14,9 +14,6 @@ class BookingController extends BaseController {
 
 			$validator = Validator::make(Input::all(), Booking::$rules1);
 
-			// var_dump(Input::all());
-			// die();
-
 			if(!$validator->passes()) {
 				return Redirect::to('booking/booking1')
 					->withErrors($validator)
@@ -140,29 +137,8 @@ class BookingController extends BaseController {
 			);
 		
 		Cart::insert($data);
-		//Session::flush();
 
 		return Redirect::to('booking/cart');
-
-
-		//saving the booking to the database
-		// $booking = new Booking();
-
-		// $booking->identification_no = Session::get('id_no');
-		// $booking->room_type_id = Input::get('room_type');
-		// $booking->no_of_rooms = Session::get('no_of_rooms');
-		// $booking->no_of_adults = Session::get('no_of_adults');
-		// $booking->no_of_kids = Session::get('no_of_kids');
-		// $booking->services = Input::get('service');
-		// $booking->total_charges = Input::get('total_charges');
-		// $booking->paid_amount = Input::get('paid_amount');
-		// $booking->promo_code = Session::get('promo_code');
-
-		// $booking->save();
-		// Session::flush();
-
-		// return Redirect::To('booking/booking1')
-		// 	->with('message', 'Booking is sucessful');
 	}
 
 	public function getCart() {
@@ -187,7 +163,7 @@ class BookingController extends BaseController {
 	}
 
 	public function postPlacebooking() {
-		//Saving the booking details to the database
+	//Saving the booking details to the database
 
 		foreach (Cart::contents() as $bookings) {
 			$booking = new Booking();
@@ -212,6 +188,8 @@ class BookingController extends BaseController {
 	}
 
 	public function getRemoveitem($identifier) {
+	//Remove a booking from the cart
+		
 		$item = Cart::item($identifier);
 		$item->remove();
 
