@@ -12,11 +12,7 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-		$start_date = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
-		$record = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
-
-	?>
+	
 	{{ Form::hidden('serviceArray', $record->services) }}
 	{{ Form::hidden('sdate',$record->start_date) }}
 	{{ Form::hidden('edate',$record->end_date) }}
@@ -36,10 +32,7 @@
 		<td> {{ Form::label('lblservice', 'Service') }} </td>
 		
 		<td>
-			<?php
-				$checks = json_decode($record->services);
-				
-			?>
+			
 			@foreach($services as $service)
 				{{ Form::label('lbl', $service->name) }}
 				<?php $i=0; ?>

@@ -3,17 +3,11 @@
 @section('content')
 <table>
 	{{ Form::open(array('url'=>'/admin/user/update')) }}
-	<?php
-		$user = User::find($id);
-	?>
-	{{ Form::hidden('id', $id) }}
+	{{ Form::hidden('id', $user->id) }}
 	<tr>
 		<td> {{ Form::label('lbluname', 'User name') }} </td>
 		<td> {{ Form::text('uname',$user->name, array('required')) }} </td>
 	</tr>
-	<?php
-		$permissions = Permission::lists('name', 'id');
-	?>
 	<tr>
 		<td> {{ Form::label('lblpermission', 'Permission Group') }} </td>
 		<td> {{ Form::select('permission', $permissions, $user->permission_id, array('required')) }} </td>

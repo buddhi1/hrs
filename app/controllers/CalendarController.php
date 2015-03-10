@@ -15,7 +15,9 @@ class CalendarController extends BaseController {
 	//Views the create Room_price_Calendar form
 	
 	public function getCreate(){
-		return View::make('calendar.create');
+		return View::make('calendar.create')
+			->with('roomTypes', RoomType::lists('name', 'id'))
+			->with('services', Service::lists('name', 'id'));
 	}
 
 	//Posts the create form details to database
@@ -86,12 +88,31 @@ class CalendarController extends BaseController {
 
 	//Views edit page for selected record
 	public function postEdit(){
-		return View::make('calendar.edit');
+		return View::make('calendar.edit')
+			->with('record', Calendar::find(Input::get('id')));
 	}
 
 	//Views edit time line page for selected record
 	public function postEdittimeline(){
-		return View::make('calendar.edittimeline');
+
+		$room_type_id = Input::get('room_id');
+		$service_id = Input::get('service_id');
+
+		$start = DB::table('room_price_calenders')
+					->where('room_type_id','=',$room_type_id)
+					->where('service_id','=',$service_id)
+					->orderBy('start_date')
+					->first();
+		$end = DB::table('room_price_calenders')
+					->where('room_type_id','=',$room_type_id)
+					->where('service_id','=',$service_id)
+					->orderBy('start_date', 'DESC')
+					->first();
+		return View::make('calendar.edittimeline')
+			->with('room_type_id', $room_type_id)
+			->with('service_id', $service_id )
+			->with('start', $start)
+			->with('end', $end);
 	}
 
 	//edit function for selected record
@@ -299,5 +320,4 @@ class CalendarController extends BaseController {
 		return Redirect::to('admin/calendar/index')
 			->with('message','Time line removed successfully');
 	}
-
 }

@@ -42,6 +42,8 @@ document.getElementById('room_type').onchange = function(){
     }   
   }
 
+
 window.onload = function(){
   sendRequestToServerPost(http_path+'/loadItem','room_type_id='+document.getElementById('room_type').value,handleResponce);
 }
+

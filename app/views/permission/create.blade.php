@@ -18,11 +18,7 @@
 	<tr>
 		<td> {{ Form::label('name', 'Permission name') }} </td>
 		<td> {{ Form::text('name','',array('required')) }} </td>
-	</tr>
-	<?php
-		$permissions = Schema::getColumnListing('permissions');
-		
-	?>			
+	</tr>		
 	@foreach($permissions as $permission)
 		<tr>
 			<td>&nbsp;</td>

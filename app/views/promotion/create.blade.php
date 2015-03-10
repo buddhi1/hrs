@@ -12,9 +12,7 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-		$roomTypes = RoomType::lists('name', 'id');
-	?>
+
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
 		<td> {{ Form::select('room_id', $roomTypes, null) }} </td>

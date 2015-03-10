@@ -11,10 +11,7 @@
 	<tr>
 		<th>Permission id</th>
 		<th>Permission group name</th>
-		<?php
-		$permissions = Schema::getColumnListing('permissions');
-		
-	?>	
+
 		@foreach($permissions as $permission)
 			<th>{{ $permission }}</th>
 		@endforeach

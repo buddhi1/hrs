@@ -12,24 +12,6 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-
-		$room_type_id = Input::get('room_id');
-		$service_id = Input::get('service_id');
-
-		$start = DB::table('room_price_calenders')
-			->where('room_type_id','=',$room_type_id)
-			->where('service_id','=',$service_id)
-			->orderBy('start_date')
-			->first();
-		$end= DB::table('room_price_calenders')
-			->where('room_type_id','=',$room_type_id)
-			->where('service_id','=',$service_id)
-			->orderBy('start_date', 'DESC')
-			->first();
-
-
-	?>
 	{{ Form::hidden('sdate',$start->start_date) }}
 	{{ Form::hidden('edate',$end->end_date) }}
 	<tr>

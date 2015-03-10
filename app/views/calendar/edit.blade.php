@@ -12,11 +12,6 @@
 			@endif
 		 </td>
 	</tr>
-	<?php
-		
-		$record = Calendar::find(Input::get('id'));
-
-	?>
 	<tr>
 		<td> {{ Form::label('lbluname', 'Room type') }} </td>
 		<td> {{ Form::text('room_id', $record->room_type_id,array('readonly')) }} </td>
