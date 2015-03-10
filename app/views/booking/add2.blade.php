@@ -19,10 +19,6 @@
 {{ Form::submit('Place Booking')}}
 {{ Form::close() }}
 
-<?php
-var_dump(Session::get('no_of_adults'));
-?>
-
 <script>
 	var http_path = '{{URL::to('/')}}';
 </script>

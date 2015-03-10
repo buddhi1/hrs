@@ -28,4 +28,14 @@
 {{ Form::submit('Proceed')}}
 {{ Form::close() }}
 
+@if(Session::has('message'))
+
+	<p class="text-success">{{ Session::get('message') }}</p>
+
+@endif
+
+@foreach($errors->all() as $error)
+	<p>{{ $error }}</p>
+@endforeach
+
 @stop

@@ -12,6 +12,18 @@ class BookingController extends BaseController {
 
 	public function postBooking2() {
 
+			$validator = Validator::make(Input::all(), Booking::$rules1);
+
+			// var_dump(Input::all());
+			// die();
+
+			if(!$validator->passes()) {
+				return Redirect::to('booking/booking1')
+					->withErrors($validator)
+					->withInput();
+				
+			}
+
 			//getting all the values into sessions
 			Session::put('id_no', Input::get('id_no'));
 			Session::put('start_date', Input::get('start_date'));
@@ -109,32 +121,55 @@ class BookingController extends BaseController {
 	public function postCreate() {
 	// Create a new booking
 
-		/*$data = array(
-			'id' => Input::get('room_type_id'),
-			'name' => $room->name,
-			'qty' => Session::get('no_of_rooms'),
-			'price' => $price
+		$room_details = RoomType::find(Input::get('room_type'));
+
+		//adding the booking to the cart
+		$data = array(
+			'id' => Input::get('room_type'),
+			'name' => $room_details->name,
+			'quantity' => Session::get('no_of_rooms'),
+			'price' => Input::get('total_charges'),
+			'options' => array(
+						'identification_no' => Session::get('id_no'),
+						'no_of_adults' => Session::get('no_of_adults'),
+						'no_of_kids' => Session::get('no_of_kids'),
+						'services' => Input::get('service'),
+						'paid_amount' => Input::get('paid_amount'),
+						'promo_code' => Session::get('promo_code')
+						)
 			);
+		
+		Cart::insert($data);
+		//Session::flush();
 
-		Cart::insert($data);*/
+		return Redirect::to('booking/cart');
 
-		$booking = new Booking();
 
-		$booking->identification_no = Session::get('id_no');
-		$booking->room_type_id = Input::get('room_type');
-		$booking->no_of_rooms = Session::get('no_of_rooms');
-		$booking->no_of_adults = Session::get('no_of_adults');
-		$booking->no_of_kids = Session::get('no_of_kids');
-		$booking->services = Input::get('service');
-		$booking->total_charges = Input::get('total_charges');
-		$booking->paid_amount = Input::get('paid_amount');
-		$booking->promo_code = Session::get('promo_code');
+		//saving the booking to the database
+		// $booking = new Booking();
 
-		$booking->save();
-		Session::flush();
+		// $booking->identification_no = Session::get('id_no');
+		// $booking->room_type_id = Input::get('room_type');
+		// $booking->no_of_rooms = Session::get('no_of_rooms');
+		// $booking->no_of_adults = Session::get('no_of_adults');
+		// $booking->no_of_kids = Session::get('no_of_kids');
+		// $booking->services = Input::get('service');
+		// $booking->total_charges = Input::get('total_charges');
+		// $booking->paid_amount = Input::get('paid_amount');
+		// $booking->promo_code = Session::get('promo_code');
 
-		return Redirect::To('booking/booking1')
-			->with('message', 'Booking is sucessful');
+		// $booking->save();
+		// Session::flush();
+
+		// return Redirect::To('booking/booking1')
+		// 	->with('message', 'Booking is sucessful');
+	}
+
+	public function getCart() {
+	// Show the summary of bookings
+
+		return View::make('booking.cart')
+						->with('rooms', Cart::contents());
 	}
 
 	public function loaditem() {
@@ -149,5 +184,37 @@ class BookingController extends BaseController {
 							->get();
 
 		return Response::json($service_id);
+	}
+
+	public function postPlacebooking() {
+		//Saving the booking details to the database
+
+		foreach (Cart::contents() as $bookings) {
+			$booking = new Booking();
+
+			$booking->identification_no = $bookings->options['identification_no'];
+			$booking->room_type_id = $bookings->id;
+			$booking->no_of_rooms = $bookings->quantity;
+			$booking->no_of_adults = $bookings->options['no_of_adults'];
+			$booking->no_of_kids = $bookings->options['no_of_kids'];
+			$booking->services = $bookings->options['services'];
+			$booking->total_charges = $bookings->price;
+			$booking->paid_amount = $bookings->options['paid_amount'];
+			$booking->promo_code = $bookings->options['promo_code'];
+
+			$booking->save();
+			Cart::destroy();
+		}
+
+		return Redirect::to('booking/booking1')
+							->with('message', 'booking has been sucessful');
+		
+	}
+
+	public function getRemoveitem($identifier) {
+		$item = Cart::item($identifier);
+		$item->remove();
+
+		return Redirect::to('booking/cart');
 	}
 }
