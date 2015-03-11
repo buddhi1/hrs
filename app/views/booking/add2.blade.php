@@ -14,7 +14,10 @@
 {{ Form::text('total_charges', null) }}
 
 {{ Form::label('Paid Amount') }}
-{{ Form::text('paid_amount', null) }}
+{{ Form::select('paid_amount', array(
+    'full' => 'Full Payment',
+    'part' => '1st Night',
+)) }}
 
 {{ Form::submit('Place Booking')}}
 {{ Form::close() }}

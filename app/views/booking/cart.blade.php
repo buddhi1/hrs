@@ -35,6 +35,8 @@
 @endforeach
 </table>
 
+{{ Cart::totalItems() }}
+
 {{ HTML::link('booking/booking1', 'Place Another Booking') }}
 
 {{ Form::open(array('url' => 'booking/placebooking')) }}
