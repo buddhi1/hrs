@@ -7,7 +7,10 @@ class CheckinController extends BaseController {
 	}
 
 	public function getCreate() {
-		return View::make('checkin.add');
+		
+		return View::make('checkin.add')
+		->with('booking_id', Input::get('booking_id'))
+		->with('identification_no', Input::get('identification_no'));
 	}
 
 	public function postCreate() {
@@ -57,31 +60,5 @@ class CheckinController extends BaseController {
 		return View::make('checkin.index');
 	}
 
-	// public function postSearch() {
-	// 	$check = Checkin::find(Input::get('check_id'));
-
-	// 	$book = Booking::find($check->booking_id);
-
-	// 	$total = 0;
-
-	// 	if(is_array(json_decode($check->payment, true))) {
-	// 		foreach(json_decode($check->payment, true) as $payment) {
-	// 		$total = $total+$payment;
-	// 		}
-	// 	} else {
-	// 		$total = intval(json_decode($check->payment, true));
-	// 	}
-
-	// 	$amount_due = $book->total_charges - $total;
-
-	// 	return Redirect::to('admin/checkin/addpayment')
-	// 		->with('checkin', $check)
-	// 		->with('booking', $book)
-	// 		->with('payment', $total)
-	// 		->with('due', $amount_due);
-	// }
-
-	// public function postUpdate() {
-
-	// }
+	
 }

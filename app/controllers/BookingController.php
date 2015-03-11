@@ -229,20 +229,19 @@ class BookingController extends BaseController {
 		$id = Input::get('id');
 
 		$booking = DB::table('bookings')
-		->where('identification_no', '=', $id)
-		->get();
+			->where('identification_no', '=', $id)
+			->first();
 
-		
 		return Redirect::to('admin/booking/search')
-			->with('booking_id', $booking[0]->id)
-			->with('identification_no', $booking[0]->identification_no)
-			->with('room_type_id', $booking[0]->room_type_id)
-			->with('no_of_rooms', $booking[0]->no_of_rooms)
-			->with('no_of_adults', $booking[0]->no_of_adults)
-			->with('no_of_kids', $booking[0]->no_of_kids)
-			->with('services', $booking[0]->services)
-			->with('total_charges', $booking[0]->total_charges)
-			->with('paid_amount', $booking[0]->paid_amount);
+			->with('booking_id', $booking->id)
+			->with('identification_no', $booking->identification_no)
+			->with('room_type_id', $booking->room_type_id)
+			->with('no_of_rooms', $booking->no_of_rooms)
+			->with('no_of_adults', $booking->no_of_adults)
+			->with('no_of_kids', $booking->no_of_kids)
+			->with('services', $booking->services)
+			->with('total_charges', $booking->total_charges)
+			->with('paid_amount', $booking->paid_amount);
 	}
 
 	//views the index page

@@ -21,20 +21,20 @@
 
 <div>
 	@if(Session::has('booking_id'))
-		{{ Session::get('booking_id') }}
-		{{ Session::get('identification_no') }}
-		{{ Session::get('room_type_id') }}
-		{{ Session::get('no_of_rooms') }}
-		{{ Session::get('no_of_adults') }}
-		{{ Session::get('no_of_kids') }}
-		{{ Session::get('services') }}
-		{{ Session::get('total_charges') }}
-		{{ Session::get('paid_amount') }}
 		{{ Form::open(array('url'=>'admin/checkin/create', 'method'=>'GET')) }}
+			{{ Form::hidden('booking_id', Session::get('booking_id')) }}
+			{{ Form::hidden('identification_no', Session::get('identification_no')) }}
+			{{ Session::get('room_type_id') }}
+			{{ Session::get('no_of_rooms') }}
+			{{ Session::get('no_of_adults') }}
+			{{ Session::get('no_of_kids') }}
+			{{ Session::get('services') }}
+			{{ Session::get('total_charges') }}
+			{{ Session::get('paid_amount') }}		
 			{{ Form::submit('Mark Checkin') }}
 		{{ Form::close() }}
 
 	@endif
 </div>
-
+{{ Form::close() }}
 @stop
