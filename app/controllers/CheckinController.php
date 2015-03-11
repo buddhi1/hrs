@@ -6,7 +6,7 @@ class CheckinController extends BaseController {
 		$this->beforeFilter('csrf', array('on' => 'post'));
 	}
 
-	public function getIndex() {
+	public function getCreate() {
 		return View::make('checkin.add');
 	}
 
@@ -52,8 +52,9 @@ class CheckinController extends BaseController {
 		}
 	}
 
-	public function getAddpayment() {
-		return View::make('checkin.search');
+	//views the index page
+	public function getIndex() {
+		return View::make('checkin.index');
 	}
 
 	// public function postSearch() {
