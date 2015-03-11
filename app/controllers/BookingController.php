@@ -13,7 +13,8 @@ class BookingController extends BaseController {
 	public function postBooking2() {
 
 			$validator = Validator::make(Input::all(), Booking::$rules1);
-
+			
+			//validating the input fields
 			if(!$validator->passes()) {
 				return Redirect::to('booking/booking1')
 					->withErrors($validator)
@@ -65,12 +66,20 @@ class BookingController extends BaseController {
 								->where('room_type_id', $roomss->room_type_id)
 								->sum('no_of_rooms');
 
+				// adding the cart rooms to the room checking
+				$cart_rooms = 0;
+
+				foreach (Cart::contents() as $carts) {
+					if($carts->id == $roomss->room_type_id) {
+						$cart_rooms = $cart_rooms + $carts->quantity;
+					}
+				}
+
 				//adding the room type to the combo box array if the rooms are available
-				if((Session::get('no_of_rooms')+$room_no)<=$room_type['no_of_rooms']) {
+				if((Session::get('no_of_rooms')+$room_no + $cart_rooms)<=$room_type['no_of_rooms']) {
 					$no_rooms[$room_type['id']] = $room_type['name'];
 				}
 			}
-
 			//getting the rooms that has not been booked before
 			$not_booked_rooms = DB::table('room_price_calenders')
 									->select('room_types.name', 'room_types.id')
@@ -116,9 +125,25 @@ class BookingController extends BaseController {
 	}
 
 	public function postCreate() {
-	// Create a new booking
+	// create a new booking
 
 		$room_details = RoomType::find(Input::get('room_type'));
+
+		// checking the payment amount
+		$payment = Input::get('paid_amount');
+		
+		if($payment === 'full') {
+			$payment_amount = floatval(Input::get('total_charges'));
+		} else {
+			$room_price = DB::table('room_price_calenders')
+						->select('price')
+						->where('start_date', '=', Session::get('start_date'))
+						->where('service_id', '=', Input::get('service'))
+						->where('room_type_id', '=', Input::get('room_type'))
+						->get();
+
+			$payment_amount = floatval($room_price[0]->price);
+		}
 
 		//adding the booking to the cart
 		$data = array(
@@ -131,7 +156,7 @@ class BookingController extends BaseController {
 						'no_of_adults' => Session::get('no_of_adults'),
 						'no_of_kids' => Session::get('no_of_kids'),
 						'services' => Input::get('service'),
-						'paid_amount' => Input::get('paid_amount'),
+						'paid_amount' => $payment_amount,
 						'promo_code' => Session::get('promo_code')
 						)
 			);
@@ -149,6 +174,8 @@ class BookingController extends BaseController {
 	}
 
 	public function loaditem() {
+	// load services to the combobox when room types are selected
+
 		$room_id = Input::get('room_type_id');
 		$service_id = DB::table('room_price_calenders')
 							->join('services', 'room_price_calenders.service_id', '=', 'services.id')
