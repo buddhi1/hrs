@@ -7,12 +7,12 @@
 
 	<tr>
 		<td>Authorizer</td>
-		<td>{{ Form::text('auth', null) }}</td>
+		<td>{{ Form::text('auth', $identification_no) }}</td>
 	</tr>
 
 	<tr>
 		<td>Booking ID</td>
-		<td>{{ Form::text('booking_id', null) }}</td>
+		<td>{{ Form::text('booking_id', $booking_id) }}</td>
 	</tr>
 
 	<tr>
