@@ -74,12 +74,29 @@ class CustomerController extends BaseController {
 	}
 
 	public function postBookingsummary() {
+		$summary = array();
 
+		$summary['name'] = Input::get('name');
+		$summary['service'] = Input::get('service');
+		$summary['facility'] = Input::get('facility');
+		$summary['price'] = Input::get('price')*Input::get('number');
+		$summary['room_no'] = Input::get('number');
+		$summary['no_of_adults'] = Input::get('no_of_adults');
+		$summary['no_of_kids'] = Input::get('no_of_kids');
 
-		return View::make('customer.summary');
+		Session::put('name', $summary['name']);
+		Session::put('service', $summary['service']);
+		Session::put('facility', $summary['facility']);
+		Session::put('price', $summary['price']);
+		Session::put('room_no', $summary['room_no']);
+		Session::put('no_of_adults', $summary['no_of_adults']);
+		Session::put('no_of_kids', $summary['no_of_kids']);
+
+		return View::make('customer.summary')
+			->with('summarys', $summary);
 	}
 
-	public function getCustomerform() {
+	public function postCustomerform() {
 		return View::make('customer.add');
 	}
 
