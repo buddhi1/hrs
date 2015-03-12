@@ -2,22 +2,21 @@
 
 @section('content')
 
-{{ Form::open(array('url' => 'customer/add')) }}
-
-
 @foreach($available_rooms as $room)
 	<div>
-		{{ $room['name'] }} with 
-		{{ $room['service'] }}&nbsp;Facilities - 
+		{{ Form::open(array('url' => 'customer/bookingsummary')) }}
+		{{ $room['name'] }}{{ Form::hidden('name', $room['name']) }} with 
+		{{ $room['service'] }}{{ Form::hidden('service', $room['service']) }}&nbsp;{{'||'}}Facilities - 
 		<?php if(json_decode($room['facility']) !== null) { ?>
 				{{ implode(", ", json_decode($room['facility'])) }}
-		<?php } ?>
-		{{ $room['price'] }}
-		{{ Form::selectRange('number', 1, $room['rooms_qty']) }}
+		<?php } ?>{{ Form::hidden('facility', $room['facility']) }}{{'||'}}
+		price - {{ $room['price'] }}{{ Form::hidden('price', $room['price']) }}
+		No of Rooms - {{ Form::selectRange('number', 1, $room['rooms_qty']) }}
+		No of Adults - {{ Form::selectRange('no_of_adults', 1, 2) }}
+		No of Kids - {{ Form::selectRange('no_of_kids', 1, 2) }}
+		{{ Form::submit('Reserve') }}
+		{{ Form::close() }}
 	</div>
 @endforeach
-
-
-{{ Form::close() }}
 
 @stop
