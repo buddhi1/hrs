@@ -76,7 +76,7 @@ class BookingController extends BaseController {
 				}
 
 				//adding the room type to the combo box array if the rooms are available
-				if((Session::get('no_of_rooms')+$room_no + $cart_rooms)<=$room_type['no_of_rooms']) {
+				if((Session::get('no_of_rooms')+intval($room_no) + $cart_rooms)<=$room_type['no_of_rooms']) {
 					$no_rooms[$room_type['id']] = $room_type['name'];
 				}
 			}
