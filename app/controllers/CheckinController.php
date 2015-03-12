@@ -22,7 +22,8 @@ class CheckinController extends BaseController {
 		$check->advance_payment = Input::get('advance_payment');
 		$check->payment = Input::get('payment');
 		$check->booking_id = Input::get('booking_id');
-
+		//var_dump($check);
+		//die();
 		if($check->check_in === '1') {
 			$check->check_in = date('Y-m-d H:i:s');
 		}
