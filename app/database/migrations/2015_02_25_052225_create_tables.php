@@ -147,8 +147,8 @@ class CreateTables extends Migration {
 			$table->text('total_charges');
 			$table->decimal('paid_amount', 8, 2);
 
-			$table->datetime('check_in');
-			$table->datetime('check_out');
+			$table->datetime('check_in')->nullable();
+			$table->datetime('check_out')->nullable();
 
 			$table->dateTime('check_in');
 			$table->dateTime('check_out');
@@ -164,7 +164,7 @@ class CreateTables extends Migration {
 			$table->datetime('check_out');
 
 			$table->dateTime('check_in');
-			$table->dateTime('check_out');
+			$table->dateTime('check_out')->nullable();
 			$table->decimal('advance_payment', 8, 2);
 			$table->text('payment');
 			$table->integer('booking_id')->unsigned();
