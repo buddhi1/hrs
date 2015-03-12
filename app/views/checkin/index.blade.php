@@ -3,20 +3,32 @@
 @section('content')
 
 <h2>Search booking</h2>
-<table>
+
+@if( Session::has('message') )
+	{{ Session::get('message') }}
+@endif
+<table border="1">
 	<tr>
-	{{ Form::open(array('url'=>'admin/booking/search')) }}		
-		<td> {{ Form::text('booing_id', '') }} </td>
-		<td> {{ Form::submit('Search') }} </td>
-	{{ Form::close() }}
+		<th>Checkin Id</th>
+		<th>Booking Id</th>
+		<th>Authorizer</th>
+		<th>Check in</th>
+		<th>Check out</th>
+		<th>Advace payment</th>
+		<th>Payments</th>
 	</tr>
 	<tr>
-	{{ Form::open(array('url'=>'admin/booking/search')) }}		
-		<td> {{ Form::text('id', '') }} </td>
-		<td> {{ Form::submit('Search') }} </td>
-	{{ Form::close() }}
+		@foreach($checkins as $checkin)
+			<td>{{$checkin->id}}</td>
+			<td>{{$checkin->booking_id}}</td>
+			<td>{{$checkin->authorizer}}</td>
+			<td>{{$checkin->check_in}}</td>
+			<td>{{$checkin->check_out}}</td>
+			<td>{{ $checkin->advance_payment }}</td>
+			<td>{{ implode(",", json_decode($checkin->payment)) }}</td>
+
+		@endforeach
 	</tr>
-	
 </table>
 
 <div>

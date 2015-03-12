@@ -226,12 +226,29 @@ class BookingController extends BaseController {
 	//Search for bookings
 	public function postSearch(){
 
-		$id = Input::get('id');
+		$uid = Input::get('id');
+		$booking_id = Input::get('booking_id');
 
-		$booking = DB::table('bookings')
-			->where('identification_no', '=', $id)
-			->first();
-
+		if($uid != null){
+			$booking = DB::table('bookings')
+				->where('identification_no', '=', $uid)
+				->first();
+			if ($booking == null){
+				return Redirect::to('admin/booking/search')
+					->with('message', 'No such ID exists in bookings');
+			}
+			
+		}elseif($booking_id != null){
+			$booking = DB::table('bookings')
+				->where('id', '=', $booking_id)
+				->first();
+			if ($booking == null){
+				return Redirect::to('admin/booking/search')
+					->with('message', 'No such ID exists in bookings');
+			}
+			
+		}
+	
 		return Redirect::to('admin/booking/search')
 			->with('booking_id', $booking->id)
 			->with('identification_no', $booking->identification_no)
@@ -241,11 +258,17 @@ class BookingController extends BaseController {
 			->with('no_of_kids', $booking->no_of_kids)
 			->with('services', $booking->services)
 			->with('total_charges', $booking->total_charges)
-			->with('paid_amount', $booking->paid_amount);
+			->with('paid_amount', $booking->paid_amount)
+			->with('check_in', $booking->check_in)
+			->with('check_out', $booking->check_out);
+		
 	}
 
-	//views the index page
+	//views the search page
 	public function getSearch() {
 		return View::make('booking.search');
 	}
+
+	//Views the booking delete page
+	//public function getDelete
 }

@@ -1,9 +1,9 @@
 @extends('layouts.main')
 
 @section('content')
-
+<h2>Edit checkin</h2>
 <table>
-	{{ Form::open(array('url' => 'admin/checkin/create')) }}
+	{{ Form::open(array('url' => 'admin/checkin/update')) }}
 
 	<tr>
 		<td>Authorizer</td>
@@ -34,7 +34,10 @@
 		<td>{{ Form::text('advance_payment', null) }}</td>
 	</tr>
 	@endif	
-
+	<tr>
+		<td>Payments so far</td>
+		<td>{{ $payments }}</td>
+	</tr>
 	<tr>
 		<td>Payment</td>
 		<td>{{ Form::text('payment', null) }}</td>
