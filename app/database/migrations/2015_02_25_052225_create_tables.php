@@ -196,6 +196,13 @@ class CreateTables extends Migration {
 			$table->text('variables');
 			$table->timestamps();
 		});
+
+		Schema::create('tax', function($table){
+			$table->increments('id');
+			$table->string('name');
+			$table->decimal('rate', 8, 2);
+			$table->timestamps();
+		});
 	}
 
 	
