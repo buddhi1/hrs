@@ -14,7 +14,7 @@
 			@endforeach
 		</ul>
 	</div>
-	@endif
+@endif
 {{ Form::open(array('url'=>'admin/login')) }}
 	{{ Form::text('name','', array('placeholder'=>'user name here')) }}
 	{{ Form::password('password') }}

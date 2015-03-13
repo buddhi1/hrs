@@ -197,7 +197,7 @@ class CreateTables extends Migration {
 			$table->timestamps();
 		});
 
-		Schema::create('tax', function($table){
+		Schema::create('taxes', function($table){
 			$table->increments('id');
 			$table->string('name');
 			$table->decimal('rate', 8, 2);
@@ -221,6 +221,7 @@ class CreateTables extends Migration {
 		Schema::drop('checkins');
 		Schema::drop('transactions');
 		Schema::drop('policies');
+		Schema::drop('taxes');
 	}
 
 }
