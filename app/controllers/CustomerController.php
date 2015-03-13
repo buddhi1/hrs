@@ -110,6 +110,10 @@ class CustomerController extends BaseController {
 			->with('summarys', $summary);
 	}
 
+	public function getCustomerform() {
+		return View::make('customer.add');
+	}
+
 	public function postCustomerform() {
 		return View::make('customer.add');
 	}
@@ -121,6 +125,7 @@ class CustomerController extends BaseController {
 		if($validator->passes()) {
 			$customer = New Customer();
 
+			// putting customer details to sessions
 			Session::put('cus_identification_no', Input::get('identification_no'));
 			Session::put('cus_title', Input::get('title'));
 			Session::put('cus_first_name', Input::get('first_name'));
@@ -134,6 +139,7 @@ class CustomerController extends BaseController {
 			Session::put('cus_flight_info', Input::get('flight_info'));
 			Session::put('cus_other', Input::get('other'));
 
+			// saving customer details
 			$customer->identification_no = Session::get('cus_identification_no');
 			$customer->title = Session::get('cus_title');
 			$customer->first_name = Session::get('cus_first_name');
@@ -154,7 +160,7 @@ class CustomerController extends BaseController {
 		}
 
 
-		return View::make('customer.customerform')
+		return Redirect::to('customer/customerform')
 			->withInput()
 			->withErrors($validator);
 	}
@@ -170,6 +176,7 @@ class CustomerController extends BaseController {
 
 		$payment = Input::get('paid_amount');
 		
+		// checking the paid amount
 		if($payment === 'full') {
 			$payment_amount = floatval(Session::get('price'));
 		} else {
@@ -185,12 +192,13 @@ class CustomerController extends BaseController {
 
 		$booking = New Booking();
 
+		// saving booking details
 		$booking->identification_no = Session::get('cus_identification_no');
 		$booking->room_type_id = Session::get('room_type_id');
 		$booking->no_of_rooms = Session::get('room_no');
 		$booking->no_of_adults = Session::get('no_of_adults');
 		$booking->no_of_kids = Session::get('no_of_kids');
-		$booking->services = Session::get('service');
+		$booking->services = Session::get('service_id');
 		$booking->total_charges = Session::get('price');
 		$booking->paid_amount = $payment_amount;
 		$booking->start_date = Session::get('start_date');
