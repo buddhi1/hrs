@@ -43,4 +43,8 @@ Route::controller('admin/checkin', 'CheckinController');
 
 Route::controller('admin/booking', 'BookingController');
 
+
 Route::controller('admin', 'UserController');
+
+Route::controller('customer', 'CustomerController');
+
