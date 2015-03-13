@@ -147,6 +147,9 @@ class CreateTables extends Migration {
 			$table->text('total_charges');
 			$table->decimal('paid_amount', 8, 2);
 
+			$table->datetime('start_date')->nullable();
+			$table->datetime('end_date')->nullable();
+
 			$table->datetime('check_in')->nullable();
 			$table->datetime('check_out')->nullable();
 

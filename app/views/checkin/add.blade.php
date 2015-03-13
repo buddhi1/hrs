@@ -14,7 +14,7 @@
 		<td>Booking ID</td>
 		<td>{{ Form::text('booking_id', $booking_id) }}</td>
 	</tr>
-	@if( $check_in != 0 )
+	@if( $check_in != null )
 	<tr>
 		
 		<td> <h4>Checked in</h4>	</td>
