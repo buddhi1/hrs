@@ -59,11 +59,14 @@ class BookingController extends BaseController {
 				foreach ($booked_rooms as $book) {
 					$arr_booked_rooms[] = $book->room_type_id;
 				}
+
+				$start_date = Session::get('start_date');
+				$end_date = Session::get('end_date');
 				
 				// get the total of booked room types from the above selected room types
 				$room_no = DB::select(DB::raw("SELECT SUM(no_of_rooms) as room_sum
 											FROM bookings
-											WHERE ((start_date >= '$start_date' AND start_date <= '$end_date') OR (end_date >= '$start_date' AND end_date <= '$end_date') OR ((start_date <= '$start_date' AND end_date >= '$end_date'))) AND room_type_id = $room_types->room_type_id AND check_out is null"));
+											WHERE ((start_date >= '$start_date' AND start_date <= '$end_date') OR (end_date >= '$start_date' AND end_date <= '$end_date') OR ((start_date <= '$start_date' AND end_date >= '$end_date'))) AND room_type_id = $roomss->room_type_id AND check_out is null"));
 
 
 				// adding the cart rooms to the room checking
@@ -204,6 +207,8 @@ class BookingController extends BaseController {
 			$booking->total_charges = $bookings->price;
 			$booking->paid_amount = $bookings->options['paid_amount'];
 			$booking->promo_code = $bookings->options['promo_code'];
+			$booking->start_date = Session::get('start_date');
+			$booking->end_date = Session::get('end_date');
 
 			$booking->save();
 			Cart::destroy();
