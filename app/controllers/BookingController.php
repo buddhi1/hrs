@@ -61,10 +61,10 @@ class BookingController extends BaseController {
 				}
 				
 				// get the total of booked room types from the above selected room types
-				$room_no = DB::table('bookings')
-								->whereNull('check_out')
-								->where('room_type_id', $roomss->room_type_id)
-								->sum('no_of_rooms');
+				$room_no = DB::select(DB::raw("SELECT SUM(no_of_rooms) as room_sum
+											FROM bookings
+											WHERE ((start_date >= '$start_date' AND start_date <= '$end_date') OR (end_date >= '$start_date' AND end_date <= '$end_date') OR ((start_date <= '$start_date' AND end_date >= '$end_date'))) AND room_type_id = $room_types->room_type_id AND check_out is null"));
+
 
 				// adding the cart rooms to the room checking
 				$cart_rooms = 0;
@@ -76,7 +76,7 @@ class BookingController extends BaseController {
 				}
 
 				//adding the room type to the combo box array if the rooms are available
-				if((Session::get('no_of_rooms')+intval($room_no) + $cart_rooms)<=$room_type['no_of_rooms']) {
+				if((Session::get('no_of_rooms')+intval($room_no[0]->room_sum) + $cart_rooms)<=$room_type['no_of_rooms']) {
 					$no_rooms[$room_type['id']] = $room_type['name'];
 				}
 			}
