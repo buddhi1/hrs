@@ -12,6 +12,8 @@
 	@if(Session::has('message'))
 		<h3>{{ Session::get('message') }}</h3>
 	@endif
+
+
 </div>
 <table>
 	{{ Form::open(array('url'=>'/admin/permission/create')) }}
@@ -19,12 +21,12 @@
 		<td> {{ Form::label('name', 'Permission name') }} </td>
 		<td> {{ Form::text('name','',array('required')) }} </td>
 	</tr>		
-	@foreach($permissions as $permission)
+	@foreach($info as $data)
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				{{ Form::checkbox('permission[]', $permission) }}
-				{{ $permission }}
+				{{ Form::checkbox('permission[]', $data[1]) }}
+				{{ $data[0] }}
 				<br />
 			</td>
 		</tr>

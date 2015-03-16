@@ -111,7 +111,7 @@ Route::filter('user_group', function($route)
 		//validates the permission for the user group of selected route
 	    $check = DB::table('permissions')
 	    	->where('id', '=', Auth::user()->permission_id)
-	    	->pluck($action. $class);
+	    	->pluck($action.'_'. $class);
 	  
 	  	if($check == 0){
 	  		return Redirect::to('/');
