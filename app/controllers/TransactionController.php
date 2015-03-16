@@ -8,6 +8,11 @@
 
 class TransactionController extends BaseController {
 
+	public function __construct(){
+		$this->beforeFilter('csrf',array('on'=>'post'));
+		$this->beforeFilter('user_group');
+	}
+	
 	//Inserts a record for transaction table
 	public function postCreate(){
 		$booking_id = Input::get('booking_id');

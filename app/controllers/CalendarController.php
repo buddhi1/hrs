@@ -10,6 +10,7 @@ class CalendarController extends BaseController {
 
 	public function __construct(){
 		$this->beforeFilter('csrf',array('on'=>'post'));
+		$this->beforeFilter('user_group');
 	}
 
 	//Views the create Room_price_Calendar form

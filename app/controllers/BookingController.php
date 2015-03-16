@@ -4,6 +4,7 @@ class BookingController extends BaseController {
 
 	public function __construnct() {
 		$this->beforeFilter('csrf', array('on' => 'post'));
+		$this->beforeFilter('login');
 	}
 
 	public function getBooking1() {

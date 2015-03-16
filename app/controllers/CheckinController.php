@@ -4,6 +4,7 @@ class CheckinController extends BaseController {
 
 	public function __construnct() {
 		$this->beforeFilter('csrf', array('on' => 'post'));
+		$this->beforeFilter('user_group');
 	}
 
 	public function getCreate() {
