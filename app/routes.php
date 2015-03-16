@@ -45,7 +45,7 @@ Route::controller('admin/booking', 'BookingController');
 
 Route::controller('admin/tax', 'TaxController');
 
-Route::controller('admin', 'UserController');
+Route::controller('admin', 'LoginController');
 
 Route::controller('customer', 'CustomerController');
 

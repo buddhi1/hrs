@@ -70,21 +70,6 @@ Route::filter('guest', function()
 	if (Auth::check()) return Redirect::to('/');
 });
 
-Route::filter('admin', function($reques,$type)
-{
-	if(Auth::check()) {
-
-		$permission = Permission::find(Auth::user()->permission_id);
-		
-		if(!$permission->$type) {
-			var_dump($permission);
-			die();
-		}
-		
-	}
-
-});
-
 /*
 |--------------------------------------------------------------------------
 | CSRF Protection Filter
@@ -108,16 +93,40 @@ Route::filter('csrf', function()
 //user level filter
 Route::filter('user_group', function($route)
 {
-	var_dump( Request::segment(3));
-	$pre = '';
-	if(Request::segment(3) == 'create'){
-		$pre = 'add';
+		
+	
+	if(Auth::check()){
+
+		$class = Request::segment(2); //reads the class of selected route
+		$action = Request::segment(3); //reads the action of selected route
+
+		if($action == 'update' || $action =='edittimeline' || $action == 'updatetimeline'){
+			$action = 'edit';
+		}elseif($action == null){
+			$action = 'index';
+		}elseif ($action == 'destroytimeline') {
+			$action = 'destroy';
+		}
+
+		//validates the permission for the user group of selected route
+	    $check = DB::table('permissions')
+	    	->where('id', '=', Auth::user()->permission_id)
+	    	->pluck($action. $class);
+	  
+	  	if($check == 0){
+	  		return Redirect::to('/');
+	  	}
+	}else{
+		return Redirect::to('admin/login');
 	}
-    $check = DB::table('permissions')
-    	->where('id', '=', Auth::user()->permission_id)
-    	->pluck($pre. Request::segment(2));
-  
-  	if($check == 0){
-  		return Redirect::to('/');
-  	}
+
+		
+	
+});
+
+
+//Authenticating logedin users
+Route::filter('login', function()
+{
+	if (!Auth::check()) return Redirect::to('admin/login');
 });
