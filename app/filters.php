@@ -75,10 +75,7 @@ Route::filter('admin', function($reques,$type)
 	if(Auth::check()) {
 
 		$permission = Permission::find(Auth::user()->permission_id);
-
-		var_dump($type->methods);
-		die();
-
+		
 		if(!$permission->$type) {
 			var_dump($permission);
 			die();
