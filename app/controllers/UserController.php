@@ -11,6 +11,7 @@ class UserController extends BaseController {
 
 	public function __construct(){
 		$this->beforeFilter('csrf',array('on'=>'post'));
+		$this->beforeFilter('user_group');
 	}
 
 	//Views the create user form

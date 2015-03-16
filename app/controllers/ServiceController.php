@@ -4,6 +4,7 @@ class ServiceController extends BaseController {
 
 	public function __construct() {
 		$this->beforeFilter('csrf',array('on' => 'post'));
+		$this->beforeFilter('user_group');
 	}
 
 	public function getIndex() {
@@ -74,6 +75,6 @@ class ServiceController extends BaseController {
 		}
 
 		return Redirect::To('admin/service')
-			->with('ser_message_del','Service is successfully deleted');
+			->with('ser_message_del','Something went wrong');
 	}
 }

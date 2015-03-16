@@ -19,7 +19,7 @@ Route::get('/', function()
 
 Route::controller('admin/facility','FacilityController');
 
-Route::controller('admin/service','ServiceController');
+Route::controller('admin/service', 'ServiceController');
 
 Route::controller('admin/room','RoomController');
 
