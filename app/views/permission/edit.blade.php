@@ -19,23 +19,23 @@
 	{{ Form::open(array('url'=>'/admin/permission/update')) }}
 	{{ Form::hidden('id', $record->id) }}
 	<tr>
-		<td> {{ Form::label('name', 'Permission name') }} </td>
-		<td> {{ Form::text('name',$record->name,array('required')) }} </td>
+		<td> {{ Form::label('name', 'Permission name: ') }} </td>
+		<td> {{ Form::label('name',$record->name,array('required')) }} </td>
 	</tr>
 		
-	@foreach($permissions as $permission)
+	@foreach($info as $data)
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<?php $i=0 ?>
-				@if($record->$permission == '1')
+				<?php $i=0; ?>
+				@if($record->$data[1] == '1')
 				<?php $i=1 ?>
-					{{ Form::checkbox('permission[]', $permission, array('required')) }}
+					{{ Form::checkbox('permission[]', $data[1], array('required')) }}
 				@endif
 				@if($i ==0 )
-					{{ Form::checkbox('permission[]', $permission) }}
+					{{ Form::checkbox('permission[]', $data[1]) }}
 				@endif
-				{{ $permission }}
+				{{ $data[0] }}
 				<br />
 			</td>
 		</tr>

@@ -17,8 +17,34 @@ class PermissionController extends BaseController {
 	//Views the create Permission form
 	
 	public function getCreate(){
+
+		$permissions = Schema::getColumnListing('permissions');
+		unset($permissions[0]); //remove permission id
+		unset($permissions[1]); //remove permission name
+		unset($permissions[sizeof($permissions)]); //remove permission created at
+		unset($permissions[sizeof($permissions)+2]); //remove permission updated at
+		$permissions = array_values($permissions); //reindex array
+		
+		foreach ($permissions as  $value) {
+			$names[] = explode("_",$value);
+			
+		}
+		
+		foreach ($names as $name) {
+			
+			if (sizeof($name) > 1) {
+				$titles[] = ucfirst($name[1]).' '.$name[0];
+
+			}
+			  
+		}	
+		for ($i=0; $i < sizeof($permissions); $i++) { 
+				$info[$i][0] = $titles[$i];
+				$info[$i][1] = $permissions[$i];
+			}	
+			
 		return View::make('permission.create')
-			->with('permissions', Schema::getColumnListing('permissions'));
+			->with('info', $info);
 	}
 
 	//Posts the create form details to database
@@ -60,9 +86,35 @@ class PermissionController extends BaseController {
 
 	//Views index page for permissions
 	public function getIndex(){
+
+		$permissions = Schema::getColumnListing('permissions');
+		unset($permissions[0]); //remove permission id
+		unset($permissions[1]); //remove permission name
+		unset($permissions[sizeof($permissions)]); //remove permission created at
+		unset($permissions[sizeof($permissions)+2]); //remove permission updated at
+		$permissions = array_values($permissions); //reindex array
+		
+		foreach ($permissions as  $value) {
+			$names[] = explode("_",$value);
+			
+		}
+		
+		foreach ($names as $name) {
+			
+			if (sizeof($name) > 1) {
+				$titles[] = ucfirst($name[1]).' '.$name[0];
+
+			}
+			  
+		}	
+		for ($i=0; $i < sizeof($permissions); $i++) { 
+				$info[$i][0] = $titles[$i];
+				$info[$i][1] = $permissions[$i];
+			}	
+
 		return View::make('permission.index')
 			->with('groups', Permission::all())
-			->with('permissions', Schema::getColumnListing('permissions'));
+			->with('info', $info);
 	}
 
 	//Deletes the selected permission group
@@ -80,9 +132,35 @@ class PermissionController extends BaseController {
 
 	//Views the edit page for the selected permission group
 	public function postEdit(){
+
+		$permissions = Schema::getColumnListing('permissions');
+		unset($permissions[0]); //remove permission id
+		unset($permissions[1]); //remove permission name
+		unset($permissions[sizeof($permissions)]); //remove permission created at
+		unset($permissions[sizeof($permissions)+2]); //remove permission updated at
+		$permissions = array_values($permissions); //reindex array
+		
+		foreach ($permissions as  $value) {
+			$names[] = explode("_",$value);
+			
+		}
+		
+		foreach ($names as $name) {
+			
+			if (sizeof($name) > 1) {
+				$titles[] = ucfirst($name[1]).' '.$name[0];
+
+			}
+			  
+		}	
+		for ($i=0; $i < sizeof($permissions); $i++) { 
+				$info[$i][0] = $titles[$i];
+				$info[$i][1] = $permissions[$i];
+			}	
+
 		return View::make('permission.edit')
 			->with('record', Permission::find(Input::get('id')))
-			->with('permissions', Schema::getColumnListing('permissions'));
+			->with('info', $info);
 	}
 
 	//Update operation for the selected permission group
@@ -96,10 +174,8 @@ class PermissionController extends BaseController {
 				->where('name','=', $name)
 				->get();
 
-			//checks for the availability of the permission group name
-			if(!$record){
+			
 				$group = Permission::find(Input::get('id'));
-				$group->name =  Input::get('name');
 				
 				foreach (Input::get('permission') as $value) {
 					$group->$value = 1;
@@ -108,11 +184,10 @@ class PermissionController extends BaseController {
 				return Redirect::to('admin/permission/index')
 					->with('message','New permission group added successfully');
 				
-			}
-			return Redirect::to('admin/permission/index')
-				->with('message','Permission group already exists');
-
 		}
+
+		return Redirect::to('admin/permission/index')
+			->withErrors($validator);
 	}
 
 }

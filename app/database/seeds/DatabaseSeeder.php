@@ -1,5 +1,21 @@
 <?php
 
+class UserTableSeeder extends Seeder
+{
+
+public function run()
+{
+
+
+   DB::table('users')->delete();
+   User::create(array(
+       'name' => 'ash',
+       'password' => Hash::make('pass'),
+       'permission_id' => 1,
+   ));
+}
+}
+
 class DatabaseSeeder extends Seeder {
 
 	/**
@@ -11,7 +27,7 @@ class DatabaseSeeder extends Seeder {
 	{
 		Eloquent::unguard();
 
-		// $this->call('UserTableSeeder');
+		$this->call('UserTableSeeder');
 	}
 
 }
