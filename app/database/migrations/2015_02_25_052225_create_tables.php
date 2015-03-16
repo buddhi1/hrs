@@ -169,8 +169,8 @@ class CreateTables extends Migration {
 			$table->increments('id');
 			$table->string('authorizer');
 
-			$table->datetime('check_in')->nullable();
 
+			$table->dateTime('check_in')->nullable();
 			$table->dateTime('check_out')->nullable();
 			$table->decimal('advance_payment', 8, 2);
 			$table->text('payment');

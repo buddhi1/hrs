@@ -275,6 +275,61 @@ class BookingController extends BaseController {
 		return View::make('booking.search');
 	}
 
-	//Views the booking delete page
-	//public function getDelete
+
+	public function getDestroy() {
+		// display the booking delete page
+		return View::make('booking.delete');
+	}
+
+	public function postDestroy() {
+		// delete a booking
+
+		$booking = Booking::find(Input::get('booking_id'));
+
+
+		$transaction = DB::table('transactions')
+					->where('booking_id',Input::get('booking_id'))
+					->get();
+
+		$policy = DB::table('policies')
+					->where('description', "Cancellation")
+					->get();
+
+		$charge = floatval($booking->paid_amount);
+
+		//calculating the date difference between today and the upcoming booking date
+		$date_difference = strtotime($booking->start_date) - strtotime(date("Y-m-d h:i:s"));
+		$no_of_days = $date_difference/(3600*24);
+
+		
+
+		$cancellation_details = json_decode($policy[0]->variables);
+		$cancellation_days = $cancellation_details->days;
+		$cancellation_rate = $cancellation_details->policy;
+
+
+		if($no_of_days < $cancellation_days) {
+
+			$cancellation_charge = $charge*$cancellation_rate;
+
+			$booking->paid_amount = $cancellation_charge;
+			$booking->cancellation = 1;
+
+			$booking->save();
+
+			return Redirect::to('booking/destroy')
+				->with('message', '50% of your paid amount has been charged due to late cancellation');
+		} else {
+
+			$cancellation_charge = 0;
+
+			$booking->paid_amount = $cancellation_charge;
+			$booking->cancellation = 1;
+
+			$booking->save();
+
+			return Redirect::to('booking/destroy')
+				->with('message', 'Booking has been cancelled without a fee');
+		}	
+	}
 }
