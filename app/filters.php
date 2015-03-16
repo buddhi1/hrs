@@ -106,3 +106,21 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+
+//user level filter
+Route::filter('user_group', function($route)
+{
+	var_dump( Request::segment(3));
+	$pre = '';
+	if(Request::segment(3) == 'create'){
+		$pre = 'add';
+	}
+    $check = DB::table('permissions')
+    	->where('id', '=', Auth::user()->permission_id)
+    	->pluck($pre. Request::segment(2));
+  
+  	if($check == 0){
+  		return Redirect::to('/');
+  	}
+});

@@ -19,7 +19,7 @@ Route::get('/', function()
 
 Route::controller('admin/facility','FacilityController');
 
-Route::controller('admin/service','ServiceController');
+Route::controller('admin/service', 'ServiceController');
 
 Route::controller('admin/room','RoomController');
 
@@ -43,8 +43,11 @@ Route::controller('admin/checkin', 'CheckinController');
 
 Route::controller('admin/booking', 'BookingController');
 
+Route::controller('admin/tax', 'TaxController');
 
 Route::controller('admin', 'UserController');
 
 Route::controller('customer', 'CustomerController');
+
+
 

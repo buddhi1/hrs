@@ -11,32 +11,41 @@ class CreateTables extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->boolean('addservice');
-			$table->boolean('removeservice');
-			$table->boolean('addcalendar');
-			$table->boolean('modifycalendar');
-			$table->boolean('removecalendar');
-			$table->boolean('addpromotioncalendar');
-			$table->boolean('modifypromotioncalendar');
-			$table->boolean('removepromotioncalendar');
-			$table->boolean('addfacility');
-			$table->boolean('removefacility');
-			$table->boolean('addusers');
-			$table->boolean('modifyusers');
-			$table->boolean('removeusers');
-			$table->boolean('addroomtype');
-			$table->boolean('modifyroomtype');
-			$table->boolean('removeroomtype');
-			$table->boolean('setfacility');
-			$table->boolean('addpolicy');
-			$table->boolean('modifypolicy');
-			$table->boolean('removepolicy');
-			$table->boolean('requestingforreports');
-			$table->boolean('addbooking');
-			$table->boolean('removebooking');
-			$table->boolean('markcheckin');
-			$table->boolean('markcheckout');
-			$table->boolean('recordpayments');
+			$table->boolean('createuser');
+			$table->boolean('indexuser');
+			$table->boolean('destroyuser');
+			$table->boolean('edituser');
+			$table->boolean('createtransaction');
+			$table->boolean('createservice');
+			$table->boolean('indexservice');
+			$table->boolean('destroyservice');
+			$table->boolean('createroom');
+			$table->boolean('indexroom');
+			$table->boolean('destroyroom');
+			$table->boolean('editroom');
+			$table->boolean('createpromotion');
+			$table->boolean('indexpromotion');
+			$table->boolean('destroypromotion');
+			$table->boolean('editpromotion');
+			$table->boolean('createpromo');
+			$table->boolean('indexpromo');
+			$table->boolean('destroypromo');
+			$table->boolean('editpromo');
+			$table->boolean('createpermission');
+			$table->boolean('indexpermission');
+			$table->boolean('destroypermission');
+			$table->boolean('editpermission');
+			$table->boolean('createfacility');
+			$table->boolean('indexfacility');
+			$table->boolean('destroyfacility');
+			$table->boolean('createcheckin');
+			$table->boolean('indexcheckin');
+			$table->boolean('destroycheckin');
+			$table->boolean('editcheckin');
+			$table->boolean('createcalendar');
+			$table->boolean('indexcalendar');
+			$table->boolean('destroycalendar');
+			$table->boolean('editcalendar');
 			$table->timestamps();
 		});
 
@@ -161,6 +170,7 @@ class CreateTables extends Migration {
 			$table->increments('id');
 			$table->string('authorizer');
 
+
 			$table->dateTime('check_in')->nullable();
 			$table->dateTime('check_out')->nullable();
 			$table->decimal('advance_payment', 8, 2);
@@ -192,7 +202,7 @@ class CreateTables extends Migration {
 			$table->timestamps();
 		});
 
-		Schema::create('tax', function($table){
+		Schema::create('taxes', function($table){
 			$table->increments('id');
 			$table->string('name');
 			$table->decimal('rate', 8, 2);
@@ -216,6 +226,7 @@ class CreateTables extends Migration {
 		Schema::drop('checkins');
 		Schema::drop('transactions');
 		Schema::drop('policies');
+		Schema::drop('taxes');
 	}
 
 }
