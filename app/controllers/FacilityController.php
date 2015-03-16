@@ -4,10 +4,12 @@ class FacilityController extends BaseController {
 
 	public function __construct() {
 		$this->beforeFilter('csrf', array('on' => 'post'));
+		$this->beforeFilter('admin');
 	}
 
 	public function getIndex() {
 		//display all the facilities in the database
+
 
 		return View::make('facility.view')
 			->with('facilities', Facility::all());
@@ -15,6 +17,7 @@ class FacilityController extends BaseController {
 
 	public function postCreate() {
 		//add a facility to the database
+
 
 		$facility = new Facility();
 
