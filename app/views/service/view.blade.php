@@ -56,5 +56,5 @@
 	<p class="text-success">{{ Session::get('ser_message_del') }}</p>
 	
 	@endif
-
+<script type="text/javascript" src="{{url()}}/"></script>
 @stop
