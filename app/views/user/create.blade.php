@@ -15,7 +15,7 @@
 		<td> {{ Form::text('uname','', array('required')) }} </td>
 	</tr>
 	<tr>
-		<td> {{ Form::label('lblpermission', 'Permission Group') }} </td>
+		<td> {{ Form::label('permission', 'Permission Group') }} </td>
 		<td> {{ Form::select('permission', $permissions, null, array('required')) }} </td>
 	</tr>
 	<tr>
