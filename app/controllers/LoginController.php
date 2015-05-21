@@ -23,31 +23,39 @@ class LoginController extends BaseController {
 
 		$validator = Validator::make(Input::all(), $rules);
 
-
 		if ($validator->fails()) {
-		    return Redirect::to('admin/login')
+			//return Redirect::to('admin/login')
+			return Response::json('failed validation')
 		        ->withErrors($validator) // send back all errors to the login form
 		        ->withInput(Input::except('password')); // send back the input (not the password) so that we can repopulate the form
 		} else {
 
 		    // create our user data for the authentication
+		    // $userdata = array(
+		    //     'name'     => Input::get('name'),
+		    //     'password'  =>  Input::get('password')
+   	 	// 		);
+			return Response::json('successful');
+
 		    $userdata = array(
-		        'name'     => Input::get('name'),
-		        'password'  =>  Input::get('password')
+		        'name'     => Input::json('name'),
+		        'password'  =>  Input::json('password')
    	 			);
 
 		 		if (Auth::attempt($userdata)) {
 
 		        // validation successful!
 		     		
-		        	return Redirect::to('admin/user')
-		        		->with('message', 'Login successfull'.Auth::user()->permission_id);
+		        	// return Redirect::to('admin/user')
+		        	// 	->with('message', 'Login successfull'.Auth::user()->permission_id);
+		        	return Response::json('successful');
 
     			} else {        
 
 		        // validation not successful, send back to form 
-		        	return Redirect::to('admin/login')
-		        		->with('message', 'Login unsuccessfull.Please try again');
+		        	// return Redirect::to('admin/login')
+		        	// 	->with('message', 'Login unsuccessfull.Please try again');
+		        	return Response::json('failed');
     			}
 
 			}
