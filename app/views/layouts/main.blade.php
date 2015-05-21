@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+<html lang="en">
 
 	<head>
 
-		<script src = "../lib/angular.min.js"></script>
-		<script src = "../lib/angular-route.min.js"></script>
-		<script src = "../js/app.js"></script>
+		<script src = "../lib/knockout-3.3.0.js"></script>
 		<title>Hotel Reservation System</title>
 
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" >  		  	
@@ -21,6 +19,7 @@
 	<h1>Hotel Reservation System</h1>
 
 	
-	<div ng-view>
+	<div>
+		@yield('content')
 	</div>
 </html>

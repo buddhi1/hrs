@@ -11,12 +11,13 @@ class UserController extends BaseController {
 
 	public function __construct(){
 		$this->beforeFilter('csrf',array('on'=>'post'));
-		$this->beforeFilter('user_group');
+		// $this->beforeFilter('user_group');
 	}
 
 	//Views the create user form
 	
 	public function getCreate(){
+		
 		return View::make('user.create')
 			->with('permissions', Permission::lists('name', 'id'));
 	}
