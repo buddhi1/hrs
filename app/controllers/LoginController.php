@@ -35,11 +35,11 @@ class LoginController extends BaseController {
 		    //     'name'     => Input::get('name'),
 		    //     'password'  =>  Input::get('password')
    	 	// 		);
-			return Response::json('successful');
+			
 
 		    $userdata = array(
-		        'name'     => Input::json('name'),
-		        'password'  =>  Input::json('password')
+		        'name'     => Input::get('name'),
+		        'password'  =>  Input::get('password')
    	 			);
 
 		 		if (Auth::attempt($userdata)) {
