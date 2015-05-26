@@ -54,8 +54,18 @@ class UserController extends BaseController {
 			->leftJoin('permissions', 'permissions.id', '=', 'permission_id')
 			->select('users.id as uid','users.name as uname','permission_id', 'permissions.id','permissions.name')						
 	        ->get();
-		return View::make('user.index')			
-			->with('users', $permissions);
+		return View::make('user.index');
+	}
+
+	public function postIndex(){
+		// send all the user details according to the ajax request
+
+		$permissions = DB::table('users')
+			->leftJoin('permissions', 'permissions.id', '=', 'permission_id')
+			->select('users.id as uid','users.name as uname','permission_id', 'permissions.id','permissions.name')						
+	        ->get();
+
+	    return $permissions;
 	}
 
 	//Deletes the selected user
@@ -77,7 +87,7 @@ class UserController extends BaseController {
 	//Views the uder edit form
 
 	public function postEdit(){
-		var_dump('expression');
+		var_dump(Input::get('id'));
 		die();
 		return View::make('user.edit')
 			->with('user', User::find(Input::get('id')))
