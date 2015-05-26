@@ -50,6 +50,7 @@
 	@endif
 <script type="text/javascript">
 	http_url = '{{url()}}';
+	var services = '{{$services}}';
 </script>
 <script type="text/javascript" src="{{url()}}/js/service.js"></script>
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>

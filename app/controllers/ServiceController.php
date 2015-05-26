@@ -59,20 +59,19 @@ class ServiceController extends BaseController {
 	public function postDestroy() {
 	// delete a service from the database
 
-		$service = Service::find(Input::get('id'));
+		$service = Service::where('name', '=', Input::get('name'))->first();
 
 		// remove the deleted service from the room types table
 		$this->deleteService('room_types', $service->name);
 
 
 		if($service) {
+			$service = Service::find($service->id);
 			$service->delete();
 
-			return Redirect::To('admin/service')
-				->with('ser_message_del','Service is successfully deleted');
+			return 1;
 		}
 
-		return Redirect::To('admin/service')
-			->with('ser_message_del','Something went wrong');
+		return 0;
 	}
 }
