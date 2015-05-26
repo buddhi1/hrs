@@ -3,7 +3,7 @@
 class ServiceController extends BaseController {
 
 	public function __construct() {
-		$this->beforeFilter('csrf',array('on' => 'post'));
+		//$this->beforeFilter('csrf',array('on' => 'post'));
 		$this->beforeFilter('user_group');
 	}
 
@@ -16,7 +16,7 @@ class ServiceController extends BaseController {
 
 	public function postCreate() {
 	// add a new service to the database
-
+		
 		$service = new Service();
 
 		//checking whether a service already exists
@@ -28,12 +28,10 @@ class ServiceController extends BaseController {
 
 			$service->save();
 
-			return Redirect::to('admin/service')
-				->with('ser_message_add','Service is succesfully added');
+			return 1;
 		}
 
-		return Redirect::to('admin/service')
-			->with('ser_message_err','Service already exists');
+		return 0;
 
 		
 	}
