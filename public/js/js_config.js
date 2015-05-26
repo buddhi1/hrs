@@ -1,19 +1,29 @@
 
-    var url = http_path +'system/route.php';
-
 
     function sendRequestToServerPost(url,variables,callback){
-        var var_string = JSON.stringify(variables);
-            var request_url = variables;
 
-            var xmlHttp = new XMLHttpRequest(); 
-            xmlHttp.onreadystatechange = function(){
-                if (xmlHttp.readyState==4 && xmlHttp.status==200){
-                    callback(xmlHttp.responseText);
-                }
-            };
-            xmlHttp.open( "POST", url, true );
-            xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-            xmlHttp.send(request_url);
+        var header =  arrayToUrl(variables); 
+             
+        var xmlHttp = new XMLHttpRequest(); 
+        xmlHttp.onreadystatechange = function(){
+            if (xmlHttp.readyState==4 && xmlHttp.status==200){
+                callback(xmlHttp.responseText);
+            }
+        };
+        xmlHttp.open( "POST", http_url+url, true );
+        xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHttp.send(header);
+    }
+
+    var arrayToUrl = function(url){
+        var variableArray = JSON.parse(url);
+        var url = "";
+        console.log('sdfdfdsf');
+        console.log(variableArray);
+        url = Object.getOwnPropertyNames(variableArray)[0]+'='+variableArray[Object.getOwnPropertyNames(variableArray)[0]];
+        for (var i = 1; Object.getOwnPropertyNames(variableArray).length - 1  >= i; i++) {
+            url += '&'+Object.getOwnPropertyNames(variableArray)[i]+'='+variableArray[Object.getOwnPropertyNames(variableArray)[i]];
+        };
+        return url;
     }
 

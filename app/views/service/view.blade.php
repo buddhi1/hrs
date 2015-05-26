@@ -2,20 +2,21 @@
 
 @section('content')
 	<h3>Add a New Service</h3>
-	{{ Form::open(array('url' => 'admin/service/create')) }}
+	<div id="add-service">
+		<!-- <form action="{{url()}}/admin/service/create"> -->
+			<table>
+				<tr>
+					<td><label>Service Name</label></td>
+					<td><input data-bind="value: name" id="service_name" /> </td>
+				</tr>
 
-	<table>
-		<tr>
-			<td>{{ Form::label('service_name', 'Service Name') }}</td>
-			<td>{{ Form::text('name',null, array('required')) }}</td>
-		</tr>
+				<tr>
+					<td colspan = "2" align = "right"><button type="submit" data-bind="click: addService">Add service</button></td>
+				</tr>
 
-		<tr>
-			<td colspan = "2" align = "right">{{ Form::submit('Submit') }}</td>
-		</tr>
-
-	</table>
-	{{ Form::close()}}
+			</table>
+	<!-- 	</form> -->
+	</div>
 
 	@if(Session::has('ser_message_add'))
 
@@ -31,30 +32,25 @@
 
 
 	<h3>All Services</h3>
+		
+	<div  id="saved-services">
+		<div data-bind="foreach: services">	
+			<div>		
+				<label data-bind="text: name"></label>			
+				<button data-bind="click: $parent.removeService">Remove</button>		
+			</div>
+		</div>
+	</div>
 
-	<div width = "500">
-		<table border = "1">
-			<th>Service Name</th>
-			<th>Delete</th>
-		@foreach($services as $service)
-		
-			<tr>
-				<td>{{ $service->name }}</td>
-				<td>
-					{{ Form::open(array('url' => 'admin/service/destroy')) }}
-					{{ Form::hidden('id', $service->id) }}
-					{{ Form::submit('Delete') }}
-					{{ Form::close() }}
-				</td>
-			</tr>
-		
-		@endforeach
-		</table>
 
 	@if(Session::has('ser_message_del'))
 
 	<p class="text-success">{{ Session::get('ser_message_del') }}</p>
 	
 	@endif
-<script type="text/javascript" src="{{url()}}/"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+</script>
+<script type="text/javascript" src="{{url()}}/js/service.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
