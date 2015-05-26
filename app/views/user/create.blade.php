@@ -62,7 +62,16 @@
 
 	ko.applyBindings(userData);
 
-	var cleanJson = function(que) {
+	// var cleanJson = function(que) {
+	// 	//this function remove all the permissions from the userData object
+		
+	// 	var copy = ko.toJS(que);
+
+	// 	delete copy.permissions;
+	// 	return copy;
+	// }
+
+	var cleanJson = function(que, para) {
 		//this function remove all the permissions from the userData object
 		
 		var copy = ko.toJS(que);
@@ -75,12 +84,13 @@
 		//save the user in the user table
 
 		var clean = cleanJson(userData);
+		console.log(clean);
 		var sendData = ko.toJSON(clean);
-		sendRequestToServerPost('/admin/user/create',function(res){
-			if(res === 'success') {
-				window.location = "{{url()}}/admin/user/create";
-			}
-		}, sendData);
+		// sendRequestToServerPost('/admin/user/create',function(res){
+		// 	if(res === 'success') {
+		// 		window.location = "{{url()}}/admin/user/create";
+		// 	}
+		// }, sendData);
 	}
 
 	function sendRequestToServerPost(url, callback, variables) {
