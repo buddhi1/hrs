@@ -31,7 +31,7 @@
 </table>
 
 <script type="text/javascript">
-
+	http_url = '{{url()}}';
 	var permissionArr;
 	var User = function() {
 		// User class is used to bind variables with input fields
@@ -46,8 +46,8 @@
 
 	window.onload = function() {
 		// load the pemission dropbox when the page loads
-
-		sendRequestToServerPost('/admin/user/permissions',function(res) {
+		var foo;
+		sendRequestToServerPost('/admin/user/permissions', foo, function(res) {
 			permissionArr = res;
 			permissionArr = JSON.parse(permissionArr);
 
@@ -62,16 +62,7 @@
 
 	ko.applyBindings(userData);
 
-	// var cleanJson = function(que) {
-	// 	//this function remove all the permissions from the userData object
-		
-	// 	var copy = ko.toJS(que);
-
-	// 	delete copy.permissions;
-	// 	return copy;
-	// }
-
-	var cleanJson = function(que, para) {
+	var cleanJson = function(que) {
 		//this function remove all the permissions from the userData object
 		
 		var copy = ko.toJS(que);
@@ -84,33 +75,13 @@
 		//save the user in the user table
 
 		var clean = cleanJson(userData);
-		console.log(clean);
 		var sendData = ko.toJSON(clean);
-		// sendRequestToServerPost('/admin/user/create',function(res){
-		// 	if(res === 'success') {
-		// 		window.location = "{{url()}}/admin/user/create";
-		// 	}
-		// }, sendData);
+		sendRequestToServerPost('/admin/user/create', sendData, function(res){
+			if(res === 'success') {
+				window.location = "{{url()}}/admin/user/create";
+			}
+		});
 	}
-
-	function sendRequestToServerPost(url, callback, variables) {
-
-		//retriving all the permission groups
-		var headers = "variables="+variables;
-		var xmlhttp=new XMLHttpRequest();
-		
-		xmlhttp.onreadystatechange=function()
-		{
-			if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			{
-	    		callback(xmlhttp.responseText);
-	    	}
-	  	}
-
-		xmlhttp.open("POST","{{url()}}"+url,true);
-		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlhttp.send(headers);
-	}
-
 </script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop

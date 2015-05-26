@@ -19,12 +19,9 @@
 		<td>{{$user->uid}}</td>
 		<td>{{$user->uname}}</td>
 		<td>{{ $user->name }}</td>
-		{{ Form::open(array('url'=>'admin/user/edit')) }}
 		<td>
-			{{Form::hidden('id',$user->uid)}} 
-			{{ Form::submit('Edit') }} 
+			<button onclick="editUser()" id="{{$user->uid}}">Edit</button>
 		</td>
-		{{ Form::close() }}
 		{{ Form::open(array('url'=>'admin/user/destroy')) }}
 		<td> 
 			{{Form::hidden('id',$user->uid)}}
@@ -34,6 +31,21 @@
 	</tr>
 @endforeach	
 </table>	
+<script type="text/javascript">
+	http_url = '{{url()}}';
 
-
+	function editUser() {
+		// this function send the user id of the user to be edited, to the controller
+	
+		var editID = window.event.target.id;
+		var sendData = ko.toJSON({"id": editID});
+		console.log(sendData);
+		sendRequestToServerPost('/admin/user/edit', sendData, function(res){
+			if(res === 'success') {
+				window.location = "{{url()}}/admin/user/index";
+			}
+		});
+	}
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop

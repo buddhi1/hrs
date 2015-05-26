@@ -26,15 +26,14 @@ class UserController extends BaseController {
 
 	public function postCreate(){
 
-		$all_data = json_decode(Input::get('variables'));
-		$uname = $all_data->uname;
-		$password = Hash::make($all_data->password);
-		$permission = $all_data->chosenPermission[0];
+		$uname = Input::get('uname');
+		$password = Hash::make(Input::get('password'));
+		$permission = Input::get('chosenPermission');
 		$permission_id = DB::table('permissions')
 								->where('name', $permission)
 								->pluck('id');
 		
-		$user =DB::table('users')->where('name', Input::get('uname'))->first();
+		$user =DB::table('users')->where('name', $uname)->first();
 
 		if(!$user){
 			$user = new User;
@@ -78,6 +77,8 @@ class UserController extends BaseController {
 	//Views the uder edit form
 
 	public function postEdit(){
+		var_dump('expression');
+		die();
 		return View::make('user.edit')
 			->with('user', User::find(Input::get('id')))
 			->with('permissions', Permission::lists('name', 'id'));
