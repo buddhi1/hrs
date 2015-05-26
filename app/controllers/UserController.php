@@ -9,10 +9,10 @@
 class UserController extends BaseController {
 	
 
-	public function __construct(){
-		$this->beforeFilter('csrf',array('on'=>'post'));
-		// $this->beforeFilter('user_group');
-	}
+	// public function __construct(){
+	// 	$this->beforeFilter('csrf',array('on'=>'post'));
+	// 	// $this->beforeFilter('user_group');
+	// }
 
 	//Views the create user form
 	
@@ -25,22 +25,26 @@ class UserController extends BaseController {
 	//Posts the create form details to database
 
 	public function postCreate(){
+
+		$uname = Input::get('uname');
+		$password = Hash::make(Input::get('password'));
+		$permission = Input::get('chosenPermission');
+		$permission_id = DB::table('permissions')
+								->where('name', $permission)
+								->pluck('id');
 		
-		$user =DB::table('users')->where('name', Input::get('uname'))->first();
+		$user =DB::table('users')->where('name', $uname)->first();
 
 		if(!$user){
 			$user = new User;
-			$user->name = Input::get('uname');
-			$user->password = Hash::make(Input::get('password'));
-			$user->permission_id = Input::get('permission');
+			$user->name = $uname;
+			$user->password = $password;
+			$user->permission_id = $permission_id;
 			$user->save();
-			return Redirect::to('admin/user/create')
-				->with('message', 'A user has been added successfully');
+			return 'success';
 		}else{
-			return Redirect::to('admin/user/create')
-				->with('message', 'The user name already exists. Please enter differernt user name');
+			return 'failure';
 		}
-		
 	}
 
 	//Views the user index page
@@ -73,6 +77,8 @@ class UserController extends BaseController {
 	//Views the uder edit form
 
 	public function postEdit(){
+		var_dump('expression');
+		die();
 		return View::make('user.edit')
 			->with('user', User::find(Input::get('id')))
 			->with('permissions', Permission::lists('name', 'id'));
@@ -98,5 +104,12 @@ class UserController extends BaseController {
 				->with('message', 'Something went wrong. Please try again');
 		}
 	}
+	public function postPermissions() {
 
+		$permission = DB::table('permissions')
+							->select('id', 'name')
+							->get();
+
+		return $permission;
+	}
 }
