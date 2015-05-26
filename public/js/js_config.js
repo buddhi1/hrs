@@ -17,6 +17,7 @@
     }
 
     var arrayToUrl = function(url){
+
         if(url !== undefined) {
 
             var variableArray = JSON.parse(url);
