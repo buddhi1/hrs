@@ -77,15 +77,7 @@
 	var userData = new UserDisplay();
 
 	ko.applyBindings(userData);
-
-	// var cleanJson = function(que) {
-	// 	//this function remove all the permissions from the userData object
-		
-	// 	var copy = ko.toJS(que);
-
-	// 	delete copy.permissions;
-	// 	return copy;
-	// }
+	
 </script>	
 <script type="text/javascript">
 	http_url = '{{url()}}';
@@ -97,7 +89,8 @@
 		var sendData = ko.toJSON({"id": editID});
 		sendRequestToServerPost('/admin/user/edit', sendData, function(res){
 			if(res === 'success') {
-				window.location = "{{url()}}/admin/user/index";
+
+				window.location = "{{url()}}/admin/user/edit";
 			}
 		});
 	}
