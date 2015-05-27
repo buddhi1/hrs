@@ -25,27 +25,17 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			<button onclick="saveUser()">Add User</button>
+			<button onclick="saveCreateUser()">Add User</button>
 		</td>
 	</tr>
 </table>
 
+<script type="text/javascript" src="{{url()}}/js/user.js"></script>
 <script type="text/javascript">
-	http_url = '{{url()}}';
+	var http_url = '{{url()}}';
 	var permissionArr;
-	var User = function() {
-		// User class is used to bind variables with input fields
-
-		var self = this;
-
-		self.uname = ko.observable();
-		self.password = ko.observable();
-		self.permissions = ko.observableArray();
-		self.chosenPermission = ko.observable();
-	}
-
 	window.onload = function() {
-		// load the pemission dropbox when the page loads
+		// load the pemission dropdown when the page loads
 		var foo;
 		sendRequestToServerPost('/admin/user/permissions', foo, function(res) {
 			permissionArr = res;
@@ -53,35 +43,13 @@
 
 			for(per in permissionArr) {
 
-				userData.permissions.push(permissionArr[per]['name']);
+				userDataCreate.permissions.push(permissionArr[per]['name']);
 			}
 		});
 	}
 
-	var userData = new User();
-
-	ko.applyBindings(userData);
-
-	var cleanJson = function(que) {
-		//this function remove all the permissions from the userData object
-		
-		var copy = ko.toJS(que);
-
-		delete copy.permissions;
-		return copy;
-	}
-
-	function saveUser() {
-		//save the user in the user table
-
-		var clean = cleanJson(userData);
-		var sendData = ko.toJSON(clean);
-		sendRequestToServerPost('/admin/user/create', sendData, function(res){
-			if(res === 'success') {
-				window.location = "{{url()}}/admin/user/create";
-			}
-		});
-	}
+	var userDataCreate = new UserCreate();
+	ko.applyBindings(userDataCreate);
 </script>
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
