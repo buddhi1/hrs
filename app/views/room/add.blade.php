@@ -3,29 +3,28 @@
 @section('content')
 
 	<h3>Add a New Room Type</h3>
-	<form action="{{url()}}/admin/room/create">
-	<table>
-		<div id="room-container">
-		<tr>
-			<td><label>Room name</label></td>
-			<td><input required="required" name="name" /></td>
-		</tr>
-
-		<tr>
-			<td><label>No of rooms</label></td>
-			<td><input name="no_of_room" required="required"></td>
-		</tr>
-		<tr>
-			<td colspan = "2" align = "right"><button data-bind="click: add Room">Add new room</button></td>
-		</tr>
+	
+	<div id="room-container">
+		<div>
+			<label>Room name</label>
+			<input data-bind="value: name" type="text" required="required"  />
 		</div>
+		<div>
+			<label>No of rooms</label>
+			<input type="text" data-bind="value: no_of_rooms" required="required">
+		</div>
+		<div>
+			<button data-bind="click: addRoom">Add new room</button>
+		</div>
+	</div>
+	<table>		
 		<tr>
 			<td>
 				<strong>Facilities</strong>
 				<div id="facility-container">
 					<div data-bind="foreach: facilityArray">
 						<div>
-							<input type="checkbox" name="facility[]"  data-bind="value: name" />
+							<input type="checkbox" data-bind="click: toggleCheckbox" />
 							<label data-bind="text: name"></label>
 						</div>
 					</div>
@@ -36,7 +35,7 @@
 				<div id="service-container">
 					<div data-bind="foreach: serviceArray">
 						<div>
-							<input type="checkbox" name="service[]" />
+							<input type="checkbox" data-bind="click: toggleCheckbox" />
 							<label data-bind="text: name"></label>
 						</div>
 					</div>
@@ -44,7 +43,7 @@
 			</td>
 		</tr>
 	</table>
-	</form>
+	
 
 	@if(Session::has('room_message_add'))
 
@@ -57,6 +56,15 @@
 	http_url = '{{url()}}';
 	services = {{$services}};
 	facilities = {{$facilities}};
+
+	window.onload = function(){
+		loadFacilities();
+		loadServices();
+	}
+
+	var savedRooms = new RoomArray();
+
+	ko.applyBindings(savedRooms, document.getElementById('rooms-container'));
 </script>
 <script type="text/javascript" src="{{url()}}/js/room.js"></script>
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
