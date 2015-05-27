@@ -141,11 +141,9 @@ class UserController extends BaseController {
 		if($user){
 			$user->delete();
 
-			return Redirect::to('admin/user/index')
-				->with('message','User Deleted Successfully');
+			return 'success';
 		}
 
-		return Redirect::to('admin/user/index')
-			->with('message','Something went wrong, Please try again');
+		return 'failure';
 	}
 }

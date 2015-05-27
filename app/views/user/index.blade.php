@@ -22,37 +22,15 @@
 			<td data-bind="text: permission_name"></td>
 			<td>
 				<button data-bind="click: editUser">Edit</button> 
-				<button onclick="deleteUser()">Delete</button>
+				<button data-bind="click: deleteUser">Delete</button>
 			</td>
 		</tr>
 	</table>
 </table>
+<script type="text/javascript" src="{{url()}}/js/user.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
-	var permissionArr;
-	var UserDetails = function() {
-		// User class is used to bind variables with display fields
-
-		var self = this;
-
-		self.uid = ko.observable();
-		self.uname = ko.observable();
-		self.permission_id = ko.observable();
-		self.permission_name = ko.observable();
-
-		self.editUser = function() {
-			editUser(self.uid);
-		}
-	}
-
-	var UserDisplay = function() {
-		// display the array of users
-
-		var self = this;
-
-		self.user = ko.observableArray();
-	}
-
+	var userArr;
 	window.onload = function() {
 		// load all the users in the database when the page loads
 		var foo;
@@ -75,25 +53,7 @@
 	}
 
 	var userData = new UserDisplay();
-
 	ko.applyBindings(userData);
-	
-</script>	
-<script type="text/javascript">
-	http_url = '{{url()}}';
-
-	function editUser(uid) {
-		// this function send the user id of the user to be edited, to the controller
-	
-		var editID = uid;
-		var sendData = ko.toJSON({"id": editID});
-		sendRequestToServerPost('/admin/user/edit', sendData, function(res){
-			if(res === 'success') {
-
-				window.location = "{{url()}}/admin/user/edit";
-			}
-		});
-	}
 </script>
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
