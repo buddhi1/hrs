@@ -37,7 +37,6 @@
 		sendRequestToServerPost('/admin/user/index', foo, function(res) {
 			userArr = res;
 			userArr = JSON.parse(userArr);
-			console.log(userArr);
 
 			for(use in userArr) {
 

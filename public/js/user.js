@@ -123,3 +123,24 @@ function saveCreateUser() {
 		}
 	});
 }
+
+/*************** User Login Functions ***************/
+
+var UserLogin = function() {
+	// UserCreate class is used to bind variables with input fields
+
+	var self = this;
+
+	self.name = ko.observable();
+	self.password = ko.observable();
+}
+
+function login() {
+
+	var sendData = ko.toJSON(user);
+	sendRequestToServerPost('/admin/login', sendData, function(res){
+		if(res === 'success') {
+			window.location = http_url+"/admin/user/create";
+		}
+	});
+}
