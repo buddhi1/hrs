@@ -2,24 +2,28 @@
 
 class FacilityController extends BaseController {
 
-	public function __construct() {
-		$this->beforeFilter('csrf', array('on' => 'post'));
+	// public function __construct() {
+	// 	$this->beforeFilter('csrf', array('on' => 'post'));
 
-		$this->beforeFilter('user_group');
+	// 	$this->beforeFilter('user_group');
 
-	}
+	// }
 
 	public function getIndex() {
 		//display all the facilities in the database
 
+		return View::make('facility.view');
+	}
 
-		return View::make('facility.view')
-			->with('facilities', Facility::all());
+	public function postIndex() {
+		//display all the facilities in the database
+		$facilities = Facility::all();
+
+		return $facilities;
 	}
 
 	public function postCreate() {
 		//add a facility to the database
-
 
 		$facility = new Facility();
 
@@ -33,12 +37,10 @@ class FacilityController extends BaseController {
 
 			$facility->save();
 
-			return Redirect::To('admin/facility')
-				->with('fac_message_add','Facility is succesfully added');
+			return 'success';
 		} 
 
-		return Redirect::To('admin/facility')
-			->with('fac_message_err','Facility already exists');
+		return 'failure';
 	}
 
 	public function deleteFacility($table, $name) {
@@ -63,7 +65,6 @@ class FacilityController extends BaseController {
 
 	public function postDestroy(){
 		//delete a facility from the database
-
 		$facility = Facility::find(Input::get('id'));
 
 		// remove the deleted facility from the room types table
@@ -72,8 +73,8 @@ class FacilityController extends BaseController {
 		if($facility) {
 			$facility->delete();
 
-			return Redirect::To('admin/facility')
-				->with('fac_message_del','Facility is successfully deleted');
+			return 'success';
 		}
+		return 'failure';
 	}
 }
