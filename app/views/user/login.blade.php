@@ -15,10 +15,16 @@
 		</ul>
 	</div>
 @endif
-{{ Form::open(array('url'=>'admin/login')) }}
-	{{ Form::text('name','', array('placeholder'=>'user name here')) }}
-	{{ Form::password('password') }}
-	{{ Form::submit('Login') }}
-{{ Form::close() }}
+<input type="text" data-bind="value: name" name="name" placeholder="user name here" required />
+<input type="password" data-bind="value: password" name="password" required>
+<button onclick="login()">Login</button>
+<script type="text/javascript" src="{{url()}}/js/user.js"></script>
+<script type="text/javascript">
+	var http_url = '{{url()}}';
+
+	var user = new UserLogin();
+	ko.applyBindings(user);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 
 @stop
