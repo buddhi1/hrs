@@ -16,7 +16,14 @@ class PermissionController extends BaseController {
 
 	//Views the create Permission form
 	
-	public function getCreate(){
+	public function getCreate() {
+		//show the create page for permissions
+
+		return View::make('permission.create');
+	}
+
+	public function postPermissions(){
+		// send all the permissions for the create page
 
 		$permissions = Schema::getColumnListing('permissions');
 		unset($permissions[0]); //remove permission id
@@ -44,8 +51,7 @@ class PermissionController extends BaseController {
 			$info[$i][1] = $permissions[$i];
 		}
 			
-		return View::make('permission.create')
-			->with('info', $info);
+		return $info;
 	}
 
 	//Posts the create form details to database
@@ -53,10 +59,9 @@ class PermissionController extends BaseController {
 	public function postCreate(){
 
 		$validator = Validator::make(Input::all(), Permission::$rules);
-
 		//validates whether atleast a permission is selected
 		if($validator->passes()){
-			$name = Input::get('name');
+			$name = Input::get('perName');
 			$record = DB::table('permissions')
 				->where('name','=', $name)
 				->get();
@@ -66,23 +71,23 @@ class PermissionController extends BaseController {
 
 				$group = new Permission;
 				$group->name =  $name;
+				var_dump(Input::get('permission'));
+				die();
 				
 				foreach (Input::get('permission') as $value) {
 					$group->$value = 1;
 				}
 				$group->save();
-				return Redirect::to('admin/permission/create')
-					->with('message','New permission group added successfully');
+				return 'success';
 				
 			}
-			return Redirect::to('admin/permission/create')
-				->with('message','Permission group already exists');
+			var_dump('failure');
+			die();
+			return 'failure';
 		}
-
-		return Redirect::to('admin/permission/create')
-			->with('message','Something went wrong')
-			->withErrors($validator)
-			->withInput();
+		var_dump('failure out');
+		die();
+		return 'failure';
 	}
 
 	//Views index page for permissions
