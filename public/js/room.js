@@ -66,7 +66,7 @@ var Room = function(){
 			}
 			newRoom.services(services);
 
-			if(room){
+			if("room" in window){
 				saveEditedRoom();
 			}else{
 				saveRoom();
