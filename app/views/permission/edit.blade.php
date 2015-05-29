@@ -14,35 +14,58 @@
 	@endif
 </div>
 
+Permission Group: <input type="text" data-bind="value: perName" name="groupName" required />
+Permissions:
+<div data-bind="foreach:permission">
+	<input type="checkbox" data-bind="click: toggleState"><span data-bind="text:chkName"></span></br>
+</div>
 
-<table>
-	{{ Form::open(array('url'=>'/admin/permission/update')) }}
-	{{ Form::hidden('id', $record->id) }}
-	<tr>
-		<td> {{ Form::label('name', 'Permission name: ') }} </td>
-		<td> {{ Form::label('name',$record->name,array('required')) }} </td>
-	</tr>
+<script type="text/javascript" src="{{url()}}/js/permission.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	var permissionArr;
+	window.onload = function() {
+		// load permission details on the page load
+		var foo;
 		
-	@foreach($info as $data)
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<?php $i=0; ?>
-				@if($record->$data[1] == '1')
-				<?php $i=1 ?>
-					{{ Form::checkbox('permission[]', $data[1], array('required')) }}
-				@endif
-				@if($i ==0 )
-					{{ Form::checkbox('permission[]', $data[1]) }}
-				@endif
-				{{ $data[0] }}
-				<br />
-			</td>
-		</tr>
-	@endforeach
-	<tr>
-		<td colspan="2" align="center"> {{ Form::submit('Add Permission group') }} </td>
-	</tr>
-	{{ Form::close() }}
-</table>
+		sendRequestToServerPost('/admin/permission/showedit', foo, function(res) {
+
+			if(res) {
+
+				var perArr = res;
+				perArr = JSON.parse(perArr);
+
+				permissionData.groupID(perArr[0].id);
+				permissionData.perName(perArr[0].name);
+				for(per in perArr[0]) {
+					if(per === 'id') {
+						
+					} else if(per === 'name') {
+
+					} else if(per === 'created_at') {
+
+					} else if(per === 'updated_at') {
+
+					}else {
+						var permission = new Permission();
+						permission.chkName(per);
+						permission.state(perArr[0][per]);
+						permissionData.permission.push(permission);
+					}
+				}
+				
+			// 	userDataEdit.uname(perArr[0].uname);
+			// 	userDataEdit.userID(perArr[0].uid);
+			// 	userDataEdit.chosenPermission.push(perArr[0].name);
+			// } else {
+
+				// window.location = "{{url()}}/admin/permission/index";
+			}
+		});
+	}
+	
+	var permissionData = new PermissionDisplay();
+	ko.applyBindings(permissionData);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop

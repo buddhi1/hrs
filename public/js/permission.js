@@ -13,11 +13,54 @@ var Permission = function() {
 		self.state(!self.state());
 		return true;
 	};
-	self.deletePer = function() {
-		deletePermission(self.id);
-	};
+}
+
+var PermissionIndex = function() {
+	var self = this;
+
+	self.id = ko.observable();
+	self.name = ko.observable();
+	self.create_user = ko.observable();
+	self.index_user = ko.observable();
+	self.destroy_user = ko.observable();
+	self.edit_user = ko.observable();
+	self.create_service = ko.observable();
+	self.index_service = ko.observable();
+	self.destroy_service = ko.observable();
+	self.create_room = ko.observable();
+	self.index_room = ko.observable();
+	self.destroy_room = ko.observable();
+	self.edit_room = ko.observable();
+	self.create_promotion = ko.observable();
+	self.index_promotion = ko.observable();
+	self.destroy_promotion = ko.observable();
+	self.edit_promotion = ko.observable();
+	self.create_promo = ko.observable();
+	self.index_promo = ko.observable();
+	self.destroy_promo = ko.observable();
+	self.edit_promo = ko.observable();
+	self.create_permission = ko.observable();
+	self.index_permission = ko.observable();
+	self.destroy_permission = ko.observable();
+	self.edit_permission = ko.observable();
+	self.create_facility = ko.observable();
+	self.index_facility = ko.observable();
+	self.destroy_facility = ko.observable();
+	self.create_checkin = ko.observable();
+	self.index_checkin = ko.observable();
+	self.destroy_checkin = ko.observable();
+	self.edit_checkin = ko.observable();
+	self.create_calendar = ko.observable();
+	self.index_calendar = ko.observable();
+	self.destroy_calendar = ko.observable();
+	self.edit_calendar = ko.observable();
+
 	self.editPer = function() {
 		editPermission(self.id);
+	};
+
+	self.deletePer = function() {
+		deletePermission(self.id);
 	};
 }
 

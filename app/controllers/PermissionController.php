@@ -140,38 +140,89 @@ class PermissionController extends BaseController {
 
 	}
 
-	//Views the edit page for the selected permission group
 	public function postEdit(){
+		// put the edit id to a session and redirect edit page
 
-		$permissions = Schema::getColumnListing('permissions');
-		unset($permissions[0]); //remove permission id
-		unset($permissions[1]); //remove permission name
-		unset($permissions[sizeof($permissions)]); //remove permission created at
-		unset($permissions[sizeof($permissions)+2]); //remove permission updated at
-		$permissions = array_values($permissions); //reindex array
-		
-		foreach ($permissions as  $value) {
-			$names[] = explode("_",$value);
-			
-		}
-		
-		foreach ($names as $name) {
-			
-			if (sizeof($name) > 1) {
-				$titles[] = ucfirst($name[1]).' '.$name[0];
+		Session::put('permission_edit_id', Input::get('id'));
 
+		return 'success';
+	}
+
+	public function getEdit(){
+		// show the edit page of a user
+
+		return View::make('permission.edit');
+	}
+
+	public function postShowedit() {
+		// this function runs on load of the edit page and return the details of the user who is in the session
+
+		if(Session::has('permission_edit_id')) {
+			$permissions = Schema::getColumnListing('permissions');
+			unset($permissions[0]); //remove permission id
+			unset($permissions[1]); //remove permission name
+			unset($permissions[sizeof($permissions)]); //remove permission created at
+			unset($permissions[sizeof($permissions)+2]); //remove permission updated at
+			$permissions = array_values($permissions); //reindex array
+			
+			foreach ($permissions as  $value) {
+				$names[] = explode("_",$value);
+				
 			}
-			  
-		}	
-		for ($i=0; $i < sizeof($permissions); $i++) { 
+			
+			foreach ($names as $name) {
+				
+				if (sizeof($name) > 1) {
+					$titles[] = ucfirst($name[1]).' '.$name[0];
+
+				}
+				  
+			}	
+			for ($i=0; $i < sizeof($permissions); $i++) { 
 				$info[$i][0] = $titles[$i];
 				$info[$i][1] = $permissions[$i];
-			}	
+			}
 
-		return View::make('permission.edit')
-			->with('record', Permission::find(Input::get('id')))
-			->with('info', $info);
+			$data = array();
+			$data[0] = Permission::find(Session::get('permission_edit_id'));
+			$data[1] = $info;
+
+			return $data;
+		}	
 	}
+
+	//Views the edit page for the selected permission group
+	// public function postEdit(){
+
+	// 	$permissions = Schema::getColumnListing('permissions');
+	// 	unset($permissions[0]); //remove permission id
+	// 	unset($permissions[1]); //remove permission name
+	// 	unset($permissions[sizeof($permissions)]); //remove permission created at
+	// 	unset($permissions[sizeof($permissions)+2]); //remove permission updated at
+	// 	$permissions = array_values($permissions); //reindex array
+		
+	// 	foreach ($permissions as  $value) {
+	// 		$names[] = explode("_",$value);
+			
+	// 	}
+		
+	// 	foreach ($names as $name) {
+			
+	// 		if (sizeof($name) > 1) {
+	// 			$titles[] = ucfirst($name[1]).' '.$name[0];
+
+	// 		}
+			  
+	// 	}	
+	// 	for ($i=0; $i < sizeof($permissions); $i++) { 
+	// 			$info[$i][0] = $titles[$i];
+	// 			$info[$i][1] = $permissions[$i];
+	// 		}	
+
+	// 	return View::make('permission.edit')
+	// 		->with('record', Permission::find(Input::get('id')))
+	// 		->with('info', $info);
+	// }
 
 	//Update operation for the selected permission group
 	public function postUpdate(){
