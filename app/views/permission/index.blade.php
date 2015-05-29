@@ -22,6 +22,40 @@
 	<tr>
 		<td data-bind="text: id"></td>
 		<td data-bind="text: name"></td>
+		<td data-bind="text: create_user"></td>
+		<td data-bind="text: index_user"></td>
+		<td data-bind="text: destroy_user"></td>
+		<td data-bind="text: edit_user"></td>
+		<td data-bind="text: create_service"></td>
+		<td data-bind="text: index_service"></td>
+		<td data-bind="text: destroy_service"></td>
+		<td data-bind="text: create_room"></td>
+		<td data-bind="text: index_room"></td>
+		<td data-bind="text: destroy_room"></td>
+		<td data-bind="text: edit_room"></td>
+		<td data-bind="text: create_promotion"></td>
+		<td data-bind="text: index_promotion"></td>
+		<td data-bind="text: destroy_promotion"></td>
+		<td data-bind="text: edit_promotion"></td>
+		<td data-bind="text: create_promo"></td>
+		<td data-bind="text: index_promo"></td>
+		<td data-bind="text: destroy_promo"></td>
+		<td data-bind="text: edit_promo"></td>
+		<td data-bind="text: create_permission"></td>
+		<td data-bind="text: index_permission"></td>
+		<td data-bind="text: destroy_permission"></td>
+		<td data-bind="text: edit_permission"></td>
+		<td data-bind="text: create_facility"></td>
+		<td data-bind="text: index_facility"></td>
+		<td data-bind="text: destroy_facility"></td>
+		<td data-bind="text: create_checkin"></td>
+		<td data-bind="text: index_checkin"></td>
+		<td data-bind="text: destroy_checkin"></td>
+		<td data-bind="text: edit_checkin"></td>
+		<td data-bind="text: create_calendar"></td>
+		<td data-bind="text: index_calendar"></td>
+		<td data-bind="text: destroy_calendar"></td>
+		<td data-bind="text: edit_calendar"></td>
 		<td>
 			<button data-bind="click: editPer">Edit</button> 
 			<button data-bind="click: deletePer">Delete</button>
@@ -42,9 +76,12 @@
 
 			for(per in permissionArr) {
 
-				permission = new Permission();
-				permission.id = permissionArr[per].id;
-				permission.name = permissionArr[per].name;
+				permission = new PermissionIndex();
+				for(var col in permissionArr[per]) {
+					if (permission.hasOwnProperty(col)) {
+						permission[col](permissionArr[per][col]);
+					}
+				}
 
 				allPermissions.permission.push(permission);
 			}

@@ -16,7 +16,6 @@
 
 </div>
 <table>
-	<!-- {{ Form::open(array('url'=>'/admin/permission/create')) }} -->
 	<tr>
 		<td>Permission name</td>
 		<td><input type="text" data-bind="value: perName" name="name"  required /></td>
