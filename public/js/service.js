@@ -28,12 +28,6 @@ var ServiceArray = function(){
 
 }
 
-var newService = new Service();
-var newServices = new ServiceArray();
-
-ko.applyBindings(newService, document.getElementById('add-service'));
-ko.applyBindings(newServices, document.getElementById('saved-services'));
-
 
 // ------------------------- service controller functions -------------------------
 

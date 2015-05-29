@@ -5,44 +5,27 @@
 	<h3>All Rooms</h3>
 
 	<table border = "1">
-		<th>Room Name</th>
-		<th>Room Facilities</th>
-		<th>Room Services</th>
-		<th>No of Rooms</th>
-		<th>Edit</th>
-		<th>Delete</th>
-	@foreach($rooms as $room)
-	
 		<tr>
-			<td>{{ $room->name }}</td>
-			<?php if(json_decode($room->facilities) !== null) { ?>
-				<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
-
-				<?php }else { echo "<td></td>";} ?>
-			<?php if(json_decode($room->services) !== null) { ?>
-				<td>{{ implode(", ", json_decode($room->services)) }}</td>
-
-				<?php }else { echo "<td></td>";} ?>
-			<!--<td>{{ implode(", ", json_decode($room->facilities)) }}</td>
-			<td>{{ implode(", ", json_decode($room->services)) }}</td>-->
-			<td>{{ $room->no_of_rooms }}</td>
-			<td>
-				{{ Form::open(array('url' => 'admin/room/edit')) }}
-				{{ Form::hidden('id', $room->id) }}
-				{{ Form::submit('Edit') }}
-				{{ Form::close() }}
-			</td>
-			<td>
-				{{ Form::open(array('url' => 'admin/room/destroy')) }}
-				{{ Form::hidden('id', $room->id) }}
-				{{ Form::submit('Delete') }}
-				{{ Form::close() }}
-			</td>
+			<th>Room Name</th>
+			<th>Room Facilities</th>
+			<th>Room Services</th>
+			<th>No of Rooms</th>
+			<th>Edit</th>
+			<th>Delete</th>
 		</tr>
 	
-	@endforeach
 	</table>
-
+	<div id="rooms-container" data-bind="foreach: roomArray">
+		<div>
+			<label data-bind="text: name"></label>
+			<input type="hidden" data-bind="text: id" id="room_id">
+			<label data-bind="text: facilities"></label>
+			<label data-bind="text: services"></label>
+			<label data-bind="text: no_of_rooms"></label>
+			<button data-bind="click: $parent.loadEditSavedRoom">Edit</button>
+			<button data-bind="click: ">Delete</button>
+		</div>
+	</div>
 	@if(Session::has('room_message_del'))
 
 		<p>{{ Session::get('room_message_del') }}</p>
@@ -54,5 +37,21 @@
 		<p>{{ Session::get('room_message_add') }}</p>
 	
 	@endif
+
+<script type="text/javascript" src="{{url()}}/js/room.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	rooms = {{$rooms}};
+	
+
+	window.onload = function(){		
+		loadRooms();
+	}
+	
+	var savedRooms = new RoomArray();
+
+	ko.applyBindings(savedRooms, document.getElementById('rooms-container'));
+</script>
 
 @stop
