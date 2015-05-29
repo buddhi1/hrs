@@ -9,10 +9,10 @@
 class PermissionController extends BaseController {
 	
 
-	public function __construct(){
-		$this->beforeFilter('csrf',array('on'=>'post'));
-		$this->beforeFilter('user_group');
-	}
+	// public function __construct(){
+	// 	$this->beforeFilter('csrf',array('on'=>'post'));
+	// 	$this->beforeFilter('user_group');
+	// }
 
 	//Views the create Permission form
 	
@@ -25,7 +25,7 @@ class PermissionController extends BaseController {
 		unset($permissions[sizeof($permissions)+2]); //remove permission updated at
 		$permissions = array_values($permissions); //reindex array
 		
-		foreach ($permissions as  $value) {
+		foreach ($permissions as $value) {
 			$names[] = explode("_",$value);
 			
 		}
@@ -37,11 +37,12 @@ class PermissionController extends BaseController {
 
 			}
 			  
-		}	
+		}
+		
 		for ($i=0; $i < sizeof($permissions); $i++) { 
-				$info[$i][0] = $titles[$i];
-				$info[$i][1] = $permissions[$i];
-			}	
+			$info[$i][0] = $titles[$i];
+			$info[$i][1] = $permissions[$i];
+		}
 			
 		return View::make('permission.create')
 			->with('info', $info);
