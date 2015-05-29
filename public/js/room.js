@@ -41,6 +41,7 @@ var Room = function(){
 
 	this.name = ko.observable();
 	this.no_of_rooms = ko.observable();
+	this.id = ko.observable();
 	this.facilities = ko.observableArray();
 	this.services = ko.observableArray();
 
@@ -64,7 +65,13 @@ var Room = function(){
 				}
 			}
 			newRoom.services(services);
-			saveRoom();
+
+			if(room){
+				saveEditedRoom();
+			}else{
+				saveRoom();
+			}
+			
 		}else{
 
 		}
@@ -76,15 +83,24 @@ var RoomArray = function(){
 	var self = this;
 
 	this.roomArray = ko.observableArray();
+
+	this.loadEditSavedRoom = function(){
+		
+		var url = '/admin/room/edit';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/room/edit"
+			}
+		});
+	}
 }
-
-var allFacilities = new FacilityArray();
-var allServices = new ServiceArray();
-var newRoom = new Room();
-
-ko.applyBindings(newRoom, document.getElementById('room-container'));
-ko.applyBindings(allServices, document.getElementById('service-container'));
-ko.applyBindings(allFacilities, document.getElementById('facility-container'));
 
 
 // ------------------------- service controller functions -------------------------
@@ -94,7 +110,15 @@ var loadFacilities = function(){
 	for(i=0; i < facilities.length; i++){
 		var facility = new Facility();
 		facility.name(facilities[i].name); 
-		facility.state(false);		
+		facility.state(false);
+		if("room" in window){
+			var savedFacilities = JSON.parse(room.facilities);		
+			for(j=0; j<savedFacilities.length; j++){				
+				if(facility.name() == savedFacilities[j]){
+					facility.state(true);
+				}
+			}			
+		}	
 		allFacilities.facilityArray.push(facility);
 	}
 
@@ -104,13 +128,49 @@ var loadServices = function(){
 	for(i=0; i < services.length; i++){
 		var service = new Service();
 		service.name(services[i].name); 
-		service.state(false);		
+		service.state(false);
+		if("room" in window){
+			var savedServices = JSON.parse(room.services);		
+			for(j=0; j<savedServices.length; j++){
+				if(service.name() == savedServices[j]){
+					service.state(true);
+				}
+			}	
+		}		
 		allServices.serviceArray.push(service);
 	}
 }
 
 var loadRooms = function(){
+	for(i=0; i<rooms.length; i++){
+			var roomFacilities = new FacilityArray();
+			var savedFacilities = JSON.parse(rooms[i].facilities);
+			
+			for(j=0; j<savedFacilities.length; j++){
+				roomFacilities.facilityArray.push(savedFacilities[j]);
+			}
 
+			var roomServices = new ServiceArray();
+			var savedServices = JSON.parse(rooms[i].services);
+			
+			for(k=0; k<savedServices.length; k++){
+				roomServices.serviceArray.push(savedServices[k]);
+			}
+			
+			var saveRoom = new Room();
+			saveRoom.name(rooms[i].name);
+			saveRoom.no_of_rooms(rooms[i].no_of_rooms);
+			saveRoom.id(rooms[i].id);
+			saveRoom.facilities(roomFacilities.facilityArray());
+			saveRoom.services(roomServices.serviceArray());
+			savedRooms.roomArray.push(saveRoom);
+		}
+}
+
+var loadRoom = function(){	
+	newRoom.name(room.name);
+	newRoom.no_of_rooms(room.no_of_rooms);
+	newRoom.id(room.id);
 }
 
 var saveRoom = function(){
@@ -129,6 +189,27 @@ var saveRoom = function(){
 			return 1;
 		}else{
 			newServices.services.pop();
+			alert('Something went wrong');
+		}
+	});
+	
+}
+
+var saveEditedRoom = function(){
+	var result=-1;
+	var url = '/admin/room/update';
+	var variables = ko.toJSON(newRoom);
+
+	var callback = function(res){
+		return res;	
+	}
+
+	sendRequestToServerPost(url,variables,function(res){		
+		if(res ==1 ){
+			alert('The Room edited successfully');
+			window.location = http_url+"/admin/room";
+			return 1;
+		}else{			
 			alert('Something went wrong');
 		}
 	});

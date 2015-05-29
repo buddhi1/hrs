@@ -20,10 +20,11 @@
         var url = "";
        
         url = Object.getOwnPropertyNames(variableArray)[0]+'='+variableArray[Object.getOwnPropertyNames(variableArray)[0]];
-        console.log(variableArray);
+      
         for (var i = 1; Object.getOwnPropertyNames(variableArray).length - 1  >= i; i++) {
             url += '&'+Object.getOwnPropertyNames(variableArray)[i]+'='+variableArray[Object.getOwnPropertyNames(variableArray)[i]];
         };
         return url;
     }
 
+   

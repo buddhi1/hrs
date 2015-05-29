@@ -48,36 +48,49 @@ class RoomController extends BaseController {
 		}
 	}
 
-	public function postEdit() {
-	// display the edit room type form
+	//
+	public function postEdit(){
+		$room = RoomType::find(Input::get('id'));
+		
+			if($room){
+				Session::put('room', $room);
+				return 1;
+			}
+	}
+
+	public function getEdit() {
+	// display the edit room type form	
 		
 		return View::make('room.edit')
-			->with('rooms', RoomType::find(Input::get('id')))
+			->with('room', Input::get('value'))
 			->with('facilities', Facility::all())
-			->with('services', Service::all());
+			->with('services', Service::all());				
+		
 	}
 
 	public function postUpdate() {
 		// update an existing room type
+						
+		$room = RoomType::find(Session::get('room')->id);
+		//return Session::get('room')->services;
+		// $room->name = Session::get('room')->name;
+		// $room->facilities = json_encode(Session::get('room')->facilities);
+		// $room->services = json_encode(Session::get('room')->services);
+		// $room->no_of_rooms = Session::get('room')->no_of_rooms;
+		// return $room;
+		// $room->save();
 
-		$validator = Validator::make(Input::all(), RoomType::$rules);
+		// Session::flush();
+		// return 1;
 
-		if($validator->passes()) {
-			$room = RoomType::find(Input::get('id'));
+		$room->name = Input::get('name');
+		$room->facilities = json_encode(explode(',', Input::get('facilities')));
+		$room->services = json_encode(explode(',', Input::get('services')));
+		$room->no_of_rooms = Input::get('no_of_rooms');
 
-			$room->name = Input::get('name');
-			$room->facilities = json_encode(Input::get('facility'));
-			$room->services = json_encode(Input::get('service'));
-			$room->no_of_rooms = Input::get('no_of_room');
-
-			$room->save();
-
-			return Redirect::to('admin/room')
-			->with('room_message_add','Room is succesfully updated');
-		}
-
-		return Redirect::to('admin/room')
-			->with('room_message_add','Services or Facilites cannot be empty')
-			->withErrors($validator);
+		$room->save();
+		Session::forget('room');
+		return 1;
+		
 	}
 }

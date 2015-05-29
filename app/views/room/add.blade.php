@@ -51,7 +51,8 @@
 		
 	@endif
 
-
+<script type="text/javascript" src="{{url()}}/js/room.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
 	services = {{$services}};
@@ -62,10 +63,13 @@
 		loadServices();
 	}
 
-	var savedRooms = new RoomArray();
+	var allFacilities = new FacilityArray();
+	var allServices = new ServiceArray();
+	var newRoom = new Room();
 
-	ko.applyBindings(savedRooms, document.getElementById('rooms-container'));
+	ko.applyBindings(newRoom, document.getElementById('room-container'));
+	ko.applyBindings(allServices, document.getElementById('service-container'));
+	ko.applyBindings(allFacilities, document.getElementById('facility-container'));
 </script>
-<script type="text/javascript" src="{{url()}}/js/room.js"></script>
-<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+
 @stop

@@ -18,10 +18,11 @@
 	<div id="rooms-container" data-bind="foreach: roomArray">
 		<div>
 			<label data-bind="text: name"></label>
+			<input type="hidden" data-bind="text: id" id="room_id">
 			<label data-bind="text: facilities"></label>
 			<label data-bind="text: services"></label>
 			<label data-bind="text: no_of_rooms"></label>
-			<button data-bind="click: ">Edit</button>
+			<button data-bind="click: $parent.loadEditSavedRoom">Edit</button>
 			<button data-bind="click: ">Delete</button>
 		</div>
 	</div>
@@ -37,22 +38,20 @@
 	
 	@endif
 
-
+<script type="text/javascript" src="{{url()}}/js/room.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
 	rooms = {{$rooms}};
 	
 
-	window.onload = function(){
-		
+	window.onload = function(){		
+		loadRooms();
 	}
+	
+	var savedRooms = new RoomArray();
 
-	var newService = new Service();
-	var newServices = new ServiceArray();
-
-	ko.applyBindings(newService, document.getElementById('add-service'));
-	ko.applyBindings(newServices, document.getElementById('saved-services'));
+	ko.applyBindings(savedRooms, document.getElementById('rooms-container'));
 </script>
-<script type="text/javascript" src="{{url()}}/js/room.js"></script>
-<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+
 @stop
