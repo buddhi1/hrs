@@ -18,8 +18,8 @@
 
     var arrayToUrl = function(url){
 
-        if(url !== undefined) {
-
+    if(url !== undefined) {
+        
             var variableArray = JSON.parse(url);
             var url = "";
             url = Object.getOwnPropertyNames(variableArray)[0]+'='+variableArray[Object.getOwnPropertyNames(variableArray)[0]];
