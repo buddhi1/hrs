@@ -58,10 +58,14 @@ class PermissionController extends BaseController {
 
 	public function postCreate(){
 
-		$validator = Validator::make(Input::all(), Permission::$rules);
+		$permission_obj = json_decode(Input::get('variables'));
+		
+
+		$validator = Validator::make(array('permission' => $permission_obj->permission), Permission::$rules);
+
 		//validates whether atleast a permission is selected
 		if($validator->passes()){
-			$name = Input::get('perName');
+			$name = $permission_obj->perName;
 			$record = DB::table('permissions')
 				->where('name','=', $name)
 				->get();
@@ -71,27 +75,26 @@ class PermissionController extends BaseController {
 
 				$group = new Permission;
 				$group->name =  $name;
-				var_dump(Input::get('permission'));
-				die();
 				
-				foreach (Input::get('permission') as $value) {
-					$group->$value = 1;
+				foreach ($permission_obj->permission as $value) {
+					$col_value = $value->name;
+					$group->$col_value = 1;
 				}
 				$group->save();
 				return 'success';
 				
 			}
-			var_dump('failure');
-			die();
 			return 'failure';
 		}
-		var_dump('failure out');
-		die();
 		return 'failure';
 	}
 
+	public function getIndex() {
+		return View::make('permission.index');
+	}
 	//Views index page for permissions
-	public function getIndex(){
+	public function postIndex(){
+		
 
 		$permissions = Schema::getColumnListing('permissions');
 		unset($permissions[0]); //remove permission id
@@ -114,13 +117,14 @@ class PermissionController extends BaseController {
 			  
 		}	
 		for ($i=0; $i < sizeof($permissions); $i++) { 
-				$info[$i][0] = $titles[$i];
-				$info[$i][1] = $permissions[$i];
-			}	
-
-		return View::make('permission.index')
-			->with('groups', Permission::all())
-			->with('info', $info);
+			$info[$i][0] = $titles[$i];
+			$info[$i][1] = $permissions[$i];
+		}
+		// $per = array();
+		$per = Permission::all();
+		// $per[1] = $info;
+		
+		return $per;
 	}
 
 	//Deletes the selected permission group
