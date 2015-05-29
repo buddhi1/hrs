@@ -16,24 +16,41 @@
 
 </div>
 <table>
-	{{ Form::open(array('url'=>'/admin/permission/create')) }}
+	<!-- {{ Form::open(array('url'=>'/admin/permission/create')) }} -->
 	<tr>
-		<td> {{ Form::label('name', 'Permission name') }} </td>
-		<td> {{ Form::text('name','',array('required')) }} </td>
-	</tr>		
-	@foreach($info as $data)
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				{{ Form::checkbox('permission[]', $data[1]) }}
-				{{ $data[0] }}
-				<br />
-			</td>
-		</tr>
-	@endforeach
-	<tr>
-		<td colspan="2" align="center"> {{ Form::submit('Add Permission group') }} </td>
+		<td>Permission name</td>
+		<td><input type="text" data-bind="value: perName" name="name"  required /></td>
 	</tr>
-	{{ Form::close() }}
 </table>
+<div data-bind="foreach:permission">
+	<input type="checkbox" data-bind="click: toggleState"><span data-bind="text:chkName"></span></br>
+</div>
+</br>
+<button onclick="savePermission()">Add Permission Grooup</button>
+<script type="text/javascript" src="{{url()}}/js/permission.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	var permissionArr;
+	window.onload = function() {
+		// load all the users in the database when the page loads
+		var foo;
+		sendRequestToServerPost('/admin/permission/permissions', foo, function(res) {
+			permissionArr = res;
+			permissionArr = JSON.parse(permissionArr);
+
+			for(per in permissionArr) {
+
+				var permission = new Permission();
+				permission.chkName = permissionArr[per][0];
+				permission.name = permissionArr[per][1];
+
+				allPermissions.permission.push(permission);
+			}
+		});
+	}
+	
+	var allPermissions = new PermissionDisplay();
+	ko.applyBindings(allPermissions);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
