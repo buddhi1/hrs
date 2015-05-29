@@ -11,44 +11,49 @@
 				<li> {{ $error }} </li>			
 		@endforeach
 	</ul>
-	@endif
+@endif
 <table border="1">
-	</tr>
 	<tr>
 		<th>Permission id</th>
 		<th>Permission group name</th>
-
-		@foreach($info as $data)
-			<th>{{ $data[0] }}</th>
-		@endforeach
-		<th colspan="2">Edit / Delete</th>
 	</tr>
-	@foreach($groups as $group)
+</table>
+<table data-bind="foreach: permission">
 	<tr>
-		<td>{{$group->id}}</td>
-		<td>{{$group->name}}</td>
-		@foreach($info as $data)
-			@if($group->$data[1] == '1')
-				<td>{{ 'Yes' }}</td>
-			@else
-				<td>{{ 'No' }}</td>
-			@endif
-		@endforeach
-		{{ Form::open(array('url'=>'admin/permission/edit')) }}
+		<td data-bind="text: id"></td>
+		<td data-bind="text: name"></td>
 		<td>
-			{{Form::hidden('id',$group->id)}} 
-			{{ Form::submit('Edit') }} 
+			<button data-bind="click: editPer">Edit</button> 
+			<button data-bind="click: deletePer">Delete</button>
 		</td>
-		{{ Form::close() }}
-		{{ Form::open(array('url'=>'admin/permission/destroy')) }}
-		<td> 
-			{{Form::hidden('id',$group->id)}}
-			{{ Form::submit('Delete') }}
-		 </td>
-		{{ Form::close() }}
 	</tr>
-@endforeach	
 </table>	
+<script type="text/javascript" src="{{url()}}/js/permission.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	var permissionArr;
+	window.onload = function() {
+		// load all the permissions in the database when the page loads
+		var foo;
+		sendRequestToServerPost('/admin/permission/index', foo, function(res) {
+			permissionArr = res;
+			permissionArr = JSON.parse(permissionArr);
+			console.log(permissionArr);
 
+			for(per in permissionArr) {
+
+				permission = new Permission();
+				permission.id = permissionArr[per].id;
+				permission.name = permissionArr[per].name;
+
+				allPermissions.permission.push(permission);
+			}
+		});
+	}
+
+	var allPermissions = new PermissionDisplay();
+	ko.applyBindings(allPermissions);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 
 @stop
