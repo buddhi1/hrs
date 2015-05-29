@@ -1,4 +1,4 @@
-// ------------------------- Data binding for service view -------------------------
+// ------------------------- Data binding for room CRUD -------------------------
 
 var Facility = function(){
 	var self = this;
@@ -103,7 +103,7 @@ var RoomArray = function(){
 }
 
 
-// ------------------------- service controller functions -------------------------
+// ------------------------- room controller functions -------------------------
 
 var loadFacilities = function(){
 
@@ -188,7 +188,6 @@ var saveRoom = function(){
 			window.location = http_url+"/admin/room";
 			return 1;
 		}else{
-			newServices.services.pop();
 			alert('Something went wrong');
 		}
 	});

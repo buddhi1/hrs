@@ -18,69 +18,59 @@ class PromotionController extends BaseController{
 	public function getCreate(){
 		return View::make('promotion.create')
 			->with('services',Service::all())
-			->with('roomTypes', RoomType::lists('name', 'id'));
+			->with('roomTypes', RoomType::all(['id', 'name']));
 	}
 
 	// add a new promotion to the database
-	public function postCreate() {
-	
-
-		$validator = Validator::make(Input::all(), Promotion::$rules);
-
-		if($validator->passes()) {
-
-			//read from date
-			$date = Input::get('from');
-			$price = Input::get('price');
-			$stays = Input::get('stays');
-			$room_type_id = Input::get('room_id');
-			$rooms = Input::get('rooms');
-
-			//validate the availability for the same promotion
-			$record = DB::table('promotion_calenders')
-				->where('room_type_id','=', $room_type_id)
-				->where('start_date','=', $date)
-				->where('services','=', json_encode(Input::get('service')))
-				->get();
-
-			if(!$record){
-				//convert from date to dateTime format
-				$from = new DateTime($date );
-				//convert to date to dateTime format
-				$to = new DateTime(Input::get('to'));
-
-				//finds the days between from and to dates
-				$days = $to->diff($from)->format("%a");		
-				
-				//loop inserts new rows for all days between from and to dates
-				for ($i=0; $i <= $days; $i++) { 
-					$promotion = New Promotion();
-
-					$promotion->start_date = $date;
-					$promotion->end_date = $to;
-					$promotion->price = $price;
-					$promotion->days = $stays;
-					$promotion->room_type_id = $room_type_id;
-					$promotion->no_of_rooms = $rooms;
-					$promotion->services = json_encode(Input::get('service'));
-					$promotion->save();
-					//get next date
-					$date = date('Y-m-d', strtotime($date.' +1 day'));	
-				}	
-
-				return Redirect::to('admin/promotion/create')
-					->with('message','Promotion has been added to calendar succesfully');
-			}
+	public function postCreate() {	
 		
-			return Redirect::to('admin/promotion/create')
-				->with('message','The promotion already exists');
-			
-		}
+		//read from date
+		$date = Input::get('from');
+		$price = Input::get('price');
+		$stays = Input::get('stays');
+		$room_type_id = Input::get('room_id');
+		$rooms = Input::get('rooms');
+		$discount = Input::get('discount');
 
-		return Redirect::to('admin/promotion/create')
-			->with('message','Something went wrong.Please try again')
-			->withErrors($validator)
-			->withInput();
+		//validate the availability for the same promotion
+		$record = DB::table('promotion_calenders')
+			->where('room_type_id','=', $room_type_id)
+			->where('start_date','=', $date)
+			->where('services','=', json_encode(explode(',', Input::get('services'))))
+			->get();
+
+		if(!$record){
+			//convert from date to dateTime format
+			$from = new DateTime($date );
+			//convert to date to dateTime format
+			$to = new DateTime(Input::get('to'));
+
+			//finds the days between from and to dates
+			$days = $to->diff($from)->format("%a");		
+			
+			//loop inserts new rows for all days between from and to dates
+			for ($i=0; $i <= $days; $i++) { 
+				$promotion = New Promotion();
+
+				$promotion->start_date = $date;
+				$promotion->end_date = $to;
+				$promotion->price = $price;
+				$promotion->discount_rate = $discount;
+				$promotion->days = $stays;
+				$promotion->room_type_id = $room_type_id;
+				$promotion->no_of_rooms = $rooms;
+				$promotion->services = json_encode(explode(',', Input::get('services')));;
+				$promotion->save();
+				//get next date
+				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+			}	
+
+			return 1;
+		}
+	
+		return 2;
+			
+		
 	}
 
 	//Views index page of promotion calendar

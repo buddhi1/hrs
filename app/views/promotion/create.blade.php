@@ -3,73 +3,118 @@
 @section('content')
 
 <h2>Promotion calendar</h2>
-<table>
-	{{ Form::open(array('url'=>'/admin/promotion/create')) }}
-	<tr>
-		<td clospan="2"> 
-			@if(Session::has('message'))
-				<h3>{{ Session::get('message') }}</h3>
-			@endif
-		 </td>
-	</tr>
 
-	<tr>
-		<td> {{ Form::label('lbluname', 'Room type') }} </td>
-		<td> {{ Form::select('room_id', $roomTypes, null) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblservice', 'Service') }} </td>
-		<td> 
-			@foreach($services as $service)
-				{{ Form::checkbox('service[]', $service->name) }}
-				{{ $service->name }}
-				<br>
-			@endforeach
-
-		</td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblfrom', 'Start date') }} </td>
-		<td>
-			{{ Form::text('from', '', array('required', 'id'=>'from')) }} 
-			{{ Form::label('lblend', 'End date') }}
-		 	{{ Form::text('to', '', array('required', 'id'=>'to')) }} 
-		</td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lbldiscount', 'Number of stays') }} </td>
-		<td> {{ Form::text('stays', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblrooms', 'Number of rooms booked') }} </td>
-		<td> {{ Form::text('rooms', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblprice', 'Room price') }} </td>
-		<td> {{ Form::text('price', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lbldiscount', 'Discount rate') }} </td>
-		<td> {{ Form::text('discount', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center"> {{ Form::submit('Add promotion') }} </td>
-	</tr>
+	@if($errors->has())
 	<div>
-		@if($errors->has())
-			<p>Following errors occured:</p>
-			<ul>
-				@foreach($errors->all() as $error)
-					<li>{{$error }}</li>
-				@endforeach
-			</ul>
-		@endif
-	</div>	
-	{{ Form::close() }}
-</table>
+		<p>Following errors occured:</p>
+		<ul>
+			@foreach($errors->all() as $error)
+				<li>{{$error }}</li>
+			@endforeach
+		</ul>
+	</div>
+	@endif
+	
+	@if(Session::has('message'))
+		<div>{{ Session::get('message') }}</div>
+	@endif
+
+	<div>
+				
+		<div id="room-types">
+			<label>Room type</label>
+			<select data-bind="options: roomTypeArray, selectedOptions: selected, optionsText: function(item) {return item.name }"></select>
+		</div>		
+	</div>
+	<div>		
+		<div id="service-container">
+			<label>Service</label>	 
+			<div data-bind="foreach: serviceArray">
+				<div>
+					<input type="checkbox" data-bind="checked: state, click: $parent.toggleCheckbox">
+					<label data-bind="text: name"></label>
+				</div>
+			</div>
+		</div>		
+	</div>
+
+<div id="promotion-container">
+	<table>
+		<tr>
+			<td><label>Start date</label></td>
+			<td>
+				<input data-bind="value: from" required="required" id="from" />
+				<label>End date</label>
+				<input data-bind="value: to" required="required" id="to" />
+			</td>
+		</tr>
+		<tr>
+			<td><label>Number of stays</label></td>
+			<td><input data-bind="value: stays" required="required" /></td>
+		</tr>
+		<tr>
+			<td><label>Number of room booked</label></td>
+			<td><input data-bind="value: rooms" required="required" /></td>
+		</tr>
+		<tr>
+			<td><label>Room price</label></td>
+			<td><input data-bind="value: price" required="required" /></td>
+		</tr>
+		<tr>
+			<td><label>Discount rate</label></td>
+			<td><input data-bind="value: discount" required="required" /></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center"><button data-bind="click: addPromotion">Add promotion</button></td>
+		</tr>
+	</table>
+</div>
+
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+ <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+ 
+ <script type="text/javascript" src="{{url()}}/js/promotion.js"></script>
+ <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+ <script type="text/javascript">
+ 	http_url = '{{url()}}';
+ 	services = {{$services}};
+ 	roomTypes = {{$roomTypes}};
+
+ 	$(function() {
+	    $( "#from" ).datepicker({
+	      defaultDate: "",
+	      changeMonth: true,
+	      numberOfMonths: 2,
+	      onClose: function( selectedDate ) {
+	        $( "#from" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+	        $( "#to" ).datepicker( "option", "minDate", selectedDate);
+	      }
+	    });
+	    $( "#to" ).datepicker({
+	      defaultDate: "",
+	      changeMonth: true,
+	      numberOfMonths: 2,
+	      onClose: function( selectedDate ) {
+	        $( "#to" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+	        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+	      }
+	    });
+	  });
+
+ 	window.onload = function(){
+ 		loadRoomTypes();
+		loadServices();
+	}
+
+ 	var allServices = new ServiceArray();
+ 	var allRoomTypes = new RoomTypeArray();
+ 	var currPromotion = new Promotion();	
+	
+	ko.applyBindings(currPromotion, document.getElementById('promotion-container'));
+	ko.applyBindings(allServices, document.getElementById('service-container'));
+	ko.applyBindings(allRoomTypes, document.getElementById('room-types'));
+ </script>
 @stop
 
 
- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
- <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>
+
