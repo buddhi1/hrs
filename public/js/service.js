@@ -10,7 +10,7 @@ var Service = function(){
 
 		service.name(this.name());
 		newServices.services.push(service);		
-		var res = saveService();
+		saveService();
 		self.name('');			
 	} 
 		

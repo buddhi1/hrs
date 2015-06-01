@@ -48,10 +48,19 @@
 	<p class="text-success">{{ Session::get('ser_message_del') }}</p>
 	
 	@endif
+
+<script type="text/javascript" src="{{url()}}/js/service.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
 	var services = '{{$services}}';
+
+	var newServices = new ServiceArray();
+	var newService = new Service();
+
+	ko.applyBindings(newServices, document.getElementById('saved-services'));
+	ko.applyBindings(newService, document.getElementById('add-service'));
+
 </script>
-<script type="text/javascript" src="{{url()}}/js/service.js"></script>
-<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+
 @stop

@@ -35,6 +35,7 @@ var RoomTypeArray = function(){
 var Promotion = function(){
 	var self = this;
 
+	this.id = ko.observable();
 	this.room_id = ko.observable();
 	this.services = ko.observableArray();
 	this.from = ko.observable();
@@ -45,24 +46,40 @@ var Promotion = function(){
 	this.discount = ko.observable();
 
 	this.addPromotion = function(){
-		currPromotion.from(this.from());
-		currPromotion.to(this.to());
-		currPromotion.stays(this.stays());
-		currPromotion.rooms(this.rooms());
-		currPromotion.price(this.price());
-		currPromotion.discount(this.discount());
+	
+		if(document.getElementById('from').value !== "" && document.getElementById('to').value !== "" && document.getElementById('stays').value !== "" && document.getElementById('rooms').value !== "" && document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
+			currPromotion.from(this.from());
+			currPromotion.to(this.to());
+			currPromotion.stays(this.stays());
+			currPromotion.rooms(this.rooms());
+			currPromotion.price(this.price());
+			currPromotion.discount(this.discount());
 
-		var services = [];
-		for(i=0; i<allServices.serviceArray().length; i++){
-			if(allServices.serviceArray()[i].state()){
-				services.push(allServices.serviceArray()[i].name());
+			var services = [];
+			for(i=0; i<allServices.serviceArray().length; i++){
+				if(allServices.serviceArray()[i].state()){
+					services.push(allServices.serviceArray()[i].name());
+				}
 			}
+			if(services.length <= 0 || services === undefined){
+				alert('You must select atleast a single service to add a promotion');				
+			}else{
+				currPromotion.room_id(allRoomTypes.selected()[0].id());
+				currPromotion.services(services);
+				savePromotion();
+			}
+			
+		}else{
+			alert('Please fill required fields to add a promotion');
 		}
-		console.log(services);
-		currPromotion.room_id(allRoomTypes.selected()[0].id());
-		currPromotion.services(services);
-		savePromotion();
+		
 	}
+}
+
+var PromotionArray = function(){
+	var self = this;
+
+	this.promotionArray = ko.observableArray();
 }
 
 // ------------------------- promotion controller functions -------------------------
