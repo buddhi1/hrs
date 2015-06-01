@@ -1,32 +1,41 @@
 @extends('layouts.main')
 
 @section('content')
+Identification No: 
+<input type="text" data-bind="value: identificationNo" name="id_no"  required />
+</br>
 
-{{ Form::open(array('url' => 'booking/booking2')) }}
+Start Date: 
+<input type="text" data-bind="value: startDate" name="start_date"  required />
+</br>
 
-{{ Form::label('Identification No') }}
-{{ Form::text('id_no', null) }}
+End Date: 
+<input type="text" data-bind="value: endDate" name="end_date"  required />
+</br>
 
-{{ Form::label('Start Date') }}
-{{ Form::text('start_date', null) }}
+No of Adults: 
+<input type="text" data-bind="value: noOfAdults" name="no_of_adults"  required />
+</br>
 
-{{ Form::label('End Date') }}
-{{ Form::text('end_date', null) }}
+No of Kids: 
+<input type="text" data-bind="value: noOfKids" name="no_of_kids"  required />
+</br>
 
-{{ Form::label('No of Adults') }}
-{{ Form::text('no_of_adults', null) }}
+No of Rooms: 
+<input type="text" data-bind="value: noOfRooms" name="no_of_rooms"  required />
+</br>
 
-{{ Form::label('No of Kids') }}
-{{ Form::text('no_of_kids', null) }}
+Promo Code: 
+<input type="text" data-bind="value: promoCode" name="promo_code"  required />
+</br>
 
-{{ Form::label('No of Rooms') }}
-{{ Form::text('no_of_rooms', null) }}
+<button onclick="checkAvailability()">Check Availability</button>
 
-{{ Form::label('Promo Code') }}
-{{ Form::text('promo_code', null) }}
+</br></br>
+Room Types: 
+<select data-bind="options: roomType, optionText: optionID" name="room_type" required />
 
-{{ Form::submit('Proceed')}}
-{{ Form::close() }}
+</select>
 
 @if(Session::has('message'))
 
@@ -34,8 +43,15 @@
 
 @endif
 
-@foreach($errors->all() as $error)
-	<p>{{ $error }}</p>
-@endforeach
 
+
+<script type="text/javascript" src="{{url()}}/js/booking.js"></script>
+<script type="text/javascript">
+	var http_url = '{{url()}}';
+
+	var bookingFirst = new Booking();
+	ko.applyBindings(bookingFirst);
+	
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop

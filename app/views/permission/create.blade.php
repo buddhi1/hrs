@@ -26,6 +26,9 @@
 </div>
 </br>
 <button onclick="savePermission()">Add Permission Grooup</button>
+
+
+
 <script type="text/javascript" src="{{url()}}/js/permission.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
