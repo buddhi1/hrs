@@ -50,19 +50,19 @@
 		</tr>
 		<tr>
 			<td><label>Number of stays</label></td>
-			<td><input data-bind="value: stays" required="required" /></td>
+			<td><input data-bind="value: stays" required="required" id="stays" /></td>
 		</tr>
 		<tr>
 			<td><label>Number of room booked</label></td>
-			<td><input data-bind="value: rooms" required="required" /></td>
+			<td><input data-bind="value: rooms" required="required" id="rooms" /></td>
 		</tr>
 		<tr>
 			<td><label>Room price</label></td>
-			<td><input data-bind="value: price" required="required" /></td>
+			<td><input data-bind="value: price" required="required" id="price" /></td>
 		</tr>
 		<tr>
 			<td><label>Discount rate</label></td>
-			<td><input data-bind="value: discount" required="required" /></td>
+			<td><input data-bind="value: discount" required="required" id="discount" /></td>
 		</tr>
 		<tr>
 			<td colspan="2" align="center"><button data-bind="click: addPromotion">Add promotion</button></td>
