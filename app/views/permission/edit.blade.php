@@ -15,10 +15,12 @@
 </div>
 
 Permission Group: <input type="text" data-bind="value: perName" name="groupName" required />
+</br>
 Permissions:
 <div data-bind="foreach:permission">
-	<input type="checkbox" data-bind="click: toggleState"><span data-bind="text:chkName"></span></br>
+	<input type="checkbox" data-bind="click: toggleState, checked: state"><span data-bind="text: name"></span></br>
 </div>
+<button onclick="updatePermission()">Update Permission Grooup</button>
 
 <script type="text/javascript" src="{{url()}}/js/permission.js"></script>
 <script type="text/javascript">
@@ -37,7 +39,9 @@ Permissions:
 
 				permissionData.groupID(perArr[0].id);
 				permissionData.perName(perArr[0].name);
+				var i = 0;
 				for(per in perArr[0]) {
+
 					if(per === 'id') {
 						
 					} else if(per === 'name') {
@@ -48,18 +52,13 @@ Permissions:
 
 					}else {
 						var permission = new Permission();
+						permission.name(perArr[1][i][0]);
 						permission.chkName(per);
 						permission.state(perArr[0][per]);
 						permissionData.permission.push(permission);
+						i++;
 					}
 				}
-				
-			// 	userDataEdit.uname(perArr[0].uname);
-			// 	userDataEdit.userID(perArr[0].uid);
-			// 	userDataEdit.chosenPermission.push(perArr[0].name);
-			// } else {
-
-				// window.location = "{{url()}}/admin/permission/index";
 			}
 		});
 	}

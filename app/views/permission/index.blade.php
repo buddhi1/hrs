@@ -72,7 +72,6 @@
 		sendRequestToServerPost('/admin/permission/index', foo, function(res) {
 			permissionArr = res;
 			permissionArr = JSON.parse(permissionArr);
-			console.log(permissionArr);
 
 			for(per in permissionArr) {
 

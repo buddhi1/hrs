@@ -134,10 +134,8 @@ class PermissionController extends BaseController {
 		if($group){
 			$group->delete();
 
-			return Redirect::to('admin/permission/index')
-				->with('message','Permission group deleted Successfully');
+			return 'success';
 		}
-
 	}
 
 	public function postEdit(){
@@ -191,64 +189,33 @@ class PermissionController extends BaseController {
 		}	
 	}
 
-	//Views the edit page for the selected permission group
-	// public function postEdit(){
-
-	// 	$permissions = Schema::getColumnListing('permissions');
-	// 	unset($permissions[0]); //remove permission id
-	// 	unset($permissions[1]); //remove permission name
-	// 	unset($permissions[sizeof($permissions)]); //remove permission created at
-	// 	unset($permissions[sizeof($permissions)+2]); //remove permission updated at
-	// 	$permissions = array_values($permissions); //reindex array
-		
-	// 	foreach ($permissions as  $value) {
-	// 		$names[] = explode("_",$value);
-			
-	// 	}
-		
-	// 	foreach ($names as $name) {
-			
-	// 		if (sizeof($name) > 1) {
-	// 			$titles[] = ucfirst($name[1]).' '.$name[0];
-
-	// 		}
-			  
-	// 	}	
-	// 	for ($i=0; $i < sizeof($permissions); $i++) { 
-	// 			$info[$i][0] = $titles[$i];
-	// 			$info[$i][1] = $permissions[$i];
-	// 		}	
-
-	// 	return View::make('permission.edit')
-	// 		->with('record', Permission::find(Input::get('id')))
-	// 		->with('info', $info);
-	// }
-
 	//Update operation for the selected permission group
 	public function postUpdate(){
-		$validator = Validator::make(Input::all(), Permission::$rules);
 
-		if($validator->passes()){			
+		$permission_obj = json_decode(Input::get('variables'));
+		
+		$validator = Validator::make(array('permission' => $permission_obj->permission), Permission::$rules);
 
-			$name = Input::get('name');
-			$record = DB::table('permissions')
-				->where('name','=', $name)
-				->get();
+		//validates whether atleast a permission is selected
+		if($validator->passes()){
+			$name = $permission_obj->perName;
+			$id = $permission_obj->groupID;
 
+
+			$group = Permission::find($id);
+			$group->name =  $name;
 			
-				$group = Permission::find(Input::get('id'));
-				
-				foreach (Input::get('permission') as $value) {
-					$group->$value = 1;
-				}
-				$group->save();
-				return Redirect::to('admin/permission/index')
-					->with('message','New permission group added successfully');
-				
+			foreach ($permission_obj->permission as $value) {
+
+				$col_value = $value->chkName;
+				$group->$col_value = 1;
+			}
+			$group->save();
+			Session::forget('permission_edit_id');
+			return 'success';
+		}else{
+			Session::forget('permission_edit_id');
+			return 'failure';
 		}
-
-		return Redirect::to('admin/permission/index')
-			->withErrors($validator);
 	}
-
 }
