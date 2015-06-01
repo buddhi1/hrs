@@ -100,6 +100,26 @@ var RoomArray = function(){
 			}
 		});
 	}
+
+	this.deleteSavedRoom = function(){
+		var url = '/admin/room/destroy';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/room"
+			}else if(res==0){
+				alert('There are promotions available for this room type. Please remove promotions to remove the room type.');
+			}else{
+				alert('Something went wrong. Please try again.')
+			}
+		});
+	}
 }
 
 

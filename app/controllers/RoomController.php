@@ -39,13 +39,16 @@ class RoomController extends BaseController {
 	// delete a room type from the database
 
 		$room = RoomType::find(Input::get('id'));
-
+		$promotion = Promotion::where('room_type_id', '=', Input::get('id'))->get();
+		if($promotion){
+			return 0;
+		}
 		if($room) {
 			$room->delete();
-
-			return Redirect::To('admin/room')
-				->with('room_message_del','Room type is successfully deleted');
+			return 1;
 		}
+
+		return 2;
 	}
 
 	//
