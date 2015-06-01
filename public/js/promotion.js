@@ -25,6 +25,14 @@ var RoomType = function(){
 	this.name = ko.observable();	
 }
 
+var Room = function(){
+	var self = this;
+
+	this.id = ko.observable();
+	this.room_type_id = ko.observable();
+	this.services = ko.observableArray();
+}
+
 var RoomTypeArray = function(){
 	var self = this;
 
@@ -80,6 +88,8 @@ var PromotionArray = function(){
 	var self = this;
 
 	this.promotionArray = ko.observableArray();
+	this.roomArray = ko.observableArray();
+
 }
 
 // ------------------------- promotion controller functions -------------------------

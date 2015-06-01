@@ -25,12 +25,12 @@
 	</tr>	
 		<div id="promotion-container">
 			<!-- foreach($rooms as $room) -->
-			<div data-bind="foreach: ">			
-				<td><label data-bind="text: room_id"></label></td>
+			<div data-bind="foreach: roomArray">			
+				<td><label data-bind="text: id"></label></td>
 				<td>
 					<table>
 						<tr>
-							<div data-bind="foreach: ">
+							<div data-bind="foreach: promotionArray">
 							<!-- foreach($calendar as $type) -->
 							<td> 
 								<ul>
@@ -87,9 +87,7 @@
  <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
  <script type="text/javascript">
  	http_url = '{{url()}}';
- 	// = '{{-- $rooms[0] --}}';
- 	//console.log(rooms);
- 	//calendar = {{-- $calendar --}};
+ 	
 
  	window.onload = function(){
  		loadPromotions();
@@ -99,8 +97,7 @@
 		var count = {{sizeOf($calendar)}};
 
 		<?php $i=0; ?>
-		for(i=0; i<count; i++){
-			<?php $i++; ?>
+		for(i=0; i<count; i++){			
 			var promotion = new Promotion();
 			promotion.from({{$calendar[$i]->start_date}});
 			promotion.to({{$calendar[$i]->end_date}});
@@ -109,6 +106,27 @@
 			promotion.discount({{$calendar[$i]->discount_rate}});
 
 			promotions.promotionArray.push(promotion);
+			<?php $i++; ?>
+		}
+
+		<?php $i=0; ?>
+		
+		for(i=0; i<count; i++){		
+			var room = new Room();
+			room.id({{$rooms[$i]->id}});
+			room.room_type_id({{$rooms[$i]->room_type_id}});			
+			
+			var ser = {{$rooms[$i]->services}};
+
+			var services = [];
+			for(j=0; j<ser.length; j++){
+				var service = new Service();
+				service.name(ser[j]);
+				service.state(true);
+				room.services.push(service);
+			}
+			
+			promotions.roomArray.push(room);
 		}
 	}
 
