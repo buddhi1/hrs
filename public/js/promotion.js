@@ -110,6 +110,7 @@ var loadRoomTypes = function(){
 	}
 }
 
+
 var savePromotion = function(){
 	var result=-1;
 	var url = '/admin/promotion/create';

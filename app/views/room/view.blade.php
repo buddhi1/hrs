@@ -23,7 +23,7 @@
 			<label data-bind="text: services"></label>
 			<label data-bind="text: no_of_rooms"></label>
 			<button data-bind="click: $parent.loadEditSavedRoom">Edit</button>
-			<button data-bind="click: ">Delete</button>
+			<button data-bind="click: $parent.deleteSavedRoom">Delete</button>
 		</div>
 	</div>
 	@if(Session::has('room_message_del'))
