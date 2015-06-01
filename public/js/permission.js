@@ -79,14 +79,14 @@ var cleanPermissionJson = function(que) {
 	var copy = ko.toJS(que);
 
 	for(var i=0; i<copy.permission.length; i++) {
-		if(copy.permission[i].state !== true) {
+		if(copy.permission[i].state != true) {
 			//delete the objects with false state
 			delete copy.permission[i];
 
 		} else {
 			//remoe the id, chkName & state from objects with true state
 			delete copy.permission[i].id;
-			delete copy.permission[i].chkName;
+			// delete copy.permission[i].chkName;
 			delete copy.permission[i].state;
 		}
 
@@ -125,6 +125,20 @@ function sendPermissionsToServerPost(url,variables,callback){
     xmlHttp.open( "POST", http_url+url, true );
     xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xmlHttp.send(header);
+}
+
+function updatePermission(uid) {
+	// this function send new permission data of the permission to be edited, to the controller
+
+	var clean = cleanPermissionJson(permissionData);
+	var sendData = ko.toJSON(clean);
+
+	sendPermissionsToServerPost('/admin/permission/update', sendData, function(res){
+		if(res === 'success') {
+
+			window.location = http_url+"/admin/permission/index";
+		}
+	});
 }
 
 function editPermission(uid) {
