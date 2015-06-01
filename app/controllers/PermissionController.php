@@ -127,17 +127,6 @@ class PermissionController extends BaseController {
 		return $per;
 	}
 
-	//Deletes the selected permission group
-	public function postDestroy(){
-		$group = Permission::find(Input::get('id'));
-
-		if($group){
-			$group->delete();
-
-			return 'success';
-		}
-	}
-
 	public function postEdit(){
 		// put the edit id to a session and redirect edit page
 
@@ -216,6 +205,19 @@ class PermissionController extends BaseController {
 		}else{
 			Session::forget('permission_edit_id');
 			return 'failure';
+		}
+	}
+
+	
+
+	//Deletes the selected permission group
+	public function postDestroy(){
+		$group = Permission::find(Input::get('id'));
+
+		if($group){
+			$group->delete();
+
+			return 'success';
 		}
 	}
 }

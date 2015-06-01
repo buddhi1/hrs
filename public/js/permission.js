@@ -101,7 +101,7 @@ var savePermission = function() {
 
 	var clean = cleanPermissionJson(allPermissions);
 	var sendData = ko.toJSON(clean);
-	console.log(sendData);
+	
 	sendPermissionsToServerPost('/admin/permission/create', sendData, function(res){
 		if(res === 'success') {
 			window.location = http_url+"/admin/permission/index";
