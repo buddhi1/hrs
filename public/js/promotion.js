@@ -90,6 +90,23 @@ var PromotionArray = function(){
 	this.promotionArray = ko.observableArray();
 	this.roomArray = ko.observableArray();
 
+	this.loadSavedPromoTimeline = function(){
+		
+		var url = '/admin/promotion/edittimeline';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promotion/edittimeline"
+			}
+		});
+	}
+
 }
 
 // ------------------------- promotion controller functions -------------------------
@@ -145,7 +162,7 @@ var loadPromotions = function(){
 		var ser = JSON.parse(rooms[i].services);
 
 		var services = [];
-		
+
 		for(j=0; j<ser.length; j++){
 			var service = new Service();
 			service.name(ser[j]);
@@ -155,6 +172,17 @@ var loadPromotions = function(){
 		
 		promotions.roomArray.push(room);
 	}
+}
+
+var loadPromotion = function(){
+	currPromotion.from(promotion.start_date);
+	currPromotion.to(promotion.end_date);
+	currPromotion.stays(promotion.days);
+	currPromotion.price(promotion.price);
+	currPromotion.discount(promotion.discount_rate);
+	currPromotion.room_id(promotion.room_type_id);
+	currPromotion.rooms(promotion.no_of_rooms);
+	
 }
 
 var savePromotion = function(){

@@ -59,13 +59,12 @@
 		</div>				
 
 	{{-- Form::open(array('url'=>'admin/promotion/edittimeline')) --}}
-		<input type="hidden" data-bind="" />{{-- Form::hidden('room_id',$room->room_type_id) --}}
-		{{-- Form::hidden('service_id',$room->service_id) --}}
-		<button data-bind="">Edit timeline</button>{{-- Form::submit('Edit time line') --}} 
+		
+		<button data-bind="click: $parent.loadSavedPromoTimeline">Edit timeline</button>{{-- Form::submit('Edit time line') --}} 
 	{{-- Form::close() --}}			
 	
 	{{-- Form::open(array('url'=>'admin/promotion/destroytimeline')) --}}	
-		<input type="hidden" data-bind="" />{{-- Form::hidden('room_id',$room->room_type_id) --}}
+		
  		<button data-bind="">Delete timeline</button>{{-- Form::submit('Delete time line') --}} 		
 	{{-- Form::close() --}}
 	</div>				

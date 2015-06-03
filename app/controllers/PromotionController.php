@@ -123,16 +123,31 @@ class PromotionController extends BaseController{
 
 	//Views the time line edit page of selected room type
 	public function postEdittimeline(){
+		
+		// $start_date = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_type_id'))->first();
+		// $record = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_type_id'))->first();
 
-		$start_date = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
-		$record = DB::table('promotion_calenders')->where('room_type_id','=',Input::get('room_id'))->first();
+		// Session::put('start_date', $start_date);
+		// Session::put('record', $record);
+		// Session::put('checks', json_decode($record->services));
 
+		Session::put('promotion_id', Input::get('id'));
+		return 1;
+
+		// return View::make('promotion.edittimeline')
+		// 	->with('services', Service::all())
+		// 	->with('start_date', $start_date)
+		// 	->with('record', $record)
+		// 	->with('checks', json_decode($record->services));
+	}
+
+	public function getEdittimeline() {
+	// display the edit promotion
 		
 		return View::make('promotion.edittimeline')
 			->with('services', Service::all())
-			->with('start_date', $start_date)
-			->with('record', $record)
-			->with('checks', json_decode($record->services));
+			->with('promotion', Promotion::find(Session::get('promotion_id')));				
+		
 	}
 
 
