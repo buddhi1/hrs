@@ -9,6 +9,15 @@ var RoomTypes = function() {
   self.name = ko.observable();
 }
 
+var Services = function() {
+  // Room types class which contains id and name
+
+  var self = this;
+
+  self.id = ko.observable();
+  self.name = ko.observable();
+}
+
 var Booking = function() {
   // booking class
 
@@ -23,7 +32,9 @@ var Booking = function() {
   self.noOfRooms = ko.observable();
   self.promoCode = ko.observable();
   self.roomType = ko.observableArray();
-  self.service = ko.observable();
+  self.chosenRoomType = ko.observable();
+  self.service = ko.observableArray();
+  self.chosenService = ko.observable();
   self.totalCharge = ko.observable();
   self.paidAmount = ko.observable();
 
@@ -31,6 +42,11 @@ var Booking = function() {
     //delete a booking from the cart
 
     removeBooking(self.id);
+  }
+
+  self.sevicesDrop = function() {
+    // console.log(self.chosenRoomType);
+    loadServices(self.chosenRoomType()[0].id());
   }
 }
 
@@ -44,7 +60,6 @@ function checkAvailability() {
 
       var rooms = res;
       rooms = JSON.parse(rooms);
-      console.log(rooms);
 
       for(var i in rooms) {
 
@@ -74,17 +89,27 @@ function getServices(url,variables,callback){
 
 var handleResponce = function(res){
   //callback
-  var services = JSON.parse(res);
+  if(res) {
 
-  document.getElementById("service").options.length=0;
-  for(var i=0; i<services.length;i++){
-    
-    var option = document.createElement("option");
-    option.text = services[i].name;
-    option.value = services[i]['service_id'];
-    var select = document.getElementById("service");
-    select.appendChild(option);
-  }   
+    var services = res;
+    services = JSON.parse(services);
+    console.log(services);
+
+    document.getElementById("service").options.length=0;
+    for(var i in services) {
+
+      var service = new Service();
+      service.id(i);
+      service.name(services[i]);
+      bookingFirst.service.push(service);
+    }
+  }
 }
 
-
+function loadServices(ser){
+  chosen = ser;
+  console.log(chosen);
+  // if(chosen!==undefined) {
+    getServices('/booking/loaditem','room_type_id='+chosen,handleResponce);
+  // }
+}

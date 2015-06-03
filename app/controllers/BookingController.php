@@ -2,10 +2,10 @@
 
 class BookingController extends BaseController {
 
-	public function __construnct() {
+	// public function __construnct() {
 		// $this->beforeFilter('csrf', array('on' => 'post'));
 		// $this->beforeFilter('login');
-	}
+	// }
 
 	public function getBooking1() {
 		return View::make('booking.add1');
@@ -178,6 +178,8 @@ class BookingController extends BaseController {
 
 	public function postLoaditem() {
 	// load services to the combobox when room types are selected
+		var_dump(Input::get('room_type_id'));
+		die();
 		$room_id = Input::get('room_type_id');
 		$service_id = DB::table('room_price_calenders')
 							->join('services', 'room_price_calenders.service_id', '=', 'services.id')
@@ -188,7 +190,7 @@ class BookingController extends BaseController {
 							->distinct()
 							->get();
 
-		return Response::json($service_id);
+		return $service_id;
 	}
 
 	public function postPlacebooking() {
