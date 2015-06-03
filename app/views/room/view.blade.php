@@ -42,6 +42,7 @@
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 <script type="text/javascript">
 	http_url = '{{url()}}';
+	console.log({{$rooms}});
 	rooms = {{$rooms}};
 	
 
