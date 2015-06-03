@@ -19,17 +19,16 @@
 
 	
 <div id="promotion-container">
-	<!-- foreach($rooms as $room) -->
 	<div data-bind="foreach: roomArray">			
 		<label data-bind="text: id"></label>
 		Services: 
 		<div data-bind="foreach: services">
 			<label data-bind="text: name"></label>{{-- implode(",",json_decode($type->services)) --}}
 		</div>				
-		<div data-bind="foreach: $parent.promotionArray">
-		<!-- foreach($calendar as $type) -->		
+		<div data-bind="foreach: $parent.promotionArray">	
+		<!-- ko if: $parent.room_type_id() == room_id() -->
+    	
 			<ul>
-				<!-- if($room->room_type_id == $type->room_type_id) -->
 				<li>Duration: <label data-bind="text: from"></label> to <label data-bind="text: to"></label></li>
 				
 								
@@ -53,8 +52,10 @@
 					</form>
 					{{-- Form::close() --}}	
 				</li>
-				<!-- endif -->
-			</ul>			
+			</ul>
+    		
+    	<!-- /ko -->    	
+    				
 		</div>				
 
 	{{-- Form::open(array('url'=>'admin/promotion/edittimeline')) --}}
