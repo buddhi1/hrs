@@ -121,6 +121,42 @@ var loadRoomTypes = function(){
 }
 
 
+var loadPromotions = function(){
+
+	for(i=0; i<calendar.length; i++){			
+		var promotion = new Promotion();
+		promotion.id(calendar[i].id);
+		promotion.from(calendar[i].start_date);
+		promotion.to(calendar[i].end_date);
+		promotion.stays(calendar[i].days)
+		promotion.price(calendar[i].price);-
+		promotion.discount(calendar[i].discount_rate);
+		promotion.room_id(calendar[i].room_type_id);
+		promotion.rooms(calendar[i].days);
+
+		promotions.promotionArray.push(promotion);		
+	}
+	console.log(promotions.promotionArray().length);
+	for(i=0; i<rooms.length; i++){		
+		var room = new Room();
+		room.id(rooms[i].id);
+		room.room_type_id(rooms[i].room_type_id);			
+		
+		var ser = JSON.parse(rooms[i].services);
+
+		var services = [];
+		
+		for(j=0; j<ser.length; j++){
+			var service = new Service();
+			service.name(ser[j]);
+			service.state(true);
+			room.services.push(service);
+		}
+		
+		promotions.roomArray.push(room);
+	}
+}
+
 var savePromotion = function(){
 	var result=-1;
 	var url = '/admin/promotion/create';

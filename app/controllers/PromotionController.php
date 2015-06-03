@@ -75,11 +75,13 @@ class PromotionController extends BaseController{
 
 	//Views index page of promotion calendar
 	public function getIndex(){
+		// 
+		// DB::table('promotion_calenders')->select('id','room_type_id','services')->groupBy('room_type_id')->get()
 		return View::make('promotion.index')
 			->with('start_date', DB::table('promotion_calenders')->orderBy('start_date')->pluck('start_date'))
 			->with('end_date', DB::table('promotion_calenders')->orderBy('start_date', 'desc')->pluck('start_date'))
-			->with('rooms', DB::table('promotion_calenders')->select('id','room_type_id','services')->groupBy('room_type_id')->get())
-			->with('calendar', DB::table('promotion_calenders')->select(DB::raw('count(*) as days'),'id','room_type_id','end_date','price','discount_rate',
+			->with('rooms',Promotion::select('id','room_type_id','services')->groupBy('room_type_id')->get())
+			->with('calendar', Promotion::select(DB::raw('count(*) as days'),'id','room_type_id','end_date','price','discount_rate',
 				'services','start_date')->groupBy('end_date','room_type_id')->get());
 	}
 

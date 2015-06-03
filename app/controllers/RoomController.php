@@ -9,6 +9,7 @@ class RoomController extends BaseController {
 
 	public function getIndex() {
 	// display all the room types
+	
 		return View::make('room.view')
 			->with('rooms', RoomType::all());
 	}
