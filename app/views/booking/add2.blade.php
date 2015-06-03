@@ -22,12 +22,19 @@
 {{ Form::submit('Place Booking')}}
 {{ Form::close() }}
 
+<script type="text/javascript" src="{{url()}}/js/booking.js"></script>
 <script>
-	var http_path = '{{URL::to('/')}}';
+	http_url = '{{url()}}';
+	// window.onload = function(){
+
+	// 	getServices('/booking/loaditem','room_type_id='+document.getElementById('room_type').value,handleResponce);
+	// }
+
+	document.getElementById('room_type').onchange = function(){
+
+	  getServices('/booking/loaditem','room_type_id='+this.value,handleResponce);
+	}
 </script>
- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
- <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script type="text/javascript" src="{{URL::to('/')}}/js/js_config.js"></script>
-<script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 
 @stop
