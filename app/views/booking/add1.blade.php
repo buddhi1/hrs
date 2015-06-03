@@ -33,10 +33,10 @@ Promo Code:
 
 </br></br>
 Room Types: 
-<select data-bind="options: roomType, optionText: optionID" name="room_type" required />
+<select data-bind="options: roomType, selectedOptions: chosenRoomType, optionsText: function(item) {return item.name }, event: { change: sevicesDrop }" name="room_type" id="room_type" required></select>
 
-</select>
-
+Services: 
+<select data-bind="options: service, selectedOptions: chosenService, optionsText: function(item) {return item.name }" name="service" id="service" required></select>
 @if(Session::has('message'))
 
 	<p class="text-success">{{ Session::get('message') }}</p>
