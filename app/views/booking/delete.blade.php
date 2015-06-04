@@ -2,14 +2,19 @@
 
 @section('content')
 
-{{ Form::open(array('url' => 'booking/destroy')) }}
+Booking ID: 
+<input type="text" data-bind="value: id" name="id"  required />
+</br>
 
-{{ Form::label('Booking ID') }}
-{{ Form::text('booking_id') }}
+<button data-bind="click: deleteBooking">Delete</button>
+<script type="text/javascript" src="{{url()}}/js/booking.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
 
-{{ Form::submit('Delete') }}
-
-{{ Form::close() }}
+	var bookingDel= new Booking();
+	ko.applyBindings(bookingDel);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 
 @if(Session::has('message'))
 
