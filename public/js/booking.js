@@ -53,7 +53,7 @@ var Booking = function() {
   self.removeItem = function() {
     //remove an item from the cart
 
-    removeCartItem(self.id);
+    removeCartItem(self.id());
   }
 }
 
@@ -194,5 +194,5 @@ function finishBooking() {
     if(res === 'success') {
       window.location = http_url+"/booking/booking1";
     }
-  }
+  });
 }
