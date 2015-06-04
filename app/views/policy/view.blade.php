@@ -4,22 +4,21 @@
 	<h3>Add a New Policy</h3>
 	{{ Form::open(array('url' => 'admin/policy/create')) }}
 
-	<table>
-		<tr>
-			<td>{{ Form::label('Policy Description') }}</td>
-			<td>{{ Form::text('description',null, array('required')) }}</td>
-		</tr>
+	</br>
+	Policy Description: <input type="text" data-bind="value: des" />
+	</br></br></br>
+	Variables:
+	</br>
+	<div data-bind="foreach: variables">
+		Property:
+		<input type="text" data-bind="value: id" />
+		Value:
+		<input type="text" data-bind="value: values" />
+		</br></br>
+	</div>
 
-		<tr>
-			<td>{{ Form::label('variables')}}</td>
-			<td>{{ Form::text('variables',null, array('required')) }}</td>
-		</tr>
 
-		<tr>
-			<td colspan = "2" align = "right">{{ Form::submit('Submit') }}</td>
-		</tr>
-
-	</table>
+<a href="#" data-bind="click: addNewVar">Add New</a>
 	{{ Form::close()}}
 
 	@if(Session::has('policy_message_add'))
@@ -70,4 +69,13 @@
 
 	@endif
 
+<script type="text/javascript" src="{{url()}}/js/policy.js"></script>
+<script type="text/javascript">
+	var http_url = '{{url()}}';
+
+	var policy = new Policy();
+	ko.applyBindings(policy);
+	
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
