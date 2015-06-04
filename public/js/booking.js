@@ -9,6 +9,32 @@ var RoomTypes = function() {
   self.name = ko.observable();
 }
 
+var SearchByID = function() {
+  // This class is used to Search a booking by booking ID
+
+  var self = this;
+
+  self.id = ko.observable();
+
+  self.searchBookingByID = function() {
+    
+    bookingSearch(self.id(), 'booking');
+  }
+}
+
+var SearchByUserID = function() {
+  // This class is used to Search a booking by booking ID
+
+  var self = this;
+
+  self.userID = ko.observable();
+
+  self.searchBookingByUserID = function() {
+    
+    bookingSearch(self.userID(), 'user');
+  }
+}
+
 var Services = function() {
   // Room types class which contains id and name
 
@@ -193,6 +219,41 @@ function finishBooking() {
   sendBookingToServerPost('/admin/booking/placebooking', foo, function(res){
     if(res === 'success') {
       window.location = http_url+"/booking/booking1";
+    }
+  });
+}
+
+function removeBooking(id) {
+  var deleteID = id;
+  var sendData = ko.toJSON({"booking_id": deleteID});
+  sendRequestToServerPost('/booking/destroy', sendData, function(res){
+    if(res === 'success') {
+
+      window.location = http_url+"/admin/booking/booking1";
+    }
+  });
+}
+
+function bookingSearch(id, type) {
+  var searchID = id;
+  if(type === 'booking') {
+    var sendData = ko.toJSON({"booking_id": searchID});
+  } else if(type === 'user') {
+    var sendData = ko.toJSON({"uid": searchID});
+  }
+  
+  console.log(sendData);
+
+  sendRequestToServerPost('/booking/search', sendData, function(res){
+    if(res) {
+      var result = JSON.parse(res);
+      searchResult.chosenRoomType(result.room_type_id);
+      searchResult.noOfRooms(result.no_of_rooms);
+      searchResult.noOfAdults(result.no_of_adults);
+      searchResult.noOfKids(result.no_of_kids);
+      searchResult.chosenService(result.services);
+      searchResult.totalPrice(result.total_charges);
+      searchResult.chosenAmount(result.paid_amount);
     }
   });
 }

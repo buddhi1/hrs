@@ -17,10 +17,19 @@ class PolicyController extends BaseController {
 	public function postCreate() {
 		// create a new policy
 
+		$policy_arr = array();
+		$policy_comma = explode(",",Input::get('variables'));
+		foreach ($policy_comma as $key => $value) {
+			$policy_eq = explode("=",$value);
+
+			$policy_arr[$policy_eq[0]] = $policy_eq[1];
+		}
+		
 		$policy = new Policy();
+		$policy_variables = json_encode($policy_arr);
 
 		$policy->description = Input::get('description');
-		$policy->variables = Input::get('variables');
+		$policy->variables = $policy_variables;
 
 		if($policy) {
 			$policy->save();

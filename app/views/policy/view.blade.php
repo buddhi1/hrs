@@ -7,17 +7,12 @@
 	<table>
 		<tr>
 			<td>{{ Form::label('Policy Description') }}</td>
-			<td>{{ Form::textarea('description',null, array('required', 'rows' => 5)) }}</td>
+			<td>{{ Form::text('description',null, array('required')) }}</td>
 		</tr>
 
 		<tr>
-			<td>{{ Form::label('Tax Rate') }}</td>
-			<td>{{ Form::text('tax', null) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('Cancellation') }}</td>
-			<td>{{ Form::text('days', null, array('placeholder' => 'Number of days')) }} {{ Form::text('rate', null, array('placeholder' => 'Rate')) }}</td>
+			<td>{{ Form::label('variables')}}</td>
+			<td>{{ Form::text('variables',null, array('required')) }}</td>
 		</tr>
 
 		<tr>
