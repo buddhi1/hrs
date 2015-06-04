@@ -134,7 +134,18 @@ class BookingController extends BaseController {
 		$room_type = $var_arr->chosenRoomType[0]->id;
 		$room_details = RoomType::find($room_type);
 		$service_id = $var_arr->chosenService[0]->id;
-		$totalCharge = $var_arr->totalCharge;
+
+		$room_price = DB::table('room_price_calenders')
+						->select('price')
+						->where('start_date', '=', Session::get('start_date'))
+						->where('service_id', '=', $service_id)
+						->where('room_type_id', '=', $room_type)
+						->get();
+
+		if($room_price) {
+			$date_difference = date_diff(date_create(Session::get('end_date')),date_create(Session::get('start_date')))->d;
+			$totalCharge = $date_difference*$room_price[0]->price;
+		}
 
 		// checking the payment amount
 		$payment = $var_arr->chosenAmount[0]->id;
@@ -143,13 +154,6 @@ class BookingController extends BaseController {
 
 			$payment_amount = floatval($totalCharge);
 		} else {
-
-			$room_price = DB::table('room_price_calenders')
-						->select('price')
-						->where('start_date', '=', Session::get('start_date'))
-						->where('service_id', '=', $service_id)
-						->where('room_type_id', '=', $room_type)
-						->get();
 
 			if($room_price) {
 				$payment_amount = floatval($room_price[0]->price);
@@ -189,7 +193,7 @@ class BookingController extends BaseController {
 
 	public function postCart() {
 
-		return Cart::contents();
+		return Cart::contents(true);
 	}
 
 	public function postLoaditem() {
@@ -225,14 +229,10 @@ class BookingController extends BaseController {
 			$booking->promo_code = $bookings->options['promo_code'];
 			$booking->start_date = Session::get('start_date');
 			$booking->end_date = Session::get('end_date');
-
 			$booking->save();
-			Cart::destroy();
 		}
-
-		return Redirect::to('booking/booking1')
-							->with('message', 'booking has been sucessful');
-		
+		Cart::destroy();
+		return 'success';
 	}
 
 	public function getRemoveitem($identifier) {
