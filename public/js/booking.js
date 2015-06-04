@@ -224,6 +224,8 @@ function finishBooking() {
 }
 
 function removeBooking(id) {
+  // delete a booking from the booking table
+
   var deleteID = id;
   var sendData = ko.toJSON({"booking_id": deleteID});
   sendRequestToServerPost('/booking/destroy', sendData, function(res){
@@ -235,14 +237,14 @@ function removeBooking(id) {
 }
 
 function bookingSearch(id, type) {
+  // used to search a booking by user's identification number of by booking id
+  
   var searchID = id;
   if(type === 'booking') {
     var sendData = ko.toJSON({"booking_id": searchID});
   } else if(type === 'user') {
     var sendData = ko.toJSON({"uid": searchID});
   }
-  
-  console.log(sendData);
 
   sendRequestToServerPost('/booking/search', sendData, function(res){
     if(res) {
