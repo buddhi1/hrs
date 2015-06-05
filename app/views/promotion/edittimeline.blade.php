@@ -65,7 +65,7 @@
 			<td><input data-bind="value: discount" required="required" id="discount" /></td>
 		</tr>
 		<tr>
-			<td colspan="2" align="center"><button data-bind="click: addPromotion">Add promotion</button></td>
+			<td colspan="2" align="center"><button data-bind="click: editSavedPromotionTimeline">Save changes</button></td>
 		</tr>
 	</table>
 </div>
@@ -79,6 +79,7 @@
  	http_url = '{{url()}}';
  	services = {{$services}};
  	promotion = {{$promotion}};
+ 	room_name = {{$room_name}};
 
  	$(function() {
 	    $( "#from" ).datepicker({
@@ -102,9 +103,8 @@
 	  });
 
  	window.onload = function(){
- 		
-		loadServices();
-		loadPromotion();
+ 		loadPromotion();
+		loadServices();		
 	}
 
  	var allServices = new ServiceArray();

@@ -23,7 +23,7 @@
 				
 		<div id="room-types">
 			<label>Room type</label>
-			<select data-bind="options: roomTypeArray, selectedOptions: selected, optionsText: function(item) {return item.name }"></select>
+			<label data-bind="text: name"></label>
 		</div>		
 	</div>
 	<div>		
@@ -40,12 +40,16 @@
 
 <div id="promotion-container">
 	<table>
+		<tr>			
+			<td><label>Room type</label></td>
+			<td><label data-bind="text: room_name"></label></td>
+		</tr>
 		<tr>
 			<td><label>Start date</label></td>
 			<td>
-				<input data-bind="value: from" required="required" id="from" />
-				<label>End date</label>
-				<input data-bind="value: to" required="required" id="to" />
+				<label data-bind="text: from" id="from"></label>
+				<label> End date </label>
+				<label data-bind="text: to" id="to"></label>				
 			</td>
 		</tr>
 		<tr>
@@ -65,7 +69,7 @@
 			<td><input data-bind="value: discount" required="required" id="discount" /></td>
 		</tr>
 		<tr>
-			<td colspan="2" align="center"><button data-bind="click: addPromotion">Add promotion</button></td>
+			<td colspan="2" align="center"><button data-bind="click: $root.editSavedPromotion">Save changes</button></td>
 		</tr>
 	</table>
 </div>
@@ -78,32 +82,15 @@
  <script type="text/javascript">
  	http_url = '{{url()}}';
  	services = {{$services}};
+ 	promotion = {{$promotion}};
  	roomTypes = {{$roomTypes}};
+ 	room_name = {{$room_name}};
 
- 	$(function() {
-	    $( "#from" ).datepicker({
-	      defaultDate: "",
-	      changeMonth: true,
-	      numberOfMonths: 2,
-	      onClose: function( selectedDate ) {
-	        $( "#from" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
-	        $( "#to" ).datepicker( "option", "minDate", selectedDate);
-	      }
-	    });
-	    $( "#to" ).datepicker({
-	      defaultDate: "",
-	      changeMonth: true,
-	      numberOfMonths: 2,
-	      onClose: function( selectedDate ) {
-	        $( "#to" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
-	        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
-	      }
-	    });
-	  });
-
+ 	
  	window.onload = function(){
- 		loadRoomTypes();
-		loadServices();
+ 		loadPromotion();
+		loadServices();	
+		loadRoomTypes();	
 	}
 
  	var allServices = new ServiceArray();
