@@ -25,7 +25,7 @@ class PromotionController extends BaseController{
 	public function postCreate() {	
 		
 		//read from date
-		$date = Input::get('from');
+		$date = date('Y-m-d', strtotime(Input::get('from').' 0 day'));
 		$price = Input::get('price');
 		$stays = Input::get('stays');
 		$room_type_id = Input::get('room_id');
@@ -38,7 +38,7 @@ class PromotionController extends BaseController{
 			->where('start_date','=', $date)
 			->where('services','=', json_encode(explode(',', Input::get('services'))))
 			->get();
-
+			
 		if(!$record){
 			//convert from date to dateTime format
 			$from = new DateTime($date);

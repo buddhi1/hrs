@@ -30,7 +30,6 @@ var Room = function(){
 
 	this.id = ko.observable();
 	this.room_type_id = ko.observable();
-	this.services = ko.observableArray();
 }
 
 var RoomTypeArray = function(){
@@ -271,18 +270,7 @@ var loadPromotions = function(){
 		var room = new Room();
 		room.id(rooms[i].id);
 		room.room_type_id(rooms[i].room_type_id);			
-		
-		var ser = JSON.parse(rooms[i].services);
-
-		var services = [];
-
-		for(j=0; j<ser.length; j++){
-			var service = new Service();
-			service.name(ser[j]);
-			service.state(true);
-			room.services.push(service);
-		}
-		
+				
 		promotions.roomArray.push(room);
 	}
 }
