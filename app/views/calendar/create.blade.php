@@ -3,47 +3,64 @@
 @section('content')
 
 <h2>Room price calendar</h2>
-<table>
-	{{ Form::open(array('url'=>'/admin/calendar/create')) }}
-	<tr>
-		<td clospan="2"> 
-			@if(Session::has('message'))
-				<h3>{{ Session::get('message') }}</h3>
-			@endif
-		 </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lbluname', 'Room type') }} </td>
-		<td> {{ Form::select('roomType', $roomTypes, null, array('id'=>'roomType')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblservice', 'Service') }} </td>
-		<td> {{ Form::select('service', $services, null, array('required', 'id'=>'service')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblfrom', 'Start date') }} </td>
-		<td>
-			{{ Form::text('from', '', array('required', 'id'=>'from')) }} 
-			{{ Form::label('lblend', 'End date') }}
-		 	{{ Form::text('to', '', array('required', 'id'=>'to')) }} 
-		</td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lblprice', 'Room price') }} </td>
-		<td> {{ Form::text('price', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td> {{ Form::label('lbldiscount', 'Discount rate') }} </td>
-		<td> {{ Form::text('discount', '', array('required')) }} </td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center"> {{ Form::submit('Add to calendar') }} </td>
-	</tr>
-	{{ Form::close() }}
-</table>
-@stop
+		
+@if(Session::has('message'))
+	<h3>{{ Session::get('message') }}</h3>
+@endif
+		
+	
+	
+<div id="room-types">
+	<label>Room type</label>
+	<select data-bind="options: roomTypeArray, selectedOptions: selected, optionsText: function(item) {return item.name }"></select>
+</div>
+
+<div id="services">
+	<label>Service</label>
+	<select data-bind="options: serviceArray, selectedOptions: selected, optionsText: function(item) {return item.name }"></select>
+</div>		
+	
+<div id="calendar-rec">
+	<div>
+		<label>Start Date</label>
+	
+		<input data-bind="value: from" id="from" />{{-- Form::text('from', '', array('required', 'id'=>'from')) --}} 
+		<label>End date</label>
+ 		<input data-bind="value: to" id="to" />{{-- Form::text('to', '', array('required', 'id'=>'to')) --}} 
+	</div>
+	<div>
+		<label>Room price</label>
+		<input data-bind="value: price" id="price" /> {{-- Form::text('price', '', array('required')) --}}
+	</div>
+	<div>
+		<label>Discount Rate</label>
+		<input data-bind="value: discount" id="discount" /> {{-- Form::text('discount', '', array('required')) --}}
+	</div>
+	<div><button data-bind="click: addCalendareRec">Add to Calendar</button></div>
+</div>
 
 
- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
  <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>
+ <script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>
+ <script type="text/javascript" src="{{url()}}/js/calendar.js"></script>
+ <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+ <script type="text/javascript">
+ 	http_url = '{{url()}}';
+ 	roomTypes = {{$roomTypes}};
+ 	services = {{$services}};
+
+	window.onload = function(){
+ 		loadRoomTypes();
+ 		loadServices();
+	}
+
+ 	var allRoomTypes = new RoomTypeArray();
+ 	var allServices = new ServiceArray();
+ 	var calendarRec = new CalendarRec();
+
+ 	ko.applyBindings(calendarRec, document.getElementById('calendar-rec'));
+ 	ko.applyBindings(allServices, document.getElementById('services'));
+ 	ko.applyBindings(allRoomTypes, document.getElementById('room-types'));
+ </script>
+@stop
