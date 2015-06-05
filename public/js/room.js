@@ -73,7 +73,7 @@ var Room = function(){
 			}
 			
 		}else{
-
+			alert('Please fill the required fields');
 		}
 		
 	}
@@ -184,7 +184,7 @@ var loadRooms = function(){
 			saveRoom.facilities(roomFacilities.facilityArray());
 			saveRoom.services(roomServices.serviceArray());
 			savedRooms.roomArray.push(saveRoom);
-		}
+	}
 }
 
 var loadRoom = function(){	

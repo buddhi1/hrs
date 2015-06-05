@@ -19,17 +19,16 @@
 
 	
 <div id="promotion-container">
-	<!-- foreach($rooms as $room) -->
 	<div data-bind="foreach: roomArray">			
 		<label data-bind="text: id"></label>
 		Services: 
 		<div data-bind="foreach: services">
-			<label data-bind="text: name"></label>{{-- implode(",",json_decode($type->services)) --}}
+			<label data-bind="text: name"></label>
 		</div>				
-		<div data-bind="foreach: $parent.promotionArray">
-		<!-- foreach($calendar as $type) -->		
+		<div data-bind="foreach: $parent.promotionArray">	
+		<!-- ko if: $parent.room_type_id() == room_id() -->
+    	
 			<ul>
-				<!-- if($room->room_type_id == $type->room_type_id) -->
 				<li>Duration: <label data-bind="text: from"></label> to <label data-bind="text: to"></label></li>
 				
 								
@@ -37,36 +36,23 @@
 				<li>Discount rate:<label data-bind="text: discount"></label></li>
 				<li>No. of days:<label data-bind="text: stays"></label></li>
 				<li>
-					<form>{{-- Form::open(array('url'=>'admin/promotion/destroy')) --}}	
-						<input type="hidden" data-bind="text: room_id" />{{-- Form::hidden('room_id',$type->room_type_id) --}}
-						<input type="hidden" data-bind="" />{{-- Form::hidden('services', $type->services) --}}
-						<input type="hidden" data-bind="text: to" />
- 						<button data-bind="click: ">Delete</button>{{-- Form::submit('Delete') --}}		
-					</form>
-					{{-- Form::close() --}}
+					<input type="hidden" data-bind="text: room_id" />
+					<input type="hidden" data-bind="" />
+					<input type="hidden" data-bind="text: to" />
+					<button data-bind="click: deleteSavedPromotion">Delete</button>					
 				</li>
 				<li>
-					<form>{{-- Form::open(array('url'=>'admin/promotion/edit')) --}}
-					<input type="hidden" data-bind="" />{{-- Form::hidden('id',$type->id) --}}
-					<input type="hidden" data-bind="" />{{-- Form::hidden('date',$type->end_date) --}}
-					<button data-bind="">Edit</button>{{-- Form::submit('Edit') --}} 
-					</form>
-					{{-- Form::close() --}}	
+					<form>				
+					<button data-bind="click: $root.loadSavedPromotion">Edit</button>
+					</form>					
 				</li>
-				<!-- endif -->
-			</ul>			
-		</div>				
-
-	{{-- Form::open(array('url'=>'admin/promotion/edittimeline')) --}}
-		<input type="hidden" data-bind="" />{{-- Form::hidden('room_id',$room->room_type_id) --}}
-		{{-- Form::hidden('service_id',$room->service_id) --}}
-		<button data-bind="">Edit timeline</button>{{-- Form::submit('Edit time line') --}} 
-	{{-- Form::close() --}}			
-	
-	{{-- Form::open(array('url'=>'admin/promotion/destroytimeline')) --}}	
-		<input type="hidden" data-bind="" />{{-- Form::hidden('room_id',$room->room_type_id) --}}
- 		<button data-bind="">Delete timeline</button>{{-- Form::submit('Delete time line') --}} 		
-	{{-- Form::close() --}}
+			</ul>
+    		
+    	<!-- /ko -->    	
+    				
+		</div>
+		<!-- <button data-bind="click: $parent.loadSavedPromoTimeline">Edit timeline</button> -->
+		<button data-bind="click: $parent.deleteSavedPromotionTimeline">Delete timeline</button>
 	</div>				
 </div>
 

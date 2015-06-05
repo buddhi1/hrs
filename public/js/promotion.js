@@ -52,6 +52,10 @@ var Promotion = function(){
 	this.rooms = ko.observable();
 	this.price = ko.observable();
 	this.discount = ko.observable();
+	this.sdate = ko.observable();
+	this.edate = ko.observable();
+	this.room_name = ko.observable();
+	this.serviceArray = ko.observableArray();
 
 	this.addPromotion = function(){
 	
@@ -82,6 +86,78 @@ var Promotion = function(){
 		}
 		
 	}
+
+	this.editSavedPromotionTimeline = function(){
+		if(document.getElementById('from').value !== "" && document.getElementById('to').value !== "" && document.getElementById('stays').value !== "" && document.getElementById('rooms').value !== "" && document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
+			currPromotion.from(this.from());
+			currPromotion.to(this.to());
+			currPromotion.stays(this.stays());
+			currPromotion.rooms(this.rooms());
+			currPromotion.price(this.price());
+			currPromotion.discount(this.discount());
+			var services = [];
+			for(i=0; i<allServices.serviceArray().length; i++){
+				if(allServices.serviceArray()[i].state()){
+					services.push(allServices.serviceArray()[i].name());
+				}
+			}
+			if(services.length <= 0 || services === undefined){
+				alert('You must select atleast a single service to add a promotion');				
+			}else{
+				currPromotion.services(services);
+				saveEditedPromotion();
+			}
+			
+		}else{
+			alert('Please fill required fields to add a promotion');
+		}
+	}
+
+	this.editSavedPromotion = function(){
+		if(document.getElementById('stays').value !== "" && document.getElementById('rooms').value !== "" && document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
+		
+			currPromotion.stays(this.stays());
+			currPromotion.rooms(this.rooms());
+			currPromotion.price(this.price());
+			currPromotion.discount(this.discount());
+			var services = [];
+			for(i=0; i<allServices.serviceArray().length; i++){
+				if(allServices.serviceArray()[i].state()){
+					services.push(allServices.serviceArray()[i].name());
+				}
+			}
+			if(services.length <= 0 || services === undefined){
+				alert('You must select atleast a single service to add a promotion');				
+			}else{
+				currPromotion.services(services);
+				saveEditedPromotionRec();
+			}
+			
+		}else{
+			alert('Please fill required fields to add a promotion');
+		}
+	}
+
+	this.deleteSavedPromotion = function(){
+		console.log(this.services());
+		var url = '/admin/promotion/destroy';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promotion"
+			}else if(res==0){
+				alert('There are promotions available for this room type. Please remove promotions to remove the room type.');
+			}else{
+				alert('Something went wrong. Please try again.')
+			}
+		});
+	}
 }
 
 var PromotionArray = function(){
@@ -89,6 +165,59 @@ var PromotionArray = function(){
 
 	this.promotionArray = ko.observableArray();
 	this.roomArray = ko.observableArray();
+
+	this.loadSavedPromoTimeline = function(){
+		
+		var url = '/admin/promotion/edittimeline';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promotion/edittimeline"
+			}
+		});
+	}
+
+	this.loadSavedPromotion = function(){
+		var url = '/admin/promotion/edit';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promotion/edit"
+			}
+		});
+	}
+
+	this.deleteSavedPromotionTimeline = function(){
+		var url = '/admin/promotion/destroytimeline';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promotion"
+			}else if(res==0){
+				alert('There are promotions available for this room type. Please remove promotions to remove the room type.');
+			}else{
+				alert('Something went wrong. Please try again.')
+			}
+		});
+	}
 
 }
 
@@ -99,8 +228,8 @@ var loadServices = function(){
 		var service = new Service();
 		service.name(services[i].name); 
 		service.state(false);
-		if("room" in window){
-			var savedServices = JSON.parse(room.services);		
+		if("currPromotion" in window){			
+			var savedServices = currPromotion.services();				
 			for(j=0; j<savedServices.length; j++){
 				if(service.name() == savedServices[j]){
 					service.state(true);
@@ -132,11 +261,12 @@ var loadPromotions = function(){
 		promotion.price(calendar[i].price);-
 		promotion.discount(calendar[i].discount_rate);
 		promotion.room_id(calendar[i].room_type_id);
-		promotion.rooms(calendar[i].days);
+		promotion.rooms(calendar[i].days);		
+		promotion.services.push(JSON.parse(calendar[i].services));
 
 		promotions.promotionArray.push(promotion);		
 	}
-	console.log(promotions.promotionArray().length);
+
 	for(i=0; i<rooms.length; i++){		
 		var room = new Room();
 		room.id(rooms[i].id);
@@ -145,7 +275,7 @@ var loadPromotions = function(){
 		var ser = JSON.parse(rooms[i].services);
 
 		var services = [];
-		
+
 		for(j=0; j<ser.length; j++){
 			var service = new Service();
 			service.name(ser[j]);
@@ -155,6 +285,21 @@ var loadPromotions = function(){
 		
 		promotions.roomArray.push(room);
 	}
+}
+
+var loadPromotion = function(){
+	currPromotion.from(promotion.start_date);
+	currPromotion.to(promotion.end_date);
+	currPromotion.stays(promotion.days);
+	currPromotion.price(promotion.price);
+	currPromotion.discount(promotion.discount_rate);
+	currPromotion.room_id(promotion.room_type_id);
+	currPromotion.rooms(promotion.no_of_rooms);
+	currPromotion.services(JSON.parse(promotion.services));	
+	currPromotion.sdate = promotion.start_date;
+	currPromotion.edate = promotion.end_date;
+	currPromotion.room_name(room_name.name);
+	currPromotion.serviceArray(JSON.parse(promotion.services));
 }
 
 var savePromotion = function(){
@@ -178,4 +323,44 @@ var savePromotion = function(){
 		}
 	});
 	
+}
+
+var saveEditedPromotion = function(){
+	var result=-1;
+	var url = '/admin/promotion/updatetimeline';
+	var variables = ko.toJSON(currPromotion);
+
+	var callback = function(res){
+		return res;	
+	}
+
+	sendRequestToServerPost(url,variables,function(res){		
+		if(res ==1 ){
+			alert('The Promotion updated successfully');
+			window.location = http_url+"/admin/promotion";
+			return 1;
+		}else{			
+			alert('Something went wrong');
+		}
+	});
+}
+
+var saveEditedPromotionRec = function(){
+	var result=-1;
+	var url = '/admin/promotion/update';
+	var variables = ko.toJSON(currPromotion);
+
+	var callback = function(res){
+		return res;	
+	}
+
+	sendRequestToServerPost(url,variables,function(res){		
+		if(res ==1 ){
+			alert('The Promotion updated successfully');
+			window.location = http_url+"/admin/promotion";
+			return 1;
+		}else{			
+			alert('Something went wrong');
+		}
+	});
 }
