@@ -9,7 +9,7 @@
 class CalendarController extends BaseController {
 
 	public function __construct(){
-		$this->beforeFilter('csrf',array('on'=>'post'));
+		//$this->beforeFilter('csrf',array('on'=>'post'));
 		$this->beforeFilter('user_group');
 	}
 
@@ -17,16 +17,17 @@ class CalendarController extends BaseController {
 	
 	public function getCreate(){
 		return View::make('calendar.create')
-			->with('roomTypes', RoomType::lists('name', 'id'))
-			->with('services', Service::lists('name', 'id'));
+			->with('roomTypes', RoomType::all(['id', 'name']))
+			->with('services', Service::all(['id', 'name']));
 	}
 
 	//Posts the create form details to database
 
 	public function postCreate(){
-
+		
 		//read from date
-		$date = Input::get('from');	
+		$date = date('Y-m-d', strtotime(Input::get('from').' +0 day'));	
+		$to_d = date('Y-m-d', strtotime(Input::get('to').' +0 day'));
 
 		$room_type_id = Input::get('roomType');
 		$service_id = Input::get('service');
@@ -43,35 +44,33 @@ class CalendarController extends BaseController {
 			//convert from date to dateTime format
 			$from = new DateTime($date );
 			//convert to date to dateTime format
-			$to = new DateTime(Input::get('to'));
+			$to = new DateTime($to_d);
 
 			//finds the days between from and to dates
 			$days = $to->diff($from)->format("%a");		
-			
+
 			//loop inserts new rows for all days between from and to dates
 			for ($i=0; $i <= $days; $i++) { 
 				$calendar = new Calendar;
 				$calendar->room_type_id = $room_type_id;
 				$calendar->service_id = $service_id;
 				$calendar->start_date = $date;
-				$calendar->end_date = new DateTime(Input::get('to'));
+				$calendar->end_date = new DateTime($to_d);
 				$calendar->price = Input::get('price');
 				$calendar->discount_rate = Input::get('discount');			
 				$calendar->save();
 
 				//get next date
 				$date = date('Y-m-d', strtotime($date.' +1 day'));	
+
 			}	
-				
-				return Redirect::to('admin/calendar/create')
-					->with('message', 'Calendar record has been added successfully');		
+				return 1;		
 			
 			}
 			//if the given date range existing for the selected room type and service type
 			else{
-					return Redirect::to('admin/calendar/create')
-					->with('message', 'Calendar records overlapping for given date range. Please refer to edit time line');
-				}		
+				return 2;
+			}		
 
 		
 	}
