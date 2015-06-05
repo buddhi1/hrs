@@ -21,17 +21,13 @@
 <div id="promotion-container">
 	<div data-bind="foreach: roomArray">			
 		<label data-bind="text: id"></label>
-		Services: 
-		<div data-bind="foreach: services">
-			<label data-bind="text: name"></label>
-		</div>				
+						
 		<div data-bind="foreach: $parent.promotionArray">	
 		<!-- ko if: $parent.room_type_id() == room_id() -->
     	
 			<ul>
 				<li>Duration: <label data-bind="text: from"></label> to <label data-bind="text: to"></label></li>
-				
-								
+				<li>Services:<label data-bind="text: services"></label></li>				
 				<li>Price:<label data-bind="text: price"></label></li>
 				<li>Discount rate:<label data-bind="text: discount"></label></li>
 				<li>No. of days:<label data-bind="text: stays"></label></li>
