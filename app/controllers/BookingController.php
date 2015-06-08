@@ -2,10 +2,10 @@
 
 class BookingController extends BaseController {
 
-	public function __construnct() {
+	// public function __construnct() {
 		// $this->beforeFilter('csrf', array('on' => 'post'));
 		// $this->beforeFilter('login');
-	}
+	// }
 
 	public function getBooking1() {
 		return View::make('booking.add1');
@@ -129,55 +129,76 @@ class BookingController extends BaseController {
 
 	public function postCreate() {
 	// create a new booking
+		$variables = Input::get('variables');
+		$var_arr = json_decode($variables);
+		$room_type = $var_arr->chosenRoomType[0]->id;
+		$room_details = RoomType::find($room_type);
+		$service_id = $var_arr->chosenService[0]->id;
 
-		$room_details = RoomType::find(Input::get('room_type'));
-
-		// checking the payment amount
-		$payment = Input::get('paid_amount');
-		
-		if($payment === 'full') {
-			$payment_amount = floatval(Input::get('total_charges'));
-		} else {
-			$room_price = DB::table('room_price_calenders')
+		$room_price = DB::table('room_price_calenders')
 						->select('price')
 						->where('start_date', '=', Session::get('start_date'))
-						->where('service_id', '=', Input::get('service'))
-						->where('room_type_id', '=', Input::get('room_type'))
+						->where('service_id', '=', $service_id)
+						->where('room_type_id', '=', $room_type)
 						->get();
 
-			$payment_amount = floatval($room_price[0]->price);
+		if($room_price) {
+			$date_difference = date_diff(date_create(Session::get('end_date')),date_create(Session::get('start_date')))->d;
+			$totalCharge = $date_difference*$room_price[0]->price;
+		}
+
+		// checking the payment amount
+		$payment = $var_arr->chosenAmount[0]->id;
+		
+		if($payment === 'full') {
+
+			$payment_amount = floatval($totalCharge);
+		} else {
+
+			if($room_price) {
+				$payment_amount = floatval($room_price[0]->price);
+			}
 		}
 
 		//adding the booking to the cart
 		$data = array(
-			'id' => Input::get('room_type'),
+			'id' => $room_type,
 			'name' => $room_details->name,
 			'quantity' => Session::get('no_of_rooms'),
-			'price' => Input::get('total_charges'),
+			'price' => $totalCharge,
 			'options' => array(
 						'identification_no' => Session::get('id_no'),
 						'no_of_adults' => Session::get('no_of_adults'),
 						'no_of_kids' => Session::get('no_of_kids'),
-						'services' => Input::get('service'),
+						'services' => $service_id,
 						'paid_amount' => $payment_amount,
 						'promo_code' => Session::get('promo_code')
 						)
 			);
 		
-		Cart::insert($data);
+		if(Cart::insert($data)) {
+			return 'success';
+		} else {
+			return 'failure';
+		}
 
-		return Redirect::to('booking/cart');
+		
 	}
 
 	public function getCart() {
 	// Show the summary of bookings
 
-		return View::make('booking.cart')
-						->with('rooms', Cart::contents());
+		return View::make('booking.cart');
+	}
+
+	public function postCart() {
+
+		return Cart::contents(true);
 	}
 
 	public function postLoaditem() {
 	// load services to the combobox when room types are selected
+
 		$room_id = Input::get('room_type_id');
 		$service_id = DB::table('room_price_calenders')
 							->join('services', 'room_price_calenders.service_id', '=', 'services.id')
@@ -188,7 +209,7 @@ class BookingController extends BaseController {
 							->distinct()
 							->get();
 
-		return Response::json($service_id);
+		return $service_id;
 	}
 
 	public function postPlacebooking() {
@@ -208,14 +229,10 @@ class BookingController extends BaseController {
 			$booking->promo_code = $bookings->options['promo_code'];
 			$booking->start_date = Session::get('start_date');
 			$booking->end_date = Session::get('end_date');
-
 			$booking->save();
-			Cart::destroy();
 		}
-
-		return Redirect::to('booking/booking1')
-							->with('message', 'booking has been sucessful');
-		
+		Cart::destroy();
+		return 'success';
 	}
 
 	public function getRemoveitem($identifier) {
@@ -230,7 +247,7 @@ class BookingController extends BaseController {
 	//Search for bookings
 	public function postSearch(){
 
-		$uid = Input::get('id');
+		$uid = Input::get('uid');
 		$booking_id = Input::get('booking_id');
 
 		if($uid != null){
@@ -238,34 +255,31 @@ class BookingController extends BaseController {
 				->where('identification_no', '=', $uid)
 				->first();
 			if ($booking == null){
-				return Redirect::to('admin/booking/search')
-					->with('message', 'No such ID exists in bookings');
+				return 'failure';
 			}
-			
 		}elseif($booking_id != null){
 			$booking = DB::table('bookings')
 				->where('id', '=', $booking_id)
 				->first();
 			if ($booking == null){
-				return Redirect::to('admin/booking/search')
-					->with('message', 'No such ID exists in bookings');
+				return 'failure';
 			}
-			
 		}
+		$search_arr = array();
+
+		$search_arr['booking_id'] = $booking->id;
+		$search_arr['identification_no'] = $booking->identification_no;
+		$search_arr['room_type_id'] = $booking->room_type_id;
+		$search_arr['no_of_rooms'] = $booking->no_of_rooms;
+		$search_arr['no_of_adults'] = $booking->no_of_adults;
+		$search_arr['no_of_kids'] = $booking->no_of_kids;
+		$search_arr['services'] = $booking->services;
+		$search_arr['total_charges'] = $booking->total_charges;
+		$search_arr['paid_amount'] = $booking->paid_amount;
+		$search_arr['check_in'] = $booking->check_in;
+		$search_arr['check_out'] = $booking->check_out;
 	
-		return Redirect::to('admin/booking/search')
-			->with('booking_id', $booking->id)
-			->with('identification_no', $booking->identification_no)
-			->with('room_type_id', $booking->room_type_id)
-			->with('no_of_rooms', $booking->no_of_rooms)
-			->with('no_of_adults', $booking->no_of_adults)
-			->with('no_of_kids', $booking->no_of_kids)
-			->with('services', $booking->services)
-			->with('total_charges', $booking->total_charges)
-			->with('paid_amount', $booking->paid_amount)
-			->with('check_in', $booking->check_in)
-			->with('check_out', $booking->check_out);
-		
+		return $search_arr;
 	}
 
 	//views the search page
@@ -284,50 +298,53 @@ class BookingController extends BaseController {
 
 		$booking = Booking::find(Input::get('booking_id'));
 
+		if($booking) {
 
-		$transaction = DB::table('transactions')
+			$transaction = DB::table('transactions')
 					->where('booking_id',Input::get('booking_id'))
 					->get();
 
-		$policy = DB::table('policies')
-					->where('description', "Cancellation")
-					->get();
+			$policy = DB::table('policies')
+						->where('description', "Cancel")
+						->get();
+			
 
-		$charge = floatval($booking->paid_amount);
+			$charge = floatval($booking->paid_amount);
 
-		//calculating the date difference between today and the upcoming booking date
-		$date_difference = strtotime($booking->start_date) - strtotime(date("Y-m-d h:i:s"));
-		$no_of_days = $date_difference/(3600*24);
+			//calculating the date difference between today and the upcoming booking date
+			$date_difference = strtotime($booking->start_date) - strtotime(date("Y-m-d h:i:s"));
+			$no_of_days = $date_difference/(3600*24);
 
-		
+			
 
-		$cancellation_details = json_decode($policy[0]->variables);
-		$cancellation_days = $cancellation_details->days;
-		$cancellation_rate = $cancellation_details->policy;
+			$cancellation_details = json_decode($policy[0]->variables);
+			$cancellation_days = $cancellation_details->days;
+			$cancellation_rate = $cancellation_details->rate;
 
 
-		if($no_of_days < $cancellation_days) {
+			if($no_of_days > $cancellation_days) {
 
-			$cancellation_charge = $charge*$cancellation_rate;
+				$cancellation_charge = $charge*$cancellation_rate;
 
-			$booking->paid_amount = $cancellation_charge;
-			$booking->cancellation = 1;
+				$booking->paid_amount = $cancellation_charge;
+				// $booking->cancellation = 1;
 
-			$booking->save();
+				$booking->save();
 
-			return Redirect::to('booking/destroy')
-				->with('message', '50% of your paid amount has been charged due to late cancellation');
+				return 'success';
+			} else {
+
+				$cancellation_charge = 0;
+
+				$booking->paid_amount = $cancellation_charge;
+				// $booking->cancellation = 1;
+
+				$booking->save();
+
+				return 'success';
+			}	
 		} else {
-
-			$cancellation_charge = 0;
-
-			$booking->paid_amount = $cancellation_charge;
-			$booking->cancellation = 1;
-
-			$booking->save();
-
-			return Redirect::to('booking/destroy')
-				->with('message', 'Booking has been cancelled without a fee');
-		}	
+			return 'failure';
+		}
 	}
 }

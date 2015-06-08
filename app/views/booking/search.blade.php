@@ -8,18 +8,26 @@
 		{{ Session::get('message') }}
 	@endif
 </div>
-<table>
-	<tr>
-	{{ Form::open(array('url'=>'admin/booking/search')) }}		
-		<td> {{ Form::text('booking_id', '') }} </td>
-		<td> {{ Form::submit('Search by booking id') }} </td>
-	{{ Form::close() }}
+<div id="search_booking">
+	<input type="text" name="booking_id" data-bind="value: id" />
+	<button data-bind="click: searchBookingByID">Search by booking id</button>
+</div>	
+<div id="search_user">
+	<input type="text" name="id" data-bind="value: userID" />
+	<button data-bind="click: searchBookingByUserID">Search by identification no</button>
+</div>
+<div id="search_result">
+	Rooom Type ID:<div data-bind="text: chosenRoomType"></div>
+	No. of Rooms:<div data-bind="text: noOfRooms"></div>
+	No. of Adults:<div data-bind="text: noOfAdults"></div>
+	No. of Kids:<div data-bind="text: noOfKids"></div>
+	Service:<div data-bind="text: chosenService"></div>
+	Total Charge:<div data-bind="text: totalPrice"></div>
+	Paid Amount:<div data-bind="text: chosenAmount"></div>
+</div>
 	</tr>
-	<tr>
-	{{ Form::open(array('url'=>'admin/booking/search')) }}		
-		<td> {{ Form::text('id', '') }} </td>
-		<td> {{ Form::submit('Search by identification no') }} </td>
-	{{ Form::close() }}
+	<tr>	
+		
 	</tr>
 	
 </table>
@@ -54,9 +62,20 @@
 			{{ Form::close() }}			
 			
 		@endif
-		
-
 	@endif
 </div>
-{{ Form::close() }}
+<script type="text/javascript" src="{{url()}}/js/booking.js"></script>
+<script type="text/javascript">
+	var http_url = '{{url()}}';
+
+	var searchBooking = new SearchByID();
+	ko.applyBindings(SearchByID, document.getElementById('search_booking'));
+
+	var searchUser = new SearchByUserID();
+	ko.applyBindings(SearchByUserID, document.getElementById('search_user'));
+	
+	var searchResult = new Booking();
+	ko.applyBindings(searchResult, document.getElementById('search_result'));
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 @stop
