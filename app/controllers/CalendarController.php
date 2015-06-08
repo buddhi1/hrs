@@ -81,32 +81,52 @@ class CalendarController extends BaseController {
 		return View::make('calendar.index')
 			->with('start_date', DB::table('room_price_calenders')->orderBy('start_date')->pluck('start_date'))
 			->with('end_date', DB::table('room_price_calenders')->orderBy('start_date', 'desc')->pluck('start_date'))
-			->with('rooms', DB::table('room_price_calenders')->select('id','room_type_id','service_id')->groupBy('service_id','room_type_id')->get())
-			->with('calendar', DB::table('room_price_calenders')->select(DB::raw('count(*) as days'),'id','room_type_id','end_date','price','discount_rate',
+			->with('rooms', Calendar::select('id','room_type_id','service_id')->groupBy('service_id','room_type_id')->get())
+			->with('calendar', Calendar::select('id','room_type_id','end_date','price','discount_rate',
 				'service_id','start_date')->groupBy('end_date','room_type_id','service_id')->get());
 	}
 
 	//Views edit page for selected record
 	public function postEdit(){
-		return View::make('calendar.edit')
-			->with('record', Calendar::find(Input::get('id')));
+		
+		Session::put('calendar_id', Input::get('id'));
+		return 1;
+	}
+
+	//Views edit page for selected record
+	public function getEdit(){	
+
+		$rec = Calendar::find(Session::get('calendar_id'));
+
+		if($rec){
+			return View::make('calendar.edit')
+						->with('record', $rec);
+		}	
+		return Redirect::to('/');
 	}
 
 	//Views edit time line page for selected record
 	public function postEdittimeline(){
+		Session::put('room_id', Input::get('roomType'));
+		Session::put('service_id', Input::get('service'));
+		return 1;
+	}
 
-		$room_type_id = Input::get('room_id');
-		$service_id = Input::get('service_id');
+	//Views edit time line page for selected record
+	public function getEdittimeline(){
 
-		$start = DB::table('room_price_calenders')
-					->where('room_type_id','=',$room_type_id)
+		$room_type_id = Session::get('room_id');
+		$service_id = Session::get('service_id');
+
+		$start = Calendar::where('room_type_id','=',$room_type_id)
 					->where('service_id','=',$service_id)
 					->orderBy('start_date')
+					->select('start_date')
 					->first();
-		$end = DB::table('room_price_calenders')
-					->where('room_type_id','=',$room_type_id)
+		$end = Calendar::where('room_type_id','=',$room_type_id)
 					->where('service_id','=',$service_id)
 					->orderBy('start_date', 'DESC')
+					->select('start_date')
 					->first();
 		return View::make('calendar.edittimeline')
 			->with('room_type_id', $room_type_id)
@@ -117,32 +137,40 @@ class CalendarController extends BaseController {
 
 	//edit function for selected record
 	public function postUpdate(){
+			
+		DB::table('room_price_calenders')
+			->where('room_type_id','=',Input::get('roomType'))
+			->where('service_id','=',Input::get('service'))
+			->where('end_date','=', Input::get('to'))
+			->update(['price'=>Input::get('price'),
+						'discount_rate'=>Input::get('discount')]);
 
-			DB::table('room_price_calenders')
-				->where('room_type_id','=',Input::get('room_id'))
-				->where('service_id','=',Input::get('service'))
-				->where('end_date','=', Input::get('to'))
-				->update(['price'=>Input::get('price'),
-							'discount_rate'=>Input::get('discount')]);
-
-			return Redirect::to('admin/calendar/index')
-				->with('message', 'Calendar record has been update successfully');			
+		Session::forget('calendar_id');
+		return 1;			
 		
 	}	
 
 	//edit function for selected time line
 	public function postUpdatetimeline(){
 
+		if(!Session::has('room_id') || !Session::has('service_id')){
+			return 3;
+		}
+		$room = Session::get('room_id');
+		$service = Session::get('service_id');
+		Session::forget('room_id');
+		Session::forget('service_id');
+		
 		$top_date = Input::get('sdate');
 		$bottom_date = Input::get('edate');
-		$from_date = Input::get('from');
-		$to_date = Input::get('to');
+		$from_date = date('Y-m-d', strtotime(Input::get('from').' 0 day'));
+		$to_date = date('Y-m-d', strtotime(Input::get('to').' 0 day'));
 
 		//reads the end date of editing time line block
 		$end_date = DB::table('room_price_calenders')
 			->where('start_date','=',$from_date)
-			->where('room_type_id','=',Input::get('room_id'))
-			->where('service_id','=',Input::get('service_id'))
+			->where('room_type_id','=',$room)
+			->where('service_id','=',$service)
 			->get();
 
 		//replacing existing time line with a single price and discount
@@ -151,8 +179,8 @@ class CalendarController extends BaseController {
 
 			//deletes ovelapping records
 			DB::table('room_price_calenders')
-			->where('room_type_id','=',Input::get('room_id'))
-			->where('service_id','=',Input::get('service_id'))
+			->where('room_type_id','=',$room)
+			->where('service_id','=',$service)
 			->delete();
 
 			//read from date
@@ -169,8 +197,8 @@ class CalendarController extends BaseController {
 			//loop inserts new rows for all days between from and to dates
 			for ($i=0; $i <= $days; $i++) { 
 				$calendar = new Calendar;
-				$calendar->room_type_id = Input::get('room_id');
-				$calendar->service_id = Input::get('service_id');
+				$calendar->room_type_id = $room;
+				$calendar->service_id = $service;
 				$calendar->start_date = $date;
 				$calendar->end_date = new DateTime($to_date);
 				$calendar->price = Input::get('price');
@@ -181,8 +209,7 @@ class CalendarController extends BaseController {
 				$date = date('Y-m-d', strtotime($date.' +1 day'));	
 			}
 
-			return Redirect::to('admin/calendar/index')
-				->with('message', 'Calendar record has been update successfully');	
+			return 1;	
 		}
 
 		//replacing existing block(s) in time line
@@ -192,13 +219,13 @@ class CalendarController extends BaseController {
 
 			//deletes ovelapping records
 			DB::table('room_price_calenders')
-				->where('room_type_id','=',Input::get('room_id'))
-				->where('service_id','=',Input::get('service_id'))
+				->where('room_type_id','=',$room)
+				->where('service_id','=',$service)
 				->where('start_date','>=',$from_date)
 				->where('start_date','<=',$to_date)
 				->delete();
 			//read from date
-			$date = Input::get('from');	
+			$date = $from_date;	
 
 			//convert from date to dateTime format
 			$from = new DateTime($date );
@@ -211,8 +238,8 @@ class CalendarController extends BaseController {
 			//loop inserts new rows for all days between from and to dates
 			for ($i=0; $i <= $days; $i++) { 
 				$calendar = new Calendar;
-				$calendar->room_type_id = Input::get('room_id');
-				$calendar->service_id = Input::get('service_id');
+				$calendar->room_type_id = $room;
+				$calendar->service_id = $service;
 				$calendar->start_date = $date;
 				$calendar->end_date = new DateTime($to_date);
 				$calendar->price = Input::get('price');
@@ -226,41 +253,40 @@ class CalendarController extends BaseController {
 
 			//change end_dates of existing block 
 			DB::table('room_price_calenders')
-				->where('room_type_id','=',Input::get('room_id'))
-				->where('service_id','=',Input::get('service_id'))
+				->where('room_type_id','=',$room)
+				->where('service_id','=',$service)
 				->where('start_date','<',$from_date)
 				->where('end_date','=', $end_date[0]->end_date)
 				->update(['end_date'=>date('Y-m-d', strtotime($from_date.' -1 day'))]);
 
-			return Redirect::to('admin/calendar/index')
-				->with('message', 'Calendar record has been update successfully!!!');
+			return 1;
 		}else{
 			if($top_date = $from_date){
 				//deletes ovelapping records
 				DB::table('room_price_calenders')
-					->where('room_type_id','=',Input::get('room_id'))
-					->where('service_id','=',Input::get('service_id'))
+					->where('room_type_id','=',$room)
+					->where('service_id','=',$service)
 					->where('start_date','=',$top_date)
 					->delete();
 			}
 			if ($bottom_date = $to_date) {
 				//deletes ovelapping records
 				DB::table('room_price_calenders')
-					->where('room_type_id','=',Input::get('room_id'))
-					->where('service_id','=',Input::get('service_id'))
+					->where('room_type_id','=',$room)
+					->where('service_id','=',$service)
 					->where('start_date','=',$bottom_date)
 					->delete();
 
 				//change end_dates of existing block 
 				DB::table('room_price_calenders')
-					->where('room_type_id','=',Input::get('room_id'))
-					->where('service_id','=',Input::get('service_id'))
+					->where('room_type_id','=',$room)
+					->where('service_id','=',$service)
 					->where('end_date','=', $to_date)
 					->update(['end_date'=>date('Y-m-d', strtotime($to_date.' -1 day'))]);
 			}
 
 			//read from date
-			$date = Input::get('from');	
+			$date = $from_date;	
 
 			//convert from date to dateTime format
 			$from = new DateTime($date );
@@ -273,8 +299,8 @@ class CalendarController extends BaseController {
 			//loop inserts new rows for all days between from and to dates
 			for ($i=0; $i <= $days; $i++) { 
 				$calendar = new Calendar;
-				$calendar->room_type_id = Input::get('room_id');
-				$calendar->service_id = Input::get('service_id');
+				$calendar->room_type_id = $room;
+				$calendar->service_id = $service;
 				$calendar->start_date = $date;
 				$calendar->end_date = new DateTime($to_date);
 				$calendar->price = Input::get('price');
@@ -285,14 +311,12 @@ class CalendarController extends BaseController {
 				$date = date('Y-m-d', strtotime($date.' +1 day'));	
 			}
 
-			return Redirect::to('admin/calendar/index')
-				->with('message', 'Calendar record has been update successfully!!!');
+			return 1;
 
 		}
 
 	
-		return Redirect::to('admin/calendar/index')
-				->with('message', 'Something went wrong');	
+		return 3;	
 	}
 
 	//deletes selected calendar record
