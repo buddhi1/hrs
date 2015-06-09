@@ -8,9 +8,6 @@
 @if(Session::has('message'))
 	<h3>{{ Session::get('message') }}</h3>
 @endif
-	
-	{{ Form::hidden('sdate',$start->start_date) }}
-	{{ Form::hidden('edate',$end->end_date) }}
 
 <div>
 	Room type: <label data-bind="text: roomType"></label>
@@ -22,10 +19,10 @@
 	Start_date: <input data-bind="value: from" id="from" /> End date: <input data-bind="value: to" id="to" />
 </div>
 <div>
-	Room price: <input data-bind="value: price" />
+	Room price: <input data-bind="value: price" id="price" />
 </div>
 <div>
-	Discount rate: <input data-bind="value: discount" />
+	Discount rate: <input data-bind="value: discount" id="discount" />
 </div>
 <div>
 	<button data-bind="click: saveEditedCalendarTimeline">Update timeline</button>

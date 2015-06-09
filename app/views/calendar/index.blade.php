@@ -17,7 +17,7 @@
 			<li>Price: <label data-bind="text: price"></label></li>
 			<li>Discount rate: <label data-bind="text: discount"></label></li>
 			<li>
-				<button data-bind="">Delete</button>
+				<button data-bind="click: deleteSavedCalendarRec">Delete</button>
 			</li>
 			<li>
 				<button data-bind="click: $root.loadSavedCalendar">Edit</button>	
@@ -26,7 +26,7 @@
 		</ul>					
 	</div>		
 	<div><button data-bind="click: $root.loadSavedCalendarTimeline">Edit timeline</button> </div>
- 	<div><button>Delete timeline</button> </div>		
+ 	<div><button data-bind="click: $parent.deleteSavedCalendarTimeline">Delete timeline</button> </div>		
 </div>	
 
  

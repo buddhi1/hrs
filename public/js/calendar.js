@@ -63,21 +63,53 @@ var CalendarRec = function(){
 
 			saveCalendarRec();
 		}else{
-			alert('Please fill all text fields to add a calendar record')
+			alert('Please fill all text fields to add a calendar record');
 		}
 		
 	}
 
 	this.saveEditedCalendarRecord = function(){
-		if( document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
+		if(document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
 			calendarRec.discount(this.discount());
 			calendarRec.price(this.price());
 
 			saveEditedCalendarRec();
 		}else{
-			alert('Please fill all text fields to update a calendar record')
+			alert('Please fill all text fields to update a calendar record');
 		}
 	}
+
+	this.saveEditedCalendarTimeline = function(){
+		if(document.getElementById('from').value !== "" && document.getElementById('to').value !== "" && document.getElementById('price').value !== "" && document.getElementById('discount').value !== ""){
+			calendarRec.discount(this.discount());
+			calendarRec.price(this.price());
+			calendarRec.from(this.from());
+			calendarRec.to(this.to());
+
+			updateEditedCalendarTimeline();
+		}else{
+			alert('Please fill all text fields to update calendar timeline');
+		}
+	}
+
+	this.deleteSavedCalendarRec = function(){
+		var url = '/admin/calendar/destroy';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/calendar"
+			}else{
+				alert('Something went wrong. Please try again.');
+			}
+		});
+	}
+
 }
 
 var Calendar = function(){
@@ -114,6 +146,24 @@ var Calendar = function(){
 
 			if(res == 1){
 				window.location = http_url+"/admin/calendar/edittimeline"
+			}
+		});
+	}
+
+	this.deleteSavedCalendarTimeline = function(){
+		var url = '/admin/calendar/destroytimeline';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/calendar"
+			}else{
+				alert('Something went wrong. Please try again.');
 			}
 		});
 	}
@@ -163,26 +213,26 @@ var loadCalendar = function(){
 	}
 }
 
-	this.loadCalendarRec = function(){
-		if(record){
-			calendarRec.id(record.id);
-			calendarRec.from(record.start_date);
-			calendarRec.to(record.end_date);
-			calendarRec.discount(record.discount_rate);
-			calendarRec.price(record.price);
-			calendarRec.roomType(record.room_type_id);
-			calendarRec.service(record.service_id);
-			
-		}
+var loadCalendarRec = function(){
+	if(record){
+		calendarRec.id(record.id);
+		calendarRec.from(record.start_date);
+		calendarRec.to(record.end_date);
+		calendarRec.discount(record.discount_rate);
+		calendarRec.price(record.price);
+		calendarRec.roomType(record.room_type_id);
+		calendarRec.service(record.service_id);
+		
 	}
+}
 
-	this.loadCalendarTimeline = function(){
+var loadCalendarTimeline = function(){
 
-		calendarRec.sdate(s_date);
-		calendarRec.edate(e_date);
-		calendarRec.roomType(room);
-		calendarRec.service(service);
-	}
+	calendarRec.sdate(s_date);
+	calendarRec.edate(e_date);
+	calendarRec.roomType(room);
+	calendarRec.service(service);
+}
 
 var saveCalendarRec = function(){
 	var result=-1;
@@ -207,7 +257,7 @@ var saveCalendarRec = function(){
 	});
 }
 
-this.saveEditedCalendarRec = function(){
+var saveEditedCalendarRec = function(){
 	var result=-1;
 	var url = '/admin/calendar/update';
 	var variables = ko.toJSON(calendarRec);
@@ -227,7 +277,7 @@ this.saveEditedCalendarRec = function(){
 	});
 }
 
-this.saveEditedCalendarTimeline = function(){
+var updateEditedCalendarTimeline = function(){
 	var result=-1;
 	var url = '/admin/calendar/updatetimeline';
 	var variables = ko.toJSON(calendarRec);
