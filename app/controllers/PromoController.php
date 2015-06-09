@@ -12,7 +12,7 @@ class PromoController extends BaseController {
 
 		return View::make('promo.view')
 			->with('promos', PromoCode::all())
-			->with('rooms', RoomType::all());
+			->with('roomTypes', RoomType::all(['id', 'name']));
 	}
 
 	public function getCreate() {

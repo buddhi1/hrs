@@ -70,6 +70,12 @@ var Promo = function(){
 	}
 }
 
+var PromoArray = function(){
+	var self = this;
+
+	this.promoArray = ko.observableArray();
+}
+
 
 // ------------------------- promotion controller functions -------------------------
 
@@ -96,6 +102,23 @@ var loadServices = function(){
 			}	
 		}		
 		allServices.serviceArray.push(service);
+	}
+}
+
+var loadPromos = function(){
+	for(i=0; i<promos.length; i++){
+		var promo = new Promo();
+		promo.id(promos[i].id);
+		promo.from(promos[i].start_date);
+		promo.to(promos[i].end_date);
+		promo.price(promos[i].price);
+		promo.stays(promos[i].days);
+		promo.rooms(promos[i].no_of_rooms);
+		promo.code(promos[i].promo_code);
+		promo.room(promos[i].room_type_id);
+		promo.services(JSON.parse(promos[i].services));
+
+		promoArray.promoArray.push(promo);
 	}
 }
 
