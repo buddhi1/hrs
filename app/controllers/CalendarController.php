@@ -321,27 +321,40 @@ class CalendarController extends BaseController {
 
 	//deletes selected calendar record
 	public function postDestroy(){
-		
-		DB::table('room_price_calenders')
-			->where('room_type_id','=',Input::get('room_id'))
-			->where('service_id','=',Input::get('service_id'))
-			->where('end_date','=',Input::get('date'))
+
+		$room = Input::get('roomType');
+		$service = Input::get('service');
+		$date = Input::get('to');
+
+		if($room && $service && $date){
+			DB::table('room_price_calenders')
+			->where('room_type_id','=', $room)
+			->where('service_id','=', $service)
+			->where('end_date','=', $date)
 			->delete();
 
-		return Redirect::to('admin/calendar/index')
-			->with('message','Record removed successfully');
+		return 1;
+		}
+		return 3;
+		
 	}
 
 
 	//deletes selected time line
 	public function postDestroytimeline(){
 
-		DB::table('room_price_calenders')
-			->where('room_type_id','=',Input::get('room_id'))
-			->where('service_id','=',Input::get('service_id'))
-			->delete();
+		$room = Input::get('roomType');
+		$service = Input::get('service');
 
-		return Redirect::to('admin/calendar/index')
-			->with('message','Time line removed successfully');
+		if($room && $service){
+			DB::table('room_price_calenders')
+				->where('room_type_id','=', $room)
+				->where('service_id','=', $service)
+				->delete();
+
+			return 1;
+		}
+
+		return 2;		
 	}
 }

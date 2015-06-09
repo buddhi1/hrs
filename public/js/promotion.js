@@ -138,7 +138,7 @@ var Promotion = function(){
 	}
 
 	this.deleteSavedPromotion = function(){
-		console.log(this.services());
+		
 		var url = '/admin/promotion/destroy';
 		var variables = ko.toJSON(this);
 
@@ -177,7 +177,7 @@ var PromotionArray = function(){
 		sendRequestToServerPost(url,variables,function(res){
 
 			if(res == 1){
-				window.location = http_url+"/admin/promotion/edittimeline"
+				window.location = http_url+"/admin/promotion/edittimeline";
 			}
 		});
 	}
