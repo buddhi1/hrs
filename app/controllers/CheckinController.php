@@ -7,36 +7,44 @@ class CheckinController extends BaseController {
 		$this->beforeFilter('user_group');
 	}
 
+	public function getCheckindetails() {
+
+		Session::put('booking_id', Input::get('booking_id'));
+	}
+
 	public function getCreate() {
-	
-		return View::make('checkin.add')
-		->with('booking_id', Input::get('booking_id'))
-		->with('identification_no', Input::get('identification_no'))
-		->with('check_in', Input::get('check_in'))
-		->with('check_out', Input::get('check_out'));
+
+		return View::make('checkin.add');
+	}
+
+	public function postOnload() {
+
+		$booking_id = Session::get('booking_id');
+		return $booking_id;
 	}
 
 	//marks checkin and checkout
 	public function postCreate() {
 
-		$booking_id = Input::get('booking_id');
+		$booking_id = Input::get('bookingID');
+		
 		$checkin = DB::table('checkins')->where('booking_id', '=', $booking_id)->first();
 	
 		if($checkin == null){
 			$check = new Checkin();
 
-			$check->authorizer = Input::get('auth');
-			$check->check_in = Input::get('check_in');
+			$check->authorizer = 1;	//Auth::id()
+			$check->check_in = Input::get('checkin');
 			$check->check_out = Input::get('check_out');
-			$check->advance_payment = Input::get('advance_payment');
+			$check->advance_payment = Input::get('advancedPay');
 			$check->payment = Input::get('payment');
 			$check->booking_id = $booking_id;
 			
-			if($check->check_in === '1') {
+			if($check->check_in === 'true') {
 				$check->check_in = date('Y-m-d H:i:s');
 			}
 
-			if($check->check_out === '1') {
+			if($check->check_out === 'true') {
 				$check->check_out = date('Y-m-d H:i:s');
 			}
 /*
@@ -58,9 +66,9 @@ class CheckinController extends BaseController {
 				}
 
 				$booking->save();
+				Session::forget('booking_id');
 				
-				return Redirect::to('admin/checkin')
-					->with('message', 'Checkin Successful');
+				return 'success';
 			}
 		
 		}
@@ -72,14 +80,20 @@ class CheckinController extends BaseController {
 			->with('checkins', Checkin::all());
 	}
 
-	//Views the edit page
 	public function getEdit(){
-		return View::make('checkin.edit')
-			->with('booking_id', Input::get('booking_id'))
-			->with('identification_no', Input::get('identification_no'))
-			->with('check_in', Input::get('check_in'))
-			->with('check_out', Input::get('check_out'))
-			->with('payments', DB::table('checkins')->where('booking_id', '=', Input::get('booking_id'))->pluck('payment'));
+		//show the edit page
+
+		return View::make('checkin.edit');	
+	}
+
+	public function postEdit() {
+
+		
+		// ->with('booking_id', Input::get('booking_id'))
+		// ->with('identification_no', Input::get('identification_no'))
+		// ->with('check_in', Input::get('check_in'))
+		// ->with('check_out', Input::get('check_out'))
+		// ->with('payments', DB::table('checkins')->where('booking_id', '=', Input::get('booking_id'))->pluck('payment'))
 	}
 	
 
