@@ -19,35 +19,25 @@ class PromoController extends BaseController {
 	// display the form to create the new promo code
 
 		return View::make('promo.add')
-			->with('services', Service::all())
-			->with('rooms', RoomType::all());
+			->with('services', Service::all(['id', 'name']))
+			->with('roomTypes', RoomType::all(['id', 'name']));
 	}
 
 	public function postCreate() {
 	// add a new promo code to the database
+		$promo = new Promocode;
+		$promo->promo_code = Input::get('code');
+		$promo->start_date = date('Y-m-d', strtotime(Input::get('from').' 0 day'));
+		$promo->end_date = date('Y-m-d', strtotime(Input::get('to').' 0 day'));
+		$promo->price = Input::get('price');
+		$promo->days = Input::get('stays');
+		$promo->room_type_id = Input::get('room');
+		$promo->no_of_rooms = Input::get('rooms');
+		$promo->services = json_encode(explode(',', Input::get('services')));
 
-		$validator = Validator::make(Input::all(), PromoCode::$rules);
+		$promo->save();
 
-		if($validator->passes()) {
-			$promo = New PromoCode();
-
-			$promo->promo_code = Input::get('promo_code');
-			$promo->start_date = Input::get('start_date');
-			$promo->end_date = Input::get('end_date');
-			$promo->price = Input::get('price');
-			$promo->days = Input::get('days');
-			$promo->room_type_id = Input::get('room_id');
-			$promo->no_of_rooms = Input::get('no_of_rooms');
-			$promo->services = json_encode(Input::get('service'));
-
-			$promo->save();
-
-			return Redirect::to('admin/promo')
-				->with('promo_message','Promo Code is succesfully added');
-		}
-
-		return Redirect::to('admin/promo')
-				->with('promo_message','Services cannot be empty');
+		return 1;		
 	}
 
 	public function postEdit() {
