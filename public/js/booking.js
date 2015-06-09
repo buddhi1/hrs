@@ -64,6 +64,8 @@ var Booking = function() {
   self.paidAmount = ko.observableArray();
   self.chosenAmount = ko.observable();
   self.totalPrice = ko.observable();
+  self.checkIn = ko.observable();
+  self.checkOut = ko.observable();
 
   self.deleteBooking = function() {
     //delete a booking from the cart
@@ -80,6 +82,14 @@ var Booking = function() {
     //remove an item from the cart
 
     removeCartItem(self.id());
+  }
+
+  self.markCheckin = function() {
+    sendCheckin(self.id(), "/admin/checkin/create");
+  }
+
+  self.markCheckout = function() {
+    sendCheckin(self.id(), "/admin/checkin/edit");
   }
 }
 
@@ -196,7 +206,7 @@ function saveBooking() {
   
   var clean = cleanBookingJson(bookingFirst);
   var sendData = ko.toJSON(clean);
-  console.log(sendData);
+
   sendBookingToServerPost('/admin/booking/create', sendData, function(res){
 
     if(res === 'success') {
@@ -256,6 +266,20 @@ function bookingSearch(id, type) {
       searchResult.chosenService(result.services);
       searchResult.totalPrice(result.total_charges);
       searchResult.chosenAmount(result.paid_amount);
+      searchResult.id(result.booking_id);
+      searchResult.identificationNo(result.identification_no);
+      searchResult.checkIn(result.check_in);
+      searchResult.checkOut(result.check_out);
     }
+  });
+}
+
+function sendCheckin(id, url) {
+  //send the checkin and checkout details to the controller
+
+  var bookID = id;
+  var sendData = ko.toJSON({"booking_id": bookID});
+  sendRequestToServerGet('/admin/checkin/checkindetails' ,sendData, function(res) {
+    window.location = http_url+url;
   });
 }

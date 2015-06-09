@@ -25,10 +25,7 @@
 <script type="text/javascript" src="{{url()}}/js/booking.js"></script>
 <script>
 	http_url = '{{url()}}';
-	// window.onload = function(){
-
-	// 	getServices('/booking/loaditem','room_type_id='+document.getElementById('room_type').value,handleResponce);
-	// }
+	
 
 	document.getElementById('room_type').onchange = function(){
 

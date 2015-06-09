@@ -1,14 +1,9 @@
 @extends('layouts.main')
 
 @section('content')
-<h2>Edit checkin</h2>
+
 <table>
 	{{ Form::open(array('url' => 'admin/checkin/update')) }}
-
-	<tr>
-		<td>Authorizer</td>
-		<td>{{ Form::text('auth', $identification_no) }}</td>
-	</tr>
 
 	<tr>
 		<td>Booking ID</td>
@@ -17,7 +12,9 @@
 	@if( $check_in != null )
 	<tr>
 		
-		<td> <h4>Checked in</h4>	</td>
+		<td>
+			<h4>Checked in</h4>
+		</td>
 		<td>&nbsp;</td>	
 	</tr>	
 	<tr>
