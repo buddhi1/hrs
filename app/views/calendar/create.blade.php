@@ -24,17 +24,17 @@
 	<div>
 		<label>Start Date</label>
 	
-		<input data-bind="value: from" id="from" />{{-- Form::text('from', '', array('required', 'id'=>'from')) --}} 
+		<input data-bind="value: from" id="from" /> 
 		<label>End date</label>
- 		<input data-bind="value: to" id="to" />{{-- Form::text('to', '', array('required', 'id'=>'to')) --}} 
+ 		<input data-bind="value: to" id="to" />
 	</div>
 	<div>
 		<label>Room price</label>
-		<input data-bind="value: price" id="price" /> {{-- Form::text('price', '', array('required')) --}}
+		<input data-bind="value: price" id="price" /> 
 	</div>
 	<div>
 		<label>Discount Rate</label>
-		<input data-bind="value: discount" id="discount" /> {{-- Form::text('discount', '', array('required')) --}}
+		<input data-bind="value: discount" id="discount" /> 
 	</div>
 	<div><button data-bind="click: addCalendareRec">Add to Calendar</button></div>
 </div>
