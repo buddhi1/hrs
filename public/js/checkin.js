@@ -7,6 +7,7 @@ var Checkin = function() {
 
 	self.id = ko.observable();
 	self.bookingID = ko.observable();
+	self.authorizer = ko.observable();
 	self.checkin = ko.observable();
 	self.checkout = ko.observable();
 	self.advancedPay = ko.observable();
@@ -17,8 +18,42 @@ var Checkin = function() {
 		//send checking details to controller
 		
 		var sendData = ko.toJSON(checkinView);
+
 		sendRequestToServerPost('/admin/checkin/create', sendData, function(res) {
 			console.log(res);
 		});
 	}
+
+	self.saveCheckout = function() {
+		//send checking details to controller
+		
+		var sendData = ko.toJSON(checkinView);
+
+		sendRequestToServerPost('/admin/checkin/update', sendData, function(res) {
+			if(res === 'success') {
+				window.location = http_url+"/admin/checkin/index";
+			}
+		});
+	}
+
+	self.addPayment = function() {
+		//send checkin id to controller
+
+		var sendData = ko.toJSON({"id": self.id()});
+
+		sendRequestToServerPost('/admin/checkin/newpayment', sendData, function(res) {
+			if(res === 'success') {
+				window.location = http_url+"/admin/checkin/addpayment";
+			}
+		});
+	}
+}
+
+var CheckinIndex = function() {
+	//Checkin Index calass to hold multiple checkins
+
+	var self = this;
+
+	self.id = ko.observable();
+	self.checkins = ko.observableArray();
 }
