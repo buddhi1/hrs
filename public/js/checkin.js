@@ -8,7 +8,9 @@ var Checkin = function() {
 	self.id = ko.observable();
 	self.bookingID = ko.observable();
 	self.checkin = ko.observable();
+	self.checkout = ko.observable();
 	self.advancedPay = ko.observable();
+	self.paid = ko.observable();
 	self.payment = ko.observable();
 
 	self.saveCheckin = function() {
