@@ -87,18 +87,19 @@ class CheckinController extends BaseController {
 	}
 
 	public function postEdit() {
-
+		//load booking_id and payment fields onLoad of edit page
 		
-		// ->with('booking_id', Input::get('booking_id'))
-		// ->with('identification_no', Input::get('identification_no'))
-		// ->with('check_in', Input::get('check_in'))
-		// ->with('check_out', Input::get('check_out'))
-		// ->with('payments', DB::table('checkins')->where('booking_id', '=', Input::get('booking_id'))->pluck('payment'))
+		$booking_id = Session::get('booking_id');
+		$payments = DB::table('checkins')->where('booking_id', '=', $booking_id)->pluck('payment');
+
+		$check_arr = array();
+		$check_arr['booking_id'] = $booking_id;
+		$check_arr['payments'] = $payments;
+		return $check_arr;
 	}
 	
-
-	//Update functionality
 	public function postUpdate(){
+		//update the checkin table with checkout details
 
 		$booking_id = Input::get('booking_id');
 		$checkin = DB::table('checkins')->where('booking_id', '=', $booking_id)->first();
@@ -115,15 +116,10 @@ class CheckinController extends BaseController {
 
 					DB::table('checkins')->where('booking_id', '=', $booking_id)
 						->update(['payment'=>json_encode($pay)]);
-
-		
 				}elseif($payHistory == null){
 					DB::table('checkins')->where('booking_id', '=', $booking_id)
 						->update(['payment'=>'['.json_encode($payment).']']);
-
 				}
-				
-			
 			}
 
 			if(Input::get('check_out') === '1') {
@@ -133,7 +129,6 @@ class CheckinController extends BaseController {
 				DB::table('bookings')->where('id', '=', $booking_id)
 					->update(['check_out'=>date('Y-m-d H:i:s')]);
 			}
-
 			
 			return Redirect::to('admin/checkin')
 					->with('message', 'Checkin Updated');
