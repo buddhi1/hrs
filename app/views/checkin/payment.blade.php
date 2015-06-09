@@ -13,7 +13,7 @@ Booking ID: <span data-bind="text: bookingID"></span></br>
 Toal Charges: <span data-bind="text: payment"></span></br>
 Already Paid: <span data-bind="text: paid"></span></br>
 Payment: <input type="text" data-bind="value: advancedPay" /></br>
-<button data-bind="click: saveCheckin">Submit</button></br>
+<button data-bind="click: savePayment">Submit</button></br>
 
 <script type="text/javascript" src="{{url()}}/js/checkin.js"></script>
 <script type="text/javascript">
@@ -36,7 +36,7 @@ Payment: <input type="text" data-bind="value: advancedPay" /></br>
 				for (var i = 0; i < payArr.length; i++) {
 					payTotal += parseFloat(payArr[i]);
 				};
-				
+
 				checkinView.paid(payTotal);
 			}
 		});

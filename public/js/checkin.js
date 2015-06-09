@@ -47,6 +47,19 @@ var Checkin = function() {
 			}
 		});
 	}
+
+	self.savePayment = function() {
+		//send checkin id to controller
+
+		var sendData = ko.toJSON(checkinView);
+		console.log(sendData);
+
+		sendRequestToServerPost('/admin/checkin/recordpayment', sendData, function(res) {
+			if(res === 'success') {
+				window.location = http_url+"/admin/checkin/index";
+			}
+		});
+	}
 }
 
 var CheckinIndex = function() {

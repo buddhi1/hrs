@@ -172,11 +172,14 @@ class CheckinController extends BaseController {
 		if(Session::has('checkin_id')) {
 
 			return View::make('checkin.payment');
+		} else {
+
+			return Redirect::to('admin/checkin/index');
 		}
 	}
 
 	public function postAddpayment() {
-		// return the payment blade
+		// display all the details revelant on the page on load
 
 		$checkin_id = Session::get('checkin_id');
 		$checkin = DB::table('checkins')
@@ -200,6 +203,30 @@ class CheckinController extends BaseController {
 		$check_arr['payment'] = $payment;
 		$check_arr['paid'] = $paid;
 
+		Session::forget('checkin_id');
 		return $check_arr;
+	}
+
+	public function postRecordpayment() {
+		//add the new payment to the checkin table
+
+		$checkin_id = Input::get('id');
+		$amount = Input::get('advancedPay');
+
+		$checkin = Checkin::find($checkin_id);
+
+
+		if($checkin) {
+			$pay_arr = json_decode($checkin->payment);
+			$pay_arr[] = $amount;
+			$pay_string = json_encode($pay_arr);
+
+			$checkin->payment = $pay_string;
+			$checkin->save();
+
+			return 'success';
+		}else {
+			return 'failure';
+		}
 	}
 }
