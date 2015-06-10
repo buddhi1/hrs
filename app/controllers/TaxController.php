@@ -9,8 +9,9 @@
 class TaxController extends BaseController {
 
 	public function __construct() {
-		$this->beforeFilter('csrf',array('on' => 'post'));
-		$this->beforeFilter('user_group');
+		//$this->beforeFilter('csrf',array('on' => 'post'));
+		//change migration
+		//$this->beforeFilter('user_group');
 	}
 
 	//views the add tax page
@@ -21,10 +22,7 @@ class TaxController extends BaseController {
 
 	//create tax operation
 	public function postCreate(){
-
-		$validator = Validator::make(Input::all(), Tax::$rules);	
-
-		if($validator->passes()){
+		
 			$tax = new Tax;
 
 			$tax->name = Input::get('name');
@@ -32,13 +30,8 @@ class TaxController extends BaseController {
 
 			$tax->save();
 
-			return Redirect::to('admin/tax/create')
-				->with('message', 'New tax added successfully');
-		}
-
-		return Redirect::to('admin/tax/create')
-			->withErrors($validator)
-			->withInput();
+			return 1;
+		
 	}
 
 
