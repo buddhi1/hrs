@@ -28,7 +28,7 @@ var RoomArray = function(){
 	var self = this;
 
 	this.roomArray = ko.observableArray();
-	this.selected = ko.observable();
+	this.selected = ko.observableArray();
 }
 
 var Promo = function(){
@@ -43,6 +43,7 @@ var Promo = function(){
 	this.code = ko.observable();
 	this.services = ko.observableArray();
 	this.room = ko.observable();
+	this.room_name = ko.observable();
 
 	this.addPromo = function(){
 		if(document.getElementById('from').value !== "" && document.getElementById('to').value !== "" && document.getElementById('price').value !== "" && document.getElementById('stays').value !== ""&& document.getElementById('rooms').value !== ""){
@@ -68,12 +69,68 @@ var Promo = function(){
 			alert('Please fill the required fields');
 		}
 	}
+
+	this.saveEditedPromo = function(){
+		if(document.getElementById('from').value !== "" && document.getElementById('to').value !== "" && document.getElementById('price').value !== "" && document.getElementById('stays').value !== ""&& document.getElementById('rooms').value !== ""){
+			currPromo.from(this.from());
+			currPromo.to(this.to());
+			currPromo.price(this.price());
+			currPromo.stays(this.stays());
+			currPromo.rooms(this.rooms());
+
+			var services = [];
+			for(i=0; i<allServices.serviceArray().length; i++){
+				if(allServices.serviceArray()[i].state()){
+					services.push(allServices.serviceArray()[i].name());
+				}
+			}
+			currPromo.services(services);
+
+			saveEdPromo();
+		}else{
+			alert('Please fill the required fields');
+		}
+	}
 }
 
 var PromoArray = function(){
 	var self = this;
 
 	this.promoArray = ko.observableArray();
+
+	this.loadEditSavedPromo = function(){
+		var url = '/admin/promo/edit';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promo/edit"
+			}
+		});
+	}
+
+	this.deleteSavedPromo = function(){
+		var url = '/admin/promo/destroy';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/promo";
+			}else{
+				alert('Something went wrong. Please try again.');
+			}
+		});
+	}
 }
 
 
@@ -116,9 +173,46 @@ var loadPromos = function(){
 		promo.rooms(promos[i].no_of_rooms);
 		promo.code(promos[i].promo_code);
 		promo.room(promos[i].room_type_id);
+
+		for(j=0; j<roomTypes.length; j++){
+			if(roomTypes[j].id == promos[i].room_type_id){
+				promo.room_name(roomTypes[j].name);
+				break;
+			}
+		}
 		promo.services(JSON.parse(promos[i].services));
 
-		promoArray.promoArray.push(promo);
+		allPromo.promoArray.push(promo);
+	}
+}
+
+var loadPromo = function(){
+	currPromo.id(promo.id);
+	currPromo.from(promo.start_date);
+	currPromo.to(promo.end_date);
+	currPromo.price(promo.price);
+	currPromo.stays(promo.days);
+	currPromo.rooms(promo.no_of_rooms);
+	currPromo.code(promo.promo_code);
+
+	
+	roomType.id(promo.room_type_id);
+	console.log(roomTypes);
+	for(k=0; k<roomTypes.length; k++){
+		if (roomTypes[k].id == promo.room_type_id) {
+			roomType.name(roomTypes[k].name);
+			break;
+		}
+	}
+	var currServices = JSON.parse(promo.services);
+	
+	for(i=0; i<allServices.serviceArray().length; i++){
+		for(j=0; j<currServices.length; j++){
+			
+			if(allServices.serviceArray()[i].name() == currServices[j]){				
+				allServices.serviceArray()[i].state(true);
+			}
+		}
 	}
 }
 
@@ -142,3 +236,22 @@ var savePromo = function(){
 	});
 }
 
+var saveEdPromo = function(){
+	var result=-1;
+	var url = '/admin/promo/update';
+	var variables = ko.toJSON(currPromo);
+
+	var callback = function(res){
+		return res;	
+	}
+
+	sendRequestToServerPost(url,variables,function(res){		
+		if(res ==1 ){
+			alert('The Promo updated successfully');
+			window.location = http_url+"/admin/promo";
+			return 1;
+		}else{
+			alert('Something went wrong');
+		}
+	});
+}
