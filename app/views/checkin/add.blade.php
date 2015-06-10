@@ -4,8 +4,9 @@
 
 Booking ID: <input type="text" data-bind="value: bookingID" /></br>
 Check in: <input type="checkbox" data-bind="checked: checkin" /></br>
+Toal Charges: <span data-bind="text: payment"></span></br>
+Already Paid: <span data-bind="text: paid"></span></br>
 Advance Payment: <input type="text" data-bind="value: advancedPay" /></br>
-Payment: <input type="text" data-bind="value: payment" /></br>
 <button data-bind="click: saveCheckin">Submit</button></br>
 
 {{ HTML::link('admin/checkin/addpayment', 'Add a Payment to an exsisting Check in') }}
@@ -20,12 +21,16 @@ Payment: <input type="text" data-bind="value: payment" /></br>
 
 	window.onload = function() {
 		//load only the booking ID
+
 		var foo;
 		var checkArr;
 		sendRequestToServerPost('/admin/checkin/onload', foo, function(res) {
 			if(res) {
 				checkArr = JSON.parse(res);
-				checkinView.bookingID(checkArr);
+				checkinView.bookingID(checkArr.booking_id);
+				checkinView.payment(checkArr.payment);
+				var 
+				checkinView.paid(checkArr.paid);
 			}
 		});
 	}

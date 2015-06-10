@@ -40,15 +40,17 @@ class RoomController extends BaseController {
 	// delete a room type from the database
 
 		$room = RoomType::find(Input::get('id'));
-		$promotion = Promotion::where('room_type_id', '=', Input::get('id'))->get();
-		if($promotion){
-			return 0;
-		}
-		if($room) {
-			$room->delete();
-			return 1;
-		}
 
+		$promotion = Promotion::where('room_type_id', '=', Input::get('id'))->first();
+		$calendar = Calendar::where('room_type_id', '=', Input::get('id'))->first();
+
+		if(!$promotion && !$calendar){
+			if($room) {
+				$room->delete();
+				return 1;
+			}
+		return 0;
+		}
 		return 2;
 	}
 

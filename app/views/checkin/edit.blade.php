@@ -4,9 +4,10 @@
 
 Booking ID: <input type="text" data-bind="value: bookingID" /></br>
 Check out: <input type="checkbox" data-bind="checked: checkout" /></br>
-Payments so far: <span data-bind="text: paid" ></span></br>
+Total Charges: <span data-bind="text: advancedPay"></span></br>
+Payments so far: <span data-bind="text: paid"></span></br>
 Payment: <input type="text" data-bind="value: payment" /></br>
-<button data-bind="click: saveCheckin">Submit</button></br>
+<button data-bind="click: saveCheckout">Submit</button></br>
 
 {{ HTML::link('admin/checkin/addpayment', 'Add a Payment to an exsisting Check in') }}
 
@@ -31,6 +32,7 @@ Payment: <input type="text" data-bind="value: payment" /></br>
 				checkArr = JSON.parse(res);
 				checkinView.bookingID(checkArr.booking_id);
 				checkinView.paid(checkArr.payments);
+				checkinView.advancedPay(checkArr.total_charge);
 			}
 		});
 	}
