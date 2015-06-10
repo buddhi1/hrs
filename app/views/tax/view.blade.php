@@ -13,7 +13,7 @@
 @endif
 
 @if(Session::has('message'))
-	{{ Session::get('message') }}
+	<div>{{ Session::get('message') }}</div>
 @endif	
 <table border="1">
 	<tr>
@@ -22,25 +22,29 @@
 		<th>Tax Rate</th>
 		<th colspan="2">Edit/Delete</th>
 	</tr>
-	@foreach($taxes as $tax)
-	<tr>
-		<td> {{ $tax->id }} </td>
-		<td> {{ $tax->name }} </td>
-		<td> {{ $tax->rate }} </td>
-		<td> 
-			{{ Form::open(array('url'=>'admin/tax/edit')) }}
-			{{ Form::hidden('id', $tax->id) }}
-			{{ Form::submit('Edit') }}
-			{{ Form::close() }}
-		</td>	
-		<td> 
-			{{ Form::open(array('url'=>'admin/tax/destroy')) }}
-			{{ Form::hidden('id', $tax->id) }}
-			{{ Form::submit('Delete') }}
-			{{ Form::close() }}
-		</td>
-	</tr>
-	@endforeach
 </table>
+	<div data-bind="foreach: taxArray">
+		<div>
+			<label data-bind="text: id"></label>
+			<label data-bind="text: name"></label>
+			<label data-bind="text: rate"></label>
+			<button data-bind="click: $parent.loadEditSavedTax">Edit</button>
+			<button data-bind="click: ">Delete</button>
+		</div>
+	</div>
+
+<script type="text/javascript" src="{{url()}}/js/tax.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	taxes = {{$taxes}};
+
+	window.onload = function(){
+		loadTaxes();
+	}
+	var allTax = new TaxArray();
+
+	ko.applyBindings(allTax);
+</script>
 
 @stop

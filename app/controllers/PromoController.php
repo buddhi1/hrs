@@ -41,41 +41,46 @@ class PromoController extends BaseController {
 	}
 
 	public function postEdit() {
+	
+		if(Input::get('id')){
+			Session::put('promo_id', Input::get('id'));
 
-		return View::make('promo.edit')
-			->with('promos', Promocode::find(Input::get('id')))
-			->with('services', Service::all())
-			->with('promo_message', ' ');
-			//->with('promo_message', "Services cannot be empty");
+			return 1;
+		}
+		return 3;
+	}
+
+	//direcects to edit page with data
+	public function getEdit() {
+		$promo_id = Session::get('promo_id');
+		if($promo_id){
+			Session::forget('promo_id');
+			return View::make('promo.edit')
+						->with('promo', Promocode::find($promo_id))
+						->with('services', Service::all())
+						->with('roomTypes', RoomType::all(['id', 'name']))
+						->with('promo_message', ' ');
+						//->with('promo_message', "Services cannot be empty");
+		}
+		return Redirect::to('/');
 	}
 
 	public function postUpdate() {
 	// update a existing Promo Code
 
-		$validator = Validator::make(Input::all(), PromoCode::$rules);
+		$promo = PromoCode::find(Input::get('id'));
 
-		if($validator->passes()) {
-			$promo = PromoCode::find(Input::get('id'));
+		$promo->start_date = date('Y-m-d', strtotime(Input::get('from').' 0 day'));
+		$promo->end_date = date('Y-m-d', strtotime(Input::get('to').' 0 day'));
+		$promo->price = Input::get('price');
+		$promo->days = Input::get('stays');
+		$promo->no_of_rooms = Input::get('rooms');
+		$promo->services = json_encode(explode(',', Input::get('services')));
 
-			$promo->promo_code = Input::get('promo_code');
-			$promo->start_date = Input::get('start_date');
-			$promo->end_date = Input::get('end_date');
-			$promo->price = Input::get('price');
-			$promo->days = Input::get('days');
-			$promo->room_type_id = Input::get('room_type_id');
-			$promo->no_of_rooms = Input::get('no_of_rooms');
-			$promo->services = json_encode(Input::get('service'));
+		$promo->save();
 
-			$promo->save();
-
-			return Redirect::to('admin/promo')
-				->with('promo_message','Promo Code is succesfully updated');
-		}
-
-		return View::make('promo.edit')
-			->with('promo_message', 'Services cannot be empty')
-			->with('promos', Promocode::find(Input::get('id')))
-			->with('services', Service::all());
+		return 1;
+		
 	}
 
 	public function postDestroy() {
@@ -85,9 +90,9 @@ class PromoController extends BaseController {
 
 		if($promo) {
 			$promo->delete();
-			return Redirect::To('admin/promo')
-				->with('promo_message', "Promo Code has been deleted");
+			return 1;
 		}
+		return 0;
 	}
 
 }

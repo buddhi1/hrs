@@ -14,20 +14,26 @@
 @endif
 
 @if(Session::has('message'))
-	{{ Session::get('message') }}
+	<div>{{ Session::get('message') }}</div>
 @endif	
 
-Tax Name: <input type="text" data-bind="value: name" />
-Tax Rate: <input type="text" data-bind="value: rate" />
-<button data-bind="click: saveTax">Add Tax</button>
+
+<div>
+	<div>Tax Name: <input data-bind="value: name" id="name" /></div>
+	<div>Tax Rate: <input data-bind="value: rate" id="rate" /></div>
+	<div><button data-bind="click: addTax">Add Tax</button> </div>
+</div>
+
 
 <script type="text/javascript" src="{{url()}}/js/tax.js"></script>
-<script type="text/javascript">
-	var http_url = '{{url()}}';
-
-	var tax = new Tax();
-	ko.applyBindings(tax);
-</script>
 <script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+
+	var newTax = new Tax();
+
+	ko.applyBindings(newTax);
+</script>
+
 
 @stop

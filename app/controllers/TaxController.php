@@ -9,8 +9,10 @@
 class TaxController extends BaseController {
 
 	public function __construct() {
-		// $this->beforeFilter('csrf',array('on' => 'post'));
-		// $this->beforeFilter('user_group');
+		//$this->beforeFilter('csrf',array('on' => 'post'));
+		//change migration
+		//$this->beforeFilter('user_group');
+
 	}
 
 	//views the add tax page
@@ -21,10 +23,7 @@ class TaxController extends BaseController {
 
 	//create tax operation
 	public function postCreate(){
-
-		$validator = Validator::make(Input::all(), Tax::$rules);	
-
-		if($validator->passes()){
+		
 			$tax = new Tax;
 
 			$tax->name = Input::get('name');
@@ -32,13 +31,8 @@ class TaxController extends BaseController {
 
 			$tax->save();
 
-			return Redirect::to('admin/tax/create')
-				->with('message', 'New tax added successfully');
-		}
-
-		return Redirect::to('admin/tax/create')
-			->withErrors($validator)
-			->withInput();
+			return 1;
+		
 	}
 
 
@@ -52,12 +46,29 @@ class TaxController extends BaseController {
 	//views the tax edit page
 	public function postEdit(){
 	
-		$tax = Tax::find(Input::get('id') );
+		$id = Input::get('id');
+		if($id){
+			Session::put('tax_id', $id);
+			return 1;
+		}
+		return 3;
+		
+	}
 
-		return View::make('tax.edit')
-			->with('id', $tax->id)
-			->with('name', $tax->name)
-			->with('rate', $tax->rate);
+	//views the tax edit page
+	public function getEdit(){
+	
+		$tax = Tax::find(Session::get('tax_id'));
+		Session::forget('tax_id');
+		if($tax){
+			return View::make('tax.edit')
+					->with('id', $tax->id)
+					->with('name', $tax->name)
+					->with('rate', $tax->rate);
+		}
+
+		return Redirect::to('/');
+		
 	}
 
 	//Edit operation

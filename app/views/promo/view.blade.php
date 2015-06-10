@@ -28,11 +28,11 @@
 		<label data-bind="text: to"></label>
 		<label data-bind="text: price"></label>
 		<label data-bind="text: stays"></label>
-		<label data-bind="text: room"></label>
+		<label data-bind="text: room_name"></label>
 		<label data-bind="text: rooms"></label>
 		<label data-bind="text: services"></label>
-		<button data-bind="click: " >Edit</button>
-		<button data-bind="click: " >Delete</button>
+		<button data-bind="click: $parent.loadEditSavedPromo" >Edit</button>
+		<button data-bind="click: $parent.deleteSavedPromo" >Delete</button>
 	</div>
 
 
@@ -47,9 +47,9 @@
 		loadPromos();
 	}
 
-	var promoArray = new PromoArray();
+	var allPromo = new PromoArray();
 
-	ko.applyBindings(promoArray);
+	ko.applyBindings(allPromo);
 </script>	
 
 @stop

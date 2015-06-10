@@ -2,82 +2,71 @@
 
 @section('content')
 
-	<h3>Edit a Promo Code</h3>
-	{{ Form::open(array('url' => 'admin/promo/update')) }}
-	{{ Form::hidden('id', $promos->id) }}
+<h3>Edit Promo Code</h3>
+@if(Session::has('room_message_add'))
+	<p>{{ Session::get('room_message_add') }}</p>	
+@endif
 
-	<?php
-		$rooms = RoomType::lists('name', 'id');
-	?>
-	<table>
-		<tr>
-			<td>{{ Form::label('Promo Code') }}</td>
-			<td>{{ Form::text('promo_code',$promos->promo_code, array('readonly')) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('Room Type') }}</td>
-			<td>{{ Form::select('room_type_id', $rooms , $promos->room_type_id) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('Start Date') }}</td>
-			<td>{{ Form::text('start_date',$promos->start_date) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('End Date') }}</td>
-			<td>{{ Form::text('end_date', $promos->end_date) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('Price') }}</td>
-			<td>{{ Form::text('price', $promos->price) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('Stays') }}</td>
-			<td>{{ Form::text('days', $promos->stays) }}</td>
-		</tr>
-
-		<tr>
-			<td>{{ Form::label('No of Rooms') }}</td>
-			<td>{{ Form::text('no_of_rooms', $promos->no_of_rooms) }}</td>
-		</tr>
+<div id="room-container">
+	Room Type: <label data-bind="text: name"></label>
+</div>
+<div id="service-container">
+	Services:
+	<div data-bind="foreach: serviceArray">
+		<div>
+			<input type="checkbox" data-bind="click: toggleCheckbox, checked: state" />
+			<label data-bind="text: name"></label>
+		</div>
+	</div>
+</div>
+<div id="promo-container">
+	<div>
+		Promo Code: <label data-bind="text: code"></label>
+	</div>
+	<div>
+		Start Date: <input data-bind="value: from" id="from" />
+	</div>
+	<div>
+		End Date: <input data-bind="value: to" id="to" />
+	</div>
+	<div>
+		Price: <input data-bind="value: price" id="price" />
+	</div>
+	<div>
+		Stays: <input data-bind="value: stays" id="stays" />
+	</div>
+	<div>
+		No of Rooms: <input data-bind="value: rooms" id="rooms" />
+	</div>
+	<div>
+		<button data-bind="click: saveEditedPromo">Save changes</button>
+	</div>
+</div>
 
 
-		<tr>
-			<td>Services</td>
-			<td>
-				<!-- Populating the services checkboxes -->
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script type="text/javascript" src="{{URL::to('/')}}/js/script.js"></script>
+<script type="text/javascript" src="{{url()}}/js/promo.js"></script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
+<script type="text/javascript">
+	http_url = '{{url()}}';
+	roomTypes= {{$roomTypes}};
+	services = {{$services}};
+	promo = {{$promo}};
 
-				@foreach($services as $service)
-					<input type = "checkbox" name = "service[]" value = "<?php echo $service['name']; ?>" <?php
-						if(in_array($service->name, json_decode($promos->services,true))) {
-							echo "checked";
-						}
-					?>>
-					{{ $service->name }}
-					<br>
-				@endforeach
-			</td>
-		</tr>
+	window.onload = function(){
+		loadServices();
+		loadPromo();
+	}
 
-		<tr>
-			<td colspan = "2" align = "right">{{ Form::submit('Update') }}</td>
-		</tr>
+	var allServices = new ServiceArray();
+	var roomType = new Room();
+	var currPromo = new Promo();
 
-	</table>
-	{{ Form::close()}}
-
-	@if(Session::has('promo_message'))
-
-		<p>{{ Session::get('promo_message') }}</p>
-	
-	@endif
-
-	@if($promo_message)
-		{{ $promo_message }}
-	@endif
+	ko.applyBindings(roomType, document.getElementById('room-container'));
+	ko.applyBindings(allServices, document.getElementById('service-container'));
+	ko.applyBindings(currPromo, document.getElementById('promo-container'));
+</script>	
 
 @stop
