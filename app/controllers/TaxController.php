@@ -45,12 +45,29 @@ class TaxController extends BaseController {
 	//views the tax edit page
 	public function postEdit(){
 	
-		$tax = Tax::find(Input::get('id') );
+		$id = Input::get('id');
+		if($id){
+			Session::put('tax_id', $id);
+			return 1;
+		}
+		return 3;
+		
+	}
 
-		return View::make('tax.edit')
-			->with('id', $tax->id)
-			->with('name', $tax->name)
-			->with('rate', $tax->rate);
+	//views the tax edit page
+	public function getEdit(){
+	
+		$tax = Tax::find(Session::get('tax_id'));
+		Session::forget('tax_id');
+		if($tax){
+			return View::make('tax.edit')
+					->with('id', $tax->id)
+					->with('name', $tax->name)
+					->with('rate', $tax->rate);
+		}
+
+		return Redirect::to('/');
+		
 	}
 
 	//Edit operation

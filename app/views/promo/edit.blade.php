@@ -2,7 +2,7 @@
 
 @section('content')
 
-<h3>Add a New Promo Code</h3>
+<h3>Edit Promo Code</h3>
 @if(Session::has('room_message_add'))
 	<p>{{ Session::get('room_message_add') }}</p>	
 @endif

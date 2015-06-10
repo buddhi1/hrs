@@ -24,6 +24,23 @@ var TaxArray = function(){
 	var self = this;
 
 	this.taxArray = ko.observableArray();
+
+	this.loadEditSavedTax = function(){
+		
+		var url = '/admin/tax/edit';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/tax/edit"
+			}
+		});
+	}
 }
 
 
@@ -39,6 +56,12 @@ var loadTaxes = function(){
 
 		allTax.taxArray.push(tax);
 	}
+}
+
+var loadTax = function(){
+	currTax.id(id);
+	currTax.name(name);
+	currTax.rate(rate);
 }
 
 var saveTax = function(){
