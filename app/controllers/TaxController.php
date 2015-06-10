@@ -12,6 +12,7 @@ class TaxController extends BaseController {
 		//$this->beforeFilter('csrf',array('on' => 'post'));
 		//change migration
 		//$this->beforeFilter('user_group');
+
 	}
 
 	//views the add tax page

@@ -17,6 +17,7 @@
 	<div>{{ Session::get('message') }}</div>
 @endif	
 
+
 <div>
 	<div>Tax Name: <input data-bind="value: name" id="name" /></div>
 	<div>Tax Rate: <input data-bind="value: rate" id="rate" /></div>
@@ -33,5 +34,6 @@
 
 	ko.applyBindings(newTax);
 </script>
+
 
 @stop

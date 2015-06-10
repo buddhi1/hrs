@@ -9,10 +9,10 @@
 class PermissionController extends BaseController {
 	
 
-	// public function __construct(){
-	// 	$this->beforeFilter('csrf',array('on'=>'post'));
-	// 	$this->beforeFilter('user_group');
-	// }
+	public function __construct(){
+		$this->beforeFilter('csrf',array('on'=>'post'));
+		$this->beforeFilter('user_group');
+	}
 
 	//Views the create Permission form
 	
@@ -213,11 +213,19 @@ class PermissionController extends BaseController {
 	//Deletes the selected permission group
 	public function postDestroy(){
 		$group = Permission::find(Input::get('id'));
+		$user = DB::table('users')
+					->where('permission_id','=',Input::get('id'))
+					->get();
 
-		if($group){
-			$group->delete();
+		if($user) {
+			return 'failure';
+		} else {
+			
+			if($group){
+				$group->delete();
 
-			return 'success';
+				return 'success';
+			}
 		}
 	}
 }

@@ -24,45 +24,9 @@
 	Service:<div data-bind="text: chosenService"></div>
 	Total Charge:<div data-bind="text: totalPrice"></div>
 	Paid Amount:<div data-bind="text: chosenAmount"></div>
-</div>
-	</tr>
-	<tr>	
-		
-	</tr>
-	
-</table>
 
-<div>
-	@if(Session::has('booking_id'))
-		{{ Session::get('room_type_id') }}
-		{{ Session::get('no_of_rooms') }}
-		{{ Session::get('no_of_adults') }}
-		{{ Session::get('no_of_kids') }}
-		{{ Session::get('services') }}
-		{{ Session::get('total_charges') }}
-		{{ Session::get('paid_amount') }}	
-		@if( Session::get('check_in' ) == 0 )
-			{{ Form::open(array('url'=>'admin/checkin/create', 'method'=>'GET')) }}
-				{{ Form::hidden('booking_id', Session::get('booking_id')) }}
-				{{ Form::hidden('identification_no', Session::get('identification_no')) }}
-				{{ Form::hidden('check_in', Session::get('check_in')) }}
-				{{ Form::hidden('check_out', Session::get('check_out')) }}
-								
-				{{ Form::submit('Mark Checkin') }}	
-			{{ Form::close() }}
-		@elseif( Session::get('check_out' ) == 0 )
-			{{ Form::open(array('url'=>'admin/checkin/edit', 'method'=>'GET')) }}
-				{{ Form::hidden('booking_id', Session::get('booking_id')) }}
-				{{ Form::hidden('identification_no', Session::get('identification_no')) }}
-				{{ Form::hidden('check_in', Session::get('check_in')) }}
-				{{ Form::hidden('check_out', Session::get('check_out')) }}
-				
-							
-				{{ Form::submit('Mark Checkout') }}
-			{{ Form::close() }}			
-			
-		@endif
-	@endif
+	<button data-bind="style: { visibility: checkIn() === null ? 'visible' : 'hidden' }, click: markCheckin">Mark Checkin</button></br>
+	<button data-bind="style: { visibility: checkOut() === null && checkIn() !== null ? 'visible' : 'hidden' }, click: markCheckout">Mark Checkout</button>
 </div>
 <script type="text/javascript" src="{{url()}}/js/booking.js"></script>
 <script type="text/javascript">

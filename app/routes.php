@@ -48,6 +48,3 @@ Route::controller('admin/tax', 'TaxController');
 Route::controller('admin', 'LoginController');
 
 Route::controller('customer', 'CustomerController');
-
-
-

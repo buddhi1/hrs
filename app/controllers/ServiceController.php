@@ -3,8 +3,8 @@
 class ServiceController extends BaseController {
 
 	public function __construct() {
-		//$this->beforeFilter('csrf',array('on' => 'post'));
-		// $this->beforeFilter('user_group');
+		$this->beforeFilter('csrf',array('on' => 'post'));
+		$this->beforeFilter('user_group');
 	}
 
 	public function getIndex() {
@@ -61,17 +61,22 @@ class ServiceController extends BaseController {
 
 		$service = Service::where('name', '=', Input::get('name'))->first();
 
-		// remove the deleted service from the room types table
-		$this->deleteService('room_types', $service->name);
+		$room_calendar = Calendar::where('service_id', '=', $service->id)->first();
+		if($room_calendar) {
+			return 0;
+		} else {
+			// remove the deleted service from the room types table
+			$this->deleteService('room_types', $service->name);
 
 
-		if($service) {
-			$service = Service::find($service->id);
-			$service->delete();
+			if($service) {
+				$service = Service::find($service->id);
+				$service->delete();
 
-			return 1;
+				return 1;
+			}
 		}
-
+		
 		return 0;
 	}
 }

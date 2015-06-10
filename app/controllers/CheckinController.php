@@ -7,43 +7,61 @@ class CheckinController extends BaseController {
 		$this->beforeFilter('user_group');
 	}
 
+	public function getCheckindetails() {
+
+		Session::put('booking_id', Input::get('booking_id'));
+	}
+
 	public function getCreate() {
-	
-		return View::make('checkin.add')
-		->with('booking_id', Input::get('booking_id'))
-		->with('identification_no', Input::get('identification_no'))
-		->with('check_in', Input::get('check_in'))
-		->with('check_out', Input::get('check_out'));
+
+		return View::make('checkin.add');
+	}
+
+	public function postOnload() {
+
+		$booking_id = Session::get('booking_id');
+		$payment = DB::table('bookings')
+						->select('paid_amount','total_charges')
+						->where('id', '=', $booking_id)
+						->first();
+		
+		$check_arr = array();
+		$check_arr['booking_id'] = $booking_id;
+		$check_arr['payment'] = $payment->total_charges;
+		$check_arr['paid'] = $payment->paid_amount;
+
+		return $check_arr;
 	}
 
 	//marks checkin and checkout
 	public function postCreate() {
 
-		$booking_id = Input::get('booking_id');
+		$booking_id = Input::get('bookingID');
+		
 		$checkin = DB::table('checkins')->where('booking_id', '=', $booking_id)->first();
 	
 		if($checkin == null){
 			$check = new Checkin();
+			$pay_arr = array();
+			$pay_arr[0] = Input::get('paid');
+			$pay_arr[1] = Input::get('advancedPay');
 
-			$check->authorizer = Input::get('auth');
-			$check->check_in = Input::get('check_in');
+
+			$check->authorizer = 1;	//Auth::id()
+			$check->check_in = Input::get('checkin');
 			$check->check_out = Input::get('check_out');
-			$check->advance_payment = Input::get('advance_payment');
-			$check->payment = Input::get('payment');
+			$check->advance_payment = Input::get('advancedPay');
+			$check->payment = json_encode($pay_arr);
 			$check->booking_id = $booking_id;
 			
-			if($check->check_in === '1') {
+			if($check->check_in === 'true') {
 				$check->check_in = date('Y-m-d H:i:s');
 			}
 
-			if($check->check_out === '1') {
+			if($check->check_out === 'true') {
 				$check->check_out = date('Y-m-d H:i:s');
 			}
-/*
-			if($check->payment) {
-				$check->payment = json_encode($check->payment);
-			}
-*/
+
 			if($check) {
 				$booking = Booking::find($check->booking_id);
 
@@ -58,9 +76,9 @@ class CheckinController extends BaseController {
 				}
 
 				$booking->save();
+				Session::forget('booking_id');
 				
-				return Redirect::to('admin/checkin')
-					->with('message', 'Checkin Successful');
+				return 'success';
 			}
 		
 		}
@@ -68,25 +86,44 @@ class CheckinController extends BaseController {
 
 	//views the index page
 	public function getIndex() {
-		return View::make('checkin.index')
-			->with('checkins', Checkin::all());
+
+		return View::make('checkin.index');
 	}
 
-	//Views the edit page
+	public function postIndex() {
+
+		$checkins = Checkin::all();
+		return $checkins;
+	}
+
 	public function getEdit(){
-		return View::make('checkin.edit')
-			->with('booking_id', Input::get('booking_id'))
-			->with('identification_no', Input::get('identification_no'))
-			->with('check_in', Input::get('check_in'))
-			->with('check_out', Input::get('check_out'))
-			->with('payments', DB::table('checkins')->where('booking_id', '=', Input::get('booking_id'))->pluck('payment'));
+		//show the edit page
+
+		return View::make('checkin.edit');	
+	}
+
+	public function postEdit() {
+		//load booking_id and payment fields onLoad of edit page
+		$total = 0;
+		$booking_id = Session::get('booking_id');
+		$payments = DB::table('checkins')->where('booking_id', '=', $booking_id)->pluck('payment');
+		$total_charge = DB::table('bookings')->where('id', '=', $booking_id)->pluck('total_charges');
+		$pay_arr = json_decode($payments);
+		foreach ($pay_arr as $key => $value) {
+			$total += floatval($value);
+		}
+
+		$check_arr = array();
+		$check_arr['booking_id'] = $booking_id;
+		$check_arr['payments'] = $total;
+		$check_arr['total_charge'] = $total_charge;
+		return $check_arr;
 	}
 	
-
-	//Update functionality
 	public function postUpdate(){
+		//update the checkin table with checkout details
 
-		$booking_id = Input::get('booking_id');
+		$booking_id = Input::get('bookingID');
 		$checkin = DB::table('checkins')->where('booking_id', '=', $booking_id)->first();
 
 		if($checkin != null){
@@ -96,33 +133,100 @@ class CheckinController extends BaseController {
 			if($payment){
 				$payHistory = DB::table('checkins')->where('booking_id', '=', $booking_id)->pluck('payment');
 				if($payHistory != null){
-					$pay = json_decode($payHistory);
+					
+					$pay = json_decode($payHistory,true);
 					$pay[] = $payment;
 
 					DB::table('checkins')->where('booking_id', '=', $booking_id)
 						->update(['payment'=>json_encode($pay)]);
-
-		
 				}elseif($payHistory == null){
 					DB::table('checkins')->where('booking_id', '=', $booking_id)
 						->update(['payment'=>'['.json_encode($payment).']']);
-
 				}
-				
-			
 			}
 
-			if(Input::get('check_out') === '1') {
+			if(Input::get('checkout') === 'true') {
 				DB::table('checkins')->where('booking_id', '=', $booking_id)
 					->update(['check_out'=>date('Y-m-d H:i:s')]);
 
 				DB::table('bookings')->where('id', '=', $booking_id)
 					->update(['check_out'=>date('Y-m-d H:i:s')]);
 			}
+			Session::forget('booking_id');
+			return 'success';
+		} else {
+			return 'failure';
+		}
+	}
 
-			
-			return Redirect::to('admin/checkin')
-					->with('message', 'Checkin Updated');
+	public function postNewpayment() {
+		// put the checkin_id to the session
+
+		Session::put('checkin_id',Input::get('id'));
+		return 'success';
+	}
+
+	public function getAddpayment() {
+		// return the payment blade
+
+		if(Session::has('checkin_id')) {
+
+			return View::make('checkin.payment');
+		} else {
+
+			return Redirect::to('admin/checkin/index');
+		}
+	}
+
+	public function postAddpayment() {
+		// display all the details revelant on the page on load
+
+		$checkin_id = Session::get('checkin_id');
+		$checkin = DB::table('checkins')
+						->select('booking_id', 'payment')
+						->where('id','=',$checkin_id)
+						->first();
+
+		$booking_id = $checkin->booking_id;
+		$paid = $checkin->payment;
+
+		if($booking_id) {
+
+			$payment = DB::table('bookings')
+							->where('id', '=', $booking_id)
+							->pluck('total_charges');
+		}
+
+		$check_arr = array();
+		$check_arr['checkin_id'] = $checkin_id;
+		$check_arr['booking_id'] = $booking_id;
+		$check_arr['payment'] = $payment;
+		$check_arr['paid'] = $paid;
+
+		Session::forget('checkin_id');
+		return $check_arr;
+	}
+
+	public function postRecordpayment() {
+		//add the new payment to the checkin table
+
+		$checkin_id = Input::get('id');
+		$amount = Input::get('advancedPay');
+
+		$checkin = Checkin::find($checkin_id);
+
+
+		if($checkin) {
+			$pay_arr = json_decode($checkin->payment);
+			$pay_arr[] = $amount;
+			$pay_string = json_encode($pay_arr);
+
+			$checkin->payment = $pay_string;
+			$checkin->save();
+
+			return 'success';
+		}else {
+			return 'failure';
 		}
 	}
 }

@@ -16,6 +16,22 @@
         xmlHttp.send(header);
     }
 
+    function sendRequestToServerGet(url,variables,callback){
+
+        var header =  arrayToUrl(variables);
+        console.log(header);
+             
+        var xmlHttp = new XMLHttpRequest(); 
+        xmlHttp.onreadystatechange = function(){
+            if (xmlHttp.readyState==4 && xmlHttp.status==200){
+                callback(xmlHttp.responseText);
+            }
+        };
+        xmlHttp.open( "GET", http_url+url+'?'+header, true );
+        xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlHttp.send();
+    }
+
     var arrayToUrl = function(url){
 
     if(url !== undefined) {
