@@ -43,8 +43,12 @@ class RoomController extends BaseController {
 
 		$promotion = Promotion::where('room_type_id', '=', Input::get('id'))->first();
 		$calendar = Calendar::where('room_type_id', '=', Input::get('id'))->first();
+		$promo = PromoCode::where('room_type_id', '=', Input::get('id'))->first();
+		$booking = Booking::where('room_type_id', '=', Input::get('id'))->first();
 
-		if(!$promotion && !$calendar){
+		if(!$promotion && !$calendar && !$promo && !$booking){
+			//delete a room only if it doesn't exists in promotion, calendar, promo and booking tables
+
 			if($room) {
 				$room->delete();
 				return 1;
@@ -78,16 +82,6 @@ class RoomController extends BaseController {
 		// update an existing room type
 						
 		$room = RoomType::find(Session::get('room')->id);
-		//return Session::get('room')->services;
-		// $room->name = Session::get('room')->name;
-		// $room->facilities = json_encode(Session::get('room')->facilities);
-		// $room->services = json_encode(Session::get('room')->services);
-		// $room->no_of_rooms = Session::get('room')->no_of_rooms;
-		// return $room;
-		// $room->save();
-
-		// Session::flush();
-		// return 1;
 
 		$room->name = Input::get('name');
 		$room->facilities = json_encode(explode(',', Input::get('facilities')));
