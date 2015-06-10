@@ -2,10 +2,10 @@
 
 class BookingController extends BaseController {
 
-	// public function __construnct() {
+	public function __construnct() {
 		// $this->beforeFilter('csrf', array('on' => 'post'));
-		// $this->beforeFilter('login');
-	// }
+		$this->beforeFilter('login');
+	}
 
 	public function getBooking1() {
 		return View::make('booking.add1');
@@ -327,7 +327,7 @@ class BookingController extends BaseController {
 				$cancellation_charge = $charge*$cancellation_rate;
 
 				$booking->paid_amount = $cancellation_charge;
-				// $booking->cancellation = 1;
+				$booking->cancellation = 1;
 
 				$booking->save();
 
@@ -337,7 +337,7 @@ class BookingController extends BaseController {
 				$cancellation_charge = 0;
 
 				$booking->paid_amount = $cancellation_charge;
-				// $booking->cancellation = 1;
+				$booking->cancellation = 1;
 
 				$booking->save();
 

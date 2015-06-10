@@ -3,7 +3,7 @@
 class PromoController extends BaseController {
 
 	public function __construnct() {
-		$this->beforeFilter('csrf', array('on' => 'post'));
+		// $this->beforeFilter('csrf', array('on' => 'post'));
 		$this->beforeFilter('user_group');
 	}
 
