@@ -17,12 +17,17 @@
 	{{ Session::get('message') }}
 @endif	
 
-{{ Form::open(array('url'=>'admin/tax/create')) }}
-	{{ Form::label('lblname', 'Tax name') }}
-	{{ Form::text('name') }} <br>
-	{{ Form::label('lblname', 'Tax rate') }}
-	{{ Form::text('rate') }}
-	{{ Form::submit('Add tax') }}
-{{ Form::close() }}
+Tax Name: <input type="text" data-bind="value: name" />
+Tax Rate: <input type="text" data-bind="value: rate" />
+<button data-bind="click: saveTax">Add Tax</button>
+
+<script type="text/javascript" src="{{url()}}/js/tax.js"></script>
+<script type="text/javascript">
+	var http_url = '{{url()}}';
+
+	var tax = new Tax();
+	ko.applyBindings(tax);
+</script>
+<script type="text/javascript" src="{{url()}}/js/js_config.js"></script>
 
 @stop

@@ -9,8 +9,8 @@
 class TaxController extends BaseController {
 
 	public function __construct() {
-		$this->beforeFilter('csrf',array('on' => 'post'));
-		$this->beforeFilter('user_group');
+		// $this->beforeFilter('csrf',array('on' => 'post'));
+		// $this->beforeFilter('user_group');
 	}
 
 	//views the add tax page
