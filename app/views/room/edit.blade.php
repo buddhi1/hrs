@@ -7,11 +7,11 @@
 	<div id="room-container">
 		<div>
 			<label>Room name</label>
-			<input data-bind="value: name" type="text" required="required"  />
+			<label data-bind="text: name" id="name"></label>
 		</div>
 		<div>
 			<label>No of rooms</label>
-			<input type="text" data-bind="value: no_of_rooms" required="required">
+			<input type="text" data-bind="value: no_of_rooms" required="required" id="rooms" />
 		</div>
 		<div>
 			<button data-bind="click: addRoom">Save Changes</button>

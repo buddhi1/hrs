@@ -47,7 +47,7 @@ var Room = function(){
 
 	this.addRoom = function(){
 		
-		if(this.name() != "" || this.no_of_rooms() != ""){
+		if(document.getElementById('name').value !== "" && document.getElementById('rooms').value !== ""){
 			newRoom.name(this.name());
 			newRoom.no_of_rooms(this.no_of_rooms());
 			var facilities = [];
@@ -65,8 +65,9 @@ var Room = function(){
 				}
 			}
 			newRoom.services(services);
-
-			if("room" in window){
+			if(facilities.length <= 0 || services.length <= 0){
+				alert('Select atleast a single facility and a single service to continue');
+			}else if("room" in window){
 				saveEditedRoom();
 			}else{
 				saveRoom();

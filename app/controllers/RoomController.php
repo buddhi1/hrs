@@ -9,7 +9,9 @@ class RoomController extends BaseController {
 
 	public function getIndex() {
 	// display all the room types
-	
+		if(Session::has('room')){
+			Session::forget('room');
+		}
 		return View::make('room.view')
 			->with('rooms', RoomType::all());
 	}
@@ -70,11 +72,14 @@ class RoomController extends BaseController {
 
 	public function getEdit() {
 	// display the edit room type form	
-		
-		return View::make('room.edit')
-			->with('room', Input::get('value'))
-			->with('facilities', Facility::all())
-			->with('services', Service::all());				
+		if(Session::has('room')){
+
+			return View::make('room.edit')
+				->with('room', Input::get('value'))
+				->with('facilities', Facility::all())
+				->with('services', Service::all());	
+		}
+		return Redirect::to('admin/room');			
 		
 	}
 
