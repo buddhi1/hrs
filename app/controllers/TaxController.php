@@ -73,29 +73,26 @@ class TaxController extends BaseController {
 
 	//Edit operation
 	public function postUpdate(){
-		$validator = Validator::make(Input::all(), Tax::$rules);	
+		
+		$tax = Tax::find(Input::get('id') );
+		$tax->name = Input::get('name');
+		$tax->rate = Input::get('rate');
 
-		if($validator->passes()){
-			$tax = Tax::find(Input::get('id') );
-			$tax->name = Input::get('name');
-			$tax->rate = Input::get('rate');
+		$tax->save();
 
-			$tax->save();
-
-			return Redirect::to('admin/tax')
-				->with('message', 'Tax edited successfully');
-		}
-
-		return Redirect::to('admin/tax')
-			->withErrors($validator);
+		return 1;
+		
 	}
 
 	//Delete existing tax
 	public function postDestroy(){
 
 		$tax = Tax::find(Input::get('id'));
-		$tax->delete();
+		if($tax){
+			$tax->delete();
 
-		return Redirect::to('admin/tax');
+			return 1;
+		}
+		return 0;
 	}
 }

@@ -41,6 +41,24 @@ var TaxArray = function(){
 			}
 		});
 	}
+
+	this.deleteSavedTax = function(){
+		var url = '/admin/tax/destroy';
+		var variables = ko.toJSON(this);
+
+		var callback = function(res){
+			return res;	
+		}
+		
+		sendRequestToServerPost(url,variables,function(res){
+
+			if(res == 1){
+				window.location = http_url+"/admin/tax"
+			}else{
+				alert('Something went wrong. Please try again.')
+			}
+		});
+	}
 }
 
 
@@ -80,6 +98,26 @@ var saveTax = function(){
 			window.location = http_url+"/admin/tax";
 			return 1;
 		}else{
+			alert('Something went wrong');
+		}
+	});
+}
+
+var saveEditedTax = function(){
+	var result=-1;
+	var url = '/admin/tax/update';
+	var variables = ko.toJSON(this);
+
+	var callback = function(res){
+		return res;	
+	}
+
+	sendRequestToServerPost(url,variables,function(res){		
+		if(res ==1 ){
+			alert('The Tax edited successfully');
+			window.location = http_url+"/admin/tax";
+			return 1;
+		}else{			
 			alert('Something went wrong');
 		}
 	});

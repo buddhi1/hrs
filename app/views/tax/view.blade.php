@@ -29,7 +29,7 @@
 			<label data-bind="text: name"></label>
 			<label data-bind="text: rate"></label>
 			<button data-bind="click: $parent.loadEditSavedTax">Edit</button>
-			<button data-bind="click: ">Delete</button>
+			<button data-bind="click: $parent.deleteSavedTax">Delete</button>
 		</div>
 	</div>
 

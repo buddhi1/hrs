@@ -20,7 +20,7 @@
 <div>
 	<div>Tax Name: <input data-bind="value: name" id="name" /></div>
 	<div>Tax Rate: <input data-bind="value: rate" id="rate" /></div>
-	<div><button data-bind="click: addTax">Save changes</button> </div>
+	<div><button data-bind="click: saveEditedTax">Save changes</button> </div>
 </div>
 
 
