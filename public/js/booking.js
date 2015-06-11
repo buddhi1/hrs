@@ -106,6 +106,9 @@ function checkAvailability() {
 
   sendRequestToServerPost('/admin/booking/booking2', sendData, function(res){
     if(res) {
+      bookingFirst.roomType([]);
+      bookingFirst.paidAmount([]);
+      bookingFirst.services([]);
 
       var rooms = res;
       rooms = JSON.parse(rooms);
@@ -117,16 +120,20 @@ function checkAvailability() {
         room.name(rooms[i]);
         bookingFirst.roomType.push(room);
       }
-      var pay_option1 = {
-        id: 'first',
-        name: 'First Night'
-      };
-      var pay_option2 = {
-        id: 'full',
-        name: 'Full Payment'
+
+      if(Object.keys(rooms).length>0) {
+        var pay_option1 = {
+          id: 'first',
+          name: 'First Night'
+        };
+        var pay_option2 = {
+          id: 'full',
+          name: 'Full Payment'
+        };
+
+        bookingFirst.paidAmount.push(pay_option1);
+        bookingFirst.paidAmount.push(pay_option2);
       }
-      bookingFirst.paidAmount.push(pay_option1);
-      bookingFirst.paidAmount.push(pay_option2);
     }
   });
 }
