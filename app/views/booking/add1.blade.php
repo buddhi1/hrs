@@ -38,7 +38,7 @@ Room Types:
 Services: 
 <select data-bind="options: services, selectedOptions: chosenService, optionsText: function(item) {return item.name }" name="services" id="services" required></select>
 
-Paid Amount: <select type="text" data-bind="options: paidAmount, selectedOptions: chosenAmount, optionsText: function(item) {return item.name }" name="paid_amount"  required></select>
+Payment: <select type="text" data-bind="options: paidAmount, selectedOptions: chosenAmount, optionsText: function(item) {return item.name }" name="paid_amount"  required></select>
 </br>
 <button onclick="saveBooking()">Place Booking</button>
 @if(Session::has('message'))

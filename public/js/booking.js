@@ -117,19 +117,18 @@ function checkAvailability() {
         room.name(rooms[i]);
         bookingFirst.roomType.push(room);
       }
+      var pay_option1 = {
+        id: 'first',
+        name: 'First Night'
+      };
+      var pay_option2 = {
+        id: 'full',
+        name: 'Full Payment'
+      }
+      bookingFirst.paidAmount.push(pay_option1);
+      bookingFirst.paidAmount.push(pay_option2);
     }
   });
-  var pay_option1 = {
-    id: 'first',
-    name: 'First Night'
-  };
-  var pay_option2 = {
-    id: 'full',
-    name: 'Full Payment'
-  }
-
-  bookingFirst.paidAmount.push(pay_option1);
-  bookingFirst.paidAmount.push(pay_option2);
 }
 
 function getServices(url,variables,callback){

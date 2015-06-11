@@ -45,6 +45,10 @@ class CreateTables extends Migration {
 			$table->boolean('index_calendar');
 			$table->boolean('destroy_calendar');
 			$table->boolean('edit_calendar');
+			$table->boolean('index_tax');
+			$table->boolean('create_tax');
+			$table->boolean('destroy_tax');
+			$table->boolean('edit_tax');
 			$table->timestamps();
 		});
 
@@ -162,14 +166,13 @@ class CreateTables extends Migration {
 			$table->datetime('check_out')->nullable();
 
 			$table->string('promo_code');
+			$table->boolean('cancellation')->nullable();
 			$table->timestamps();
 		});
 
 		Schema::create('checkins', function($table){
 			$table->increments('id');
 			$table->string('authorizer');
-
-
 			$table->dateTime('check_in')->nullable();
 			$table->dateTime('check_out')->nullable();
 			$table->decimal('advance_payment', 8, 2);
