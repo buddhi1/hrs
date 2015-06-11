@@ -168,8 +168,6 @@ class CreateTables extends Migration {
 		Schema::create('checkins', function($table){
 			$table->increments('id');
 			$table->string('authorizer');
-
-
 			$table->dateTime('check_in')->nullable();
 			$table->dateTime('check_out')->nullable();
 			$table->decimal('advance_payment', 8, 2);
