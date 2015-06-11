@@ -11,7 +11,7 @@ class TaxController extends BaseController {
 	public function __construct() {
 		//$this->beforeFilter('csrf',array('on' => 'post'));
 		//change migration
-		//$this->beforeFilter('user_group');
+		$this->beforeFilter('user_group');
 
 	}
 

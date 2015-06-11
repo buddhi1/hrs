@@ -2,12 +2,12 @@
 
 class FacilityController extends BaseController {
 
-	// public function __construct() {
-	// 	$this->beforeFilter('csrf', array('on' => 'post'));
+	public function __construct() {
+		// $this->beforeFilter('csrf', array('on' => 'post'));
 
-	// 	$this->beforeFilter('user_group');
+		$this->beforeFilter('user_group');
 
-	// }
+	}
 
 	public function getIndex() {
 		//display all the facilities in the database
