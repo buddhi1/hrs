@@ -45,6 +45,10 @@ class CreateTables extends Migration {
 			$table->boolean('index_calendar');
 			$table->boolean('destroy_calendar');
 			$table->boolean('edit_calendar');
+			$table->boolean('index_tax');
+			$table->boolean('create_tax');
+			$table->boolean('destroy_tax');
+			$table->boolean('edit_tax');
 			$table->timestamps();
 		});
 
@@ -162,6 +166,7 @@ class CreateTables extends Migration {
 			$table->datetime('check_out')->nullable();
 
 			$table->string('promo_code');
+			$table->boolean('cancellation')->nullable();
 			$table->timestamps();
 		});
 
