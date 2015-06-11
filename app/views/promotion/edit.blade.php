@@ -19,24 +19,6 @@
 		<div>{{ Session::get('message') }}</div>
 	@endif
 
-	<div>
-				
-		<div id="room-types">
-			<label>Room type</label>
-			<label data-bind="text: name"></label>
-		</div>		
-	</div>
-	<div>		
-		<div id="service-container">
-			<label>Service</label>	 
-			<div data-bind="foreach: serviceArray">
-				<div>
-					<input type="checkbox" data-bind="checked: state, click: $parent.toggleCheckbox">
-					<label data-bind="text: name"></label>
-				</div>
-			</div>
-		</div>		
-	</div>
 
 <div id="promotion-container">
 	<table>
